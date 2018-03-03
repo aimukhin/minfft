@@ -160,7 +160,7 @@ those of FFTW. Timings are plotted with three-sigma error intervals.
 ![](docs/perf-dct4.svg)
 
 ### Discussion
-For the generic complex and real DFTs, and for the most transform sizes,
+For the generic complex and real DFTs, and for most transform sizes,
 our library performs 1.5-2 times slower than FFTW. It is not surprising,
 considering the sophistication of FFTW, but quite acceptable, taking into
 account how much simpler our code is. What is surprising, though, is
