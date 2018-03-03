@@ -135,7 +135,7 @@ Transform | Difference
 `DCT-4`   | Our transform differs by constant `2`
 `DST-4`   | Our transform differs by constant `-2`
 
-## Implementaion details
+## Implementation details
 The generic complex DFT is computed by a split-radix (2/4)
 decimation-in-frequency explicitly recursive fast Fourier transform.
 This method achieves a remarkable balance between performance and
