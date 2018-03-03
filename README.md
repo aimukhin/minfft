@@ -153,28 +153,25 @@ those of FFTW. Timings are plotted with three-sigma error intervals.
 ### Real DFT
 ![](docs/perf-realdft.svg)
 
+For the generic complex and real DFTs, our library performs 1.5-2 times
+slower than FFTW in most cases. It is not surprising, considering the
+sophistication of FFTW, but quite acceptable, taking into account how
+much simpler our code is. What is surprising, though, is that our
+library manages to perform comparably or significantly better than FFTW
+for very big transforms (>65536). In this range, our performance matches
+FFTW for the complex DFT, and exceeds it for the real DFT.
+
+Also note as a curiosity, that our library performs much better than
+FFTW for very small transforms of sizes 1,2,4.
+
 ### DCT-2
 ![](docs/perf-dct2.svg)
 
 ### DCT-4
 ![](docs/perf-dct4.svg)
 
-### Discussion
-For the generic complex and real DFTs, and for most transform sizes,
-our library performs 1.5-2 times slower than FFTW. It is not surprising,
-considering the sophistication of FFTW, but quite acceptable, taking into
-account how much simpler our code is. What is surprising, though, is
-that our library manages to perform comparably or significantly better
-than FFTW for very big transforms (>65536). In this range, our
-performance matches FFTW for the complex DFT, and exceeds it for the real
-DFT.
-
-Also note as a curiosity, that our library performs much better than
-FFTW for very small transforms of sizes 1,2,4.
-
-For the real symmetric transforms, the situation is different. Here, our
-library performs at least as well as FFTW for most transform sizes, and
-sometimes much better.
+For the real symmetric transforms, our library performs at least as well
+as FFTW for most transform sizes, and sometimes much better.
 
 ## Precision
 This graph shows how much the results of real transforms differ
