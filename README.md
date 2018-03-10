@@ -1,8 +1,12 @@
 # fourier
-A library for computing discrete Fourier transforms.
+This library computes most widely used 1-dimensional discrete Fourier
+transforms:
+
+* Complex DFT and its inverse,
+* DFT of real values and its inverse,
+* Real symmetric transforms (DCT and DST) of types 2, 3, and 4.
 
 ## Contents
-- [Overview](#overview)
 - [Interface](#interface)
 - [Usage](#usage)
   - [Complex DFT](#complex-dft)
@@ -20,13 +24,6 @@ A library for computing discrete Fourier transforms.
 - [Precision](#precision)
 - [Compliance](#compliance)
 - [License](#license)
-
-## Overview
-The library computes most widely used 1-dimensional transforms:
-
-* Complex DFT and its inverse,
-* DFT of real values and its inverse,
-* Real symmetric transforms (DCT and DST) of types 2, 3, and 4.
 
 ## Interface
 The transform functions take four arguments:
