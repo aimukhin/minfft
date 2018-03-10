@@ -147,7 +147,7 @@ transform. Let's see how.
 
 Everywhere below,
 
-![](docs/exp.svg).
+![](docs/exp.svg)
 
 ### Real DFT
 Results of the real DFT can be recovered as
@@ -183,7 +183,7 @@ Consider
 
 and notice symmetry
 
-![](docs/g-symmetry.svg).
+![](docs/g-symmetry.svg)
 
 Therefore, we will determine all G if we find those at the even
 positions. Luckily, there's a simple way to compute them:
