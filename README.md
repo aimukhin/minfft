@@ -156,7 +156,7 @@ Results of the real DFT can be recovered as
 
 from the results of the complex DFT of length N/2:
 
-![](docs/dft-for-realdft.svg).
+![](docs/dft-for-realdft.svg)
 
 Inverse real DFT routine simply plays backwards the steps taken by the
 forward transform routine.
@@ -185,8 +185,8 @@ and notice symmetry
 
 ![](docs/g-symmetry.svg).
 
-Therefore, we will know all G if we find those at the even positions.
-Luckily, there's a simple way to compute them:
+Therefore, we will determine all G if we find those at the even
+positions. Luckily, there's a simple way to compute them:
 
 ![](docs/g-even.svg)
 
