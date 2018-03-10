@@ -1,6 +1,6 @@
 # fourier
-This library computes most widely used 1-dimensional discrete Fourier
-transforms:
+This is a library of routines for computing most widely used
+1-dimensional discrete Fourier transforms:
 
 * Complex DFT and its inverse,
 * DFT of real values and its inverse,
@@ -8,7 +8,7 @@ transforms:
 
 ## Contents
 - [Interface](#interface)
-- [Usage](#usage)
+- [Transforms](#transforms)
   - [Complex DFT](#complex-dft)
   - [Inverse complex DFT](#inverse-complex-dft)
   - [Real DFT](#real-dft)
@@ -37,7 +37,7 @@ The exponent vector contains precomputed constants for the given
 transform type and length. The library provides functions for allocating
 and filling the exponent vectors for each transform type.
 
-## Usage
+## Transforms
 Here goes a description of every transform function (along with its
 exponent vector generator) with a short explanation of what it
 computes.
