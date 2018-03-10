@@ -1,10 +1,30 @@
 # fourier
 A library for computing discrete Fourier transforms.
 
+## Contents
+- [Overview](#overview)
+- [Interface](#interface)
+- [Usage](#usage)
+  - [Complex DFT](#complex-dft)
+  - [Inverse complex DFT](#inverse-complex-dft)
+  - [Real DFT](#real-dft)
+  - [Inverse real DFT](#inverse-real-dft)
+  - [DCT-2](#dct-2)
+  - [DST-2](#dst-2)
+  - [DCT-3](#dct-3)
+  - [DST-3](#dst-3)
+  - [DCT-4](#dct-4)
+  - [DST-4](#dst-4)
+- [Implementation details](#implementation-details)
+- [Performance](#performance)
+- [Precision](#precision)
+- [Compliance](#compliance)
+- [License](#license)
+
 ## Overview
 The library computes most widely used 1-dimensional transforms:
 
-* Generic complex DFT and its inverse,
+* Complex DFT and its inverse,
 * DFT of real values and its inverse,
 * Real symmetric transforms (DCT and DST) of types 2, 3, and 4.
 
@@ -25,12 +45,12 @@ Here goes a description of every transform function (along with its
 exponent vector generator) with a short explanation of what it
 computes.
 
-### Generic complex DFT
+### Complex DFT
 ```C
 void dft (int N, complex *x, complex *y, const complex *e);
 complex* mkexp_dft (int N);
 ```
-The function computes the generic complex DFT, defined as usual:
+The function computes the complex DFT, defined as usual:
 
 ![](docs/dft-def.svg)
 
@@ -136,7 +156,7 @@ Transform | Difference
 `DST-4`   | Our transform differs by constant `-2`
 
 ## Implementation details
-The generic complex DFT is computed by a split-radix (2/4)
+The complex DFT is computed by a split-radix (2/4)
 decimation-in-frequency explicitly recursive fast Fourier transform.
 This method achieves a remarkable balance between performance and
 simplicity, and it behaves particularly cache-friendly, since it refers
@@ -196,14 +216,14 @@ This way we reduce a type-4 transform to a half-length complex DFT.
 These graphs show the execution times of our routines compared with
 those of FFTW. Timings are plotted with three-sigma error intervals.
 
-### Generic complex DFT
+### Complex DFT
 ![](docs/perf-dft.svg)
 
 ### Real DFT
 ![](docs/perf-realdft.svg)
 
-For the generic complex and real DFTs, our library performs 1.5-2 times
-slower than FFTW in most cases. It is not surprising, considering the
+For the complex and real DFTs, our library performs 1.5-2 times slower
+than FFTW in most cases. It is not surprising, considering the
 sophistication of FFTW, but quite acceptable, taking into account how
 much simpler our code is. What is surprising, though, is that our
 library manages to perform comparably or significantly better than FFTW
