@@ -145,12 +145,21 @@ refers to adjacent memory locations.
 All the real transforms are reduced eventually to a half-length complex
 transform. Let's see how.
 
-Everywhere below, ![](docs/exp.svg).
+Everywhere below,
+
+![](docs/exp.svg).
 
 ### Real DFT
-Real DFT of ![](docs/realdft-inputs.svg) can be recovered as
+Real DFT of
+
+![](docs/realdft-inputs.svg)
+
+can be recovered as
+
 ![](docs/realdft-recover.svg)
+
 from the results of the complex DFT of length N/2:
+
 ![](docs/dft-for-realdft.svg).
 
 Inverse real DFT routine simply plays backwards the steps taken by the
@@ -159,6 +168,7 @@ forward transform routine.
 ### Type-2 real symmetric transforms
 DCT-2 and DST-2 of length N can be easily reduced to a real DFT of the
 same length:
+
 ![](docs/type2-impl.svg)
 
 ### Type-3 real symmetric transforms
@@ -168,12 +178,22 @@ taken by the type-2 routines.
 
 ### Type-4 real symmetric transforms
 Type-4 transforms can be written as:
+
 ![](docs/type4-impl.svg).
-Consider ![](docs/g-def.svg) and notice symmetry
-![](docs/g-symmetry.svg). Therefore, we will know all `G`s if we find
-those at the even positions. Luckily, there's a simple way to compute
-them:
+
+Consider
+
+![](docs/g-def.svg)
+
+and notice symmetry
+
+![](docs/g-symmetry.svg).
+
+Therefore, we will know all `G`s if we find those at the even positions.
+Luckily, there's a simple way to compute them:
+
 ![](docs/g-even.svg).
+
 This way we reduce a type-4 transform to a half-length complex DFT.
 
 ## Performance
