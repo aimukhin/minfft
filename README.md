@@ -188,7 +188,7 @@ and notice symmetry
 Therefore, we will know all G if we find those at the even positions.
 Luckily, there's a simple way to compute them:
 
-![](docs/g-even.svg).
+![](docs/g-even.svg)
 
 This way we reduce a type-4 transform to a half-length complex DFT.
 
