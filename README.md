@@ -139,15 +139,13 @@ Transform | Difference
 The generic complex DFT is computed by a split-radix (2/4)
 decimation-in-frequency explicitly recursive fast Fourier transform.
 This method achieves a remarkable balance between performance and
-simplicity, and it behaves particularly cache-friendly, since it mostly
-refers to adjacent memory locations.
+simplicity, and it behaves particularly cache-friendly, since it refers
+mostly to adjacent memory locations.
 
 All the real transforms are reduced eventually to a half-length complex
 transform. Let's see how.
 
-Everywhere below,
-
-![](docs/exp.svg).
+Everywhere below, ![](docs/exp.svg).
 
 ### Real DFT
 Results of the real DFT can be recovered as
@@ -177,13 +175,7 @@ Type-4 transforms can be written as
 
 ![](docs/type4-impl.svg)
 
-Consider
-
-![](docs/g-def.svg)
-
-and notice symmetry
-
-![](docs/g-symmetry.svg).
+Consider ![](docs/g-def.svg) and notice symmetry ![](docs/g-symmetry.svg).
 
 Therefore, we will know all G if we find those at the even positions.
 Luckily, there's a simple way to compute them:
