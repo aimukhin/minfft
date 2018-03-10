@@ -173,7 +173,7 @@ type-2 counterparts, they are computed by working backwards the steps
 taken by the type-2 routines.
 
 ### Type-4 real symmetric transforms
-Type-4 transforms can be written as
+These transforms can be written as
 
 ![](docs/type4-impl.svg)
 
