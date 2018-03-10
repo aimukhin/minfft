@@ -150,11 +150,7 @@ Everywhere below,
 ![](docs/exp.svg).
 
 ### Real DFT
-Real DFT of
-
-![](docs/realdft-inputs.svg)
-
-can be recovered as
+Results of the real DFT can be recovered as
 
 ![](docs/realdft-recover.svg)
 
@@ -177,9 +173,9 @@ type-2 counterparts, they are computed by working backwards the steps
 taken by the type-2 routines.
 
 ### Type-4 real symmetric transforms
-Type-4 transforms can be written as:
+Type-4 transforms can be written as
 
-![](docs/type4-impl.svg).
+![](docs/type4-impl.svg)
 
 Consider
 
@@ -189,7 +185,7 @@ and notice symmetry
 
 ![](docs/g-symmetry.svg).
 
-Therefore, we will know all `G`s if we find those at the even positions.
+Therefore, we will know all G if we find those at the even positions.
 Luckily, there's a simple way to compute them:
 
 ![](docs/g-even.svg).
