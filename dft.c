@@ -58,7 +58,7 @@ rdft (int N, complex *x, complex *y, int sy, const complex *e) {
 // complex DFT
 void
 dft (int N, complex *x, complex *y, const complex *e) {
-	return rdft(N,x,y,1,e);
+	rdft(N,x,y,1,e);
 }
 
 // fill the exponent vector for complex DFT (for internal use)
