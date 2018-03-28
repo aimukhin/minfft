@@ -6,6 +6,8 @@ This is a library of routines for computing most widely used
 * DFT of real values and its inverse,
 * Real symmetric transforms (DCT and DST) of types 2, 3, and 4.
 
+It combines high performance with simplicity of implementation.
+
 ## Contents
 - [Interface](#interface)
 - [Transforms](#transforms)
@@ -23,6 +25,7 @@ This is a library of routines for computing most widely used
 - [Performance](#performance)
 - [Precision](#precision)
 - [Compliance](#compliance)
+- [Manually optimized versions](#manually-optimized-versions)
 - [License](#license)
 
 ## Interface
@@ -271,6 +274,20 @@ usage, and therefore can serve as a reference.
 
 ## Compliance
 The source code complies with the C99 standard.
+
+## Manually optimized versions
+We also provide manually written assembly-language implementations of
+the forward and inverse complex DFTs. Since they are the core transforms
+to which the other transforms are ultimately reduced, it's worth to
+invest some effort in computing them as fast as possible.
+
+The performance of the hand-written code is much better then of the code
+emitted by GCC.
+
+Machine-dependent versions are kept in separate branches. At present,
+we provide the following version:
+
+* For [x86-64 with SSE3](/aimukhin/fourier/blob/x86-64-sse3-sysv/README.md), using SystemV ABI calling conventions.
 
 ## License
 The library is in the public domain.
