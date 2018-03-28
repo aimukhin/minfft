@@ -1,0 +1,186 @@
+\documentclass[12pt,a4paper,landscape]{article}
+\pagestyle{empty}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1cm]{geometry}
+\usepackage{amsmath}
+\def\arraystretch{1.2}
+
+\begin{document}
+\begin{flushleft}
+
+\setlength{\tabcolsep}{4pt}
+
+\iffalse
+% dft-def
+$$ F_n = \sum_{k=0}^{N-1}x_kexp(-\frac{2\pi i}{N}kn),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
+\fi
+
+\iffalse
+% realdft-format
+\begin{tabular}{ccccccc}
+$0$ & $1$ & $2$ & $3$ & \dots & $N\!\!-\!\!2$ & $N\!\!-\!\!1$ \\
+\hline
+$\Re F_0$ & $\Re F_{N/2}$ & $\Re F_1$ & $\Im F_1$ & \dots & $\Re F_{N/2-1}$ & $\Im F_{N/2-1}$
+\end{tabular}
+\fi
+
+\iffalse
+% dct2-def
+\begin{tabular}{r|cccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$ \\
+\hline
+{\it DFT input}&
+.&{\bf a}&.&{\bf b}&.&{\bf c}&.&{\bf d}&.&d&.&c&.&b&.&a \\
+{\it DFT output}&
+{\bf A}&{\bf B}&{\bf C}&{\bf D}&.&--D&--C&--B&--A&--B&--C&--D&.&D&C&B
+\end{tabular}
+\fi
+
+\iffalse
+% dst2-def
+\begin{tabular}{r|cccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$ \\
+\hline
+{\it DFT input}&
+.&{\bf a}&.&{\bf b}&.&{\bf c}&.&{\bf d}&.&--d&.&--c&.&--b&.&--a \\
+{\it DFT output}&
+.&{\bf D}&{\bf C}&{\bf B}&{\bf A}&B&C&D&.&--D&--C&--B&--A&--B&--C&--D
+\end{tabular}
+\fi
+
+\iffalse
+% dct3-def
+\begin{tabular}{r|cccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$ \\
+\hline
+{\it DFT input}&
+{\bf a}&{\bf b}&{\bf c}&{\bf d}&.&--d&--c&--b&--a&--b&--c&--d&.&d&c&b \\
+{\it DFT output}&
+.&{\bf A}&.&{\bf B}&.&{\bf C}&.&{\bf D}&.&D&.&C&.&B&.&A
+\end{tabular}
+\fi
+
+\iffalse
+% dst3-def
+\begin{tabular}{r|cccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$ \\
+\hline
+{\it DFT input}&
+.&{\bf d}&{\bf c}&{\bf b}&{\bf a}&b&c&d&.&--d&--c&--b&--a&--b&--c&--d \\
+{\it DFT output}&
+.&{\bf A}&.&{\bf B}&.&{\bf C}&.&{\bf D}&.&--D&.&--C&.&--B&.&--A
+\end{tabular}
+\fi
+
+\setlength{\tabcolsep}{3pt}
+
+\iffalse
+% dct4-def
+\begin{tabular}{r|cccccccccccccccccccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$&&&&$5N$&&&&$6N$&&&&$7N$&&&&$8N$ \\
+\hline
+{\it DFT input}&
+.&{\bf a}&.&{\bf b}&.&{\bf c}&.&{\bf d}&.&--d&.&--c&.&--b&.&--a&.&--a&.&--b&.&--c&.&--d&.&d&.&c&.&b&.&a \\
+{\it DFT output}&
+.&{\bf A}&.&{\bf B}&.&{\bf C}&.&{\bf D}&.&--D&.&--C&.&--B&.&--A&.&--A&.&--B&.&--C&.&--D&.&D&.&C&.&B&.&A \\
+\end{tabular}
+\fi
+
+\iffalse
+% dst4-def
+\begin{tabular}{r|cccccccccccccccccccccccccccccccc|c}
+&$0$&&&&$N$&&&&$2N$&&&&$3N$&&&&$4N$&&&&$5N$&&&&$6N$&&&&$7N$&&&&$8N$ \\
+\hline
+{\it DFT input}&
+.&{\bf a}&.&{\bf b}&.&{\bf c}&.&{\bf d}&.&d&.&c&.&b&.&a&.&--a&.&--b&.&--c&.&--d&.&--d&.&--c&.&--b&.&--a \\
+{\it DFT output}&
+.&{\bf A}&.&{\bf B}&.&{\bf C}&.&{\bf D}&.&D&.&C&.&B&.&A&.&--A&.&--B&.&--C&.&--D&.&--D&.&--C&.&--B&.&--A \\
+\end{tabular}
+\fi
+
+\iffalse
+% exp
+$ E_N = e^{\frac{2\pi i}{N}}. $
+\fi
+
+\iffalse
+% realdft-recover
+$
+\frac{F_n+\overline{F}_{\frac{N}{2}-n}}{2}
++
+\frac{F_n-\overline{F}_{\frac{N}{2}-n}}{2i}E_N^{-n}
+$
+\fi
+
+\iffalse
+% dft-for-realdft
+$ F_n = {\bf DFT}_n(x_0+ix_1,x_2+ix_3,\dots,x_{N-2}+ix_{N-1}). $
+\fi
+
+\iffalse
+% type2-impl
+$
+{\bf DCT2}_n(x_0,x_1,\dots,x_{N-1}) =
+2\Re(E_{4N}^{-n}{\bf DFT}_n
+(\underbrace{x_0,x_2,\dots,x_{N-2}}_\text{even},
+\underbrace{x_{N-1},\dots,x_3,x_1}_\text{odd, reverse order})),
+$\\
+$
+{\bf DST2}_n(x_0,x_1,\dots,x_{N-1}) =
+2\Im(E_{4N}^{-n}{\bf DFT}_n
+(\underbrace{x_0,x_2,\dots,x_{N-2}}_\text{even},
+\underbrace{-x_{N-1},\dots,-x_3,-x_1}_\text{odd, reverse order, reverse sign})).
+$
+\fi
+
+\iffalse
+% type4-impl
+$
+{\bf DCT4}_n(x_0,x_1,\dots,x_{N-1}) =
+4\Re(E_{8N}^{-(2n+1)}{\bf DFT}_n
+(\underbrace{x_{0}E_{2N}^0}_{z_0},
+\underbrace{x_{2}E_{2N}^{-1}}_{z_1},
+\dots,
+\underbrace{x_{N-2}E_{2N}^{-(\frac{N}{2}-1)}}_{z_{\frac{N}{2}-1}},
+\underbrace{-x_{N-1}E_{2N}^{-\frac{N}{2}}}_{z_{\frac{N}{2}}},
+\underbrace{-x_{N-3}E_{2N}^{-(\frac{N}{2}+1)}}_{z_{\frac{N}{2}+1}},
+\dots,
+\underbrace{-x_{1}E_{2N}^{-(N-1)}}_{z_{N-1}})),
+$
+$
+{\bf DST4}_n(x_0,x_1,\dots,x_{N-1}) =
+4\Im(E_{8N}^{-(2n+1)}{\bf DFT}_n
+(\underbrace{x_{0}E_{2N}^0}_{z_0},
+\underbrace{x_{2}E_{2N}^{-1}}_{z_1},
+\dots,
+\underbrace{x_{N-2}E_{2N}^{-(\frac{N}{2}-1)}}_{z_{\frac{N}{2}-1}},
+\underbrace{x_{N-1}E_{2N}^{-\frac{N}{2}}}_{z_{\frac{N}{2}}},
+\underbrace{x_{N-3}E_{2N}^{-(\frac{N}{2}+1)}}_{z_{\frac{N}{2}+1}},
+\dots,
+\underbrace{x_{1}E_{2N}^{-(N-1)}}_{z_{N-1}})).
+$
+\fi
+
+\iffalse
+% g-def
+$ G_n = {\bf DFT}_n(z_0,z_1,\dots,z_{N-1}) $
+\fi
+
+\iffalse
+% g-symmetry
+$ G_n = \overline{G}_{N-1-n}. $
+\fi
+
+\iffalse
+% g-even
+$
+G_{2n} = {\bf DFT}_n\left\{z_k+z_{\frac{N}{2}+k}\right\}_{k=0}^{\frac{N}{2}-1},
+\ \ n=0,1,\dots,\frac{N}{2}-1.
+$
+\fi
+
+\end{flushleft}
+\end{document}
