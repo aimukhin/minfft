@@ -287,7 +287,7 @@ emitted by GCC.
 Machine-dependent versions are kept in separate branches. At present,
 we provide the following version:
 
-* For [x86-64 with SSE3](https://github.com/aimukhin/fourier/blob/x86-64-sse3-sysv/README.md), using SystemV ABI calling conventions.
+* For [x86-64 with SSE3](tree/x86-64-sse3-sysv), using SystemV ABI calling conventions.
 
 ## License
 The library is in the public domain.
