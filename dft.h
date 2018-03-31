@@ -1,6 +1,6 @@
-// DFT library
-// Written by Alexander Mukhin
-// Public domain
+// DFT library (double-precision version).
+// Written by Alexander Mukhin.
+// Public domain.
 
 #include <complex.h>
 

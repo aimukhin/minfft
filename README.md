@@ -29,7 +29,7 @@ It combines high performance with simplicity of implementation.
 - [License](#license)
 
 ## Interface
-The transform functions take four arguments:
+All transform functions take four arguments:
 
 * transform length `N` (a power of 2),
 * pointer to the input vector `x` (its values will be destroyed),
@@ -40,6 +40,11 @@ The exponent vector contains precomputed constants for the given
 transform type and length. The library provides functions for allocating
 and filling the exponent vectors for each transform type.
 
+All transforms are implemented in two ways - with single and double
+precision. Files `dft.h` and `dft.c` contain double precision versions,
+whereas `dftf.h` and `dftf.c` provide their single-precision
+counterparts.
+
 ## Transforms
 Here goes a description of every transform function (along with its
 exponent vector generator) with a short explanation of what it
@@ -49,6 +54,9 @@ computes.
 ```C
 void dft (int N, complex *x, complex *y, const complex *e);
 complex* mkexp_dft (int N);
+
+void dftf (int N, complex float *x, complex float *y, const complex float *e);
+complex float* mkexp_dftf (int N);
 ```
 The function computes the complex DFT, defined as usual:
 
@@ -58,6 +66,9 @@ The function computes the complex DFT, defined as usual:
 ```C
 void idft (int N, complex *x, complex *y, const complex *e);
 complex* mkexp_idft (int N);
+
+void idftf (int N, complex float *x, complex float *y, const complex float *e);
+complex float* mkexp_idftf (int N);
 ```
 It computes an unnormalized inverse of the complex DFT (that is, N times
 the inverse).
@@ -66,6 +77,9 @@ the inverse).
 ```C
 void realdft (int N, double *x, double *y, const complex *e);
 complex* mkexp_realdft (int N);
+
+void realdftf (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_realdftf (int N);
 ```
 This function computes the complex DFT of N reals. Since only half of N
 complex outputs are independent, only those values are returned, packed
@@ -77,6 +91,9 @@ as follows:
 ```C
 void irealdft (int N, double *x, double *y, const complex *e);
 complex* mkexp_irealdft (int N);
+
+void irealdftf (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_irealdftf (int N);
 ```
 It's an unnormalized inverse of the real DFT (N times the inverse). It
 expects its input in the same format as `realdft` produces output.
@@ -93,6 +110,9 @@ marked with dots are set to zero.
 ```C
 void dct2 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t2 (int N);
+
+void dct2f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t2f (int N);
 ```
 ![](docs/dct2-def.svg)
 
@@ -100,6 +120,9 @@ complex* mkexp_t2 (int N);
 ```C
 void dst2 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t2 (int N);
+
+void dst2f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t2f (int N);
 ```
 ![](docs/dst2-def.svg)
 
@@ -109,6 +132,9 @@ complex* mkexp_t2 (int N);
 ```C
 void dct3 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t3 (int N);
+
+void dct3f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t3f (int N);
 ```
 ![](docs/dct3-def.svg)
 
@@ -118,6 +144,9 @@ complex* mkexp_t3 (int N);
 ```C
 void dst3 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t3 (int N);
+
+void dst3f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t3f (int N);
 ```
 ![](docs/dst3-def.svg)
 
@@ -127,6 +156,9 @@ complex* mkexp_t3 (int N);
 ```C
 void dct4 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t4 (int N);
+
+void dct4f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t4f (int N);
 ```
 ![](docs/dct4-def.svg)
 
@@ -136,6 +168,9 @@ complex* mkexp_t4 (int N);
 ```C
 void dst4 (int N, double *x, double *y, const complex *e);
 complex* mkexp_t4 (int N);
+
+void dst4f (int N, float *x, float *y, const complex float *e);
+complex float* mkexp_t4f (int N);
 ```
 ![](docs/dst4-def.svg)
 
@@ -167,8 +202,12 @@ transform. Further details are given [here](docs/math-details.md).
 
 ## Performance
 These graphs show the execution times of our routines compared with
-those of FFTW. Timings are measured in microseconds per single call, and
-are plotted with three-sigma error intervals.
+those of FFTW. Here our library is compiled with GCC, which was unable
+to vectorize the code, whereas FFTW codelets are vectorized. The details
+of the test environment are given [below](#test-environment).
+
+Timings are measured in microseconds per single call, and are plotted
+with three-sigma error intervals.
 
 ### Complex DFT
 ![](docs/perf-dft.svg)
@@ -176,16 +215,15 @@ are plotted with three-sigma error intervals.
 ### Real DFT
 ![](docs/perf-realdft.svg)
 
-For the complex and real DFTs, our library performs 1.5-2 times slower
-than FFTW in most cases. It is not surprising, considering the
-sophistication of FFTW, but quite acceptable, taking into account how
-much simpler our code is. What is surprising, though, is that our
-library manages to perform comparably or significantly better than FFTW
-for very big transforms (>65536). In this range, our performance matches
-FFTW for the complex DFT, and exceeds it for the real DFT.
+For the complex DFTs, our library performs slower than FFTW by 1.5-2
+times (and even more for the single-precision routines). This is not
+surprising, considering the sophistication of FFTW and lack of
+vectorization ability for this particular compiler.
 
-Also note as a curiosity, that our library performs much better than
-FFTW for very small transforms of sizes 1,2,4.
+Nevertheless, for the real transforms things begin to look better, and
+our performance approaches to, and sometimes exceeds that of FFTW. One
+can notice two areas where our library performs better - for the very
+small and very big transforms.
 
 ### DCT-2
 ![](docs/perf-dct2.svg)
@@ -195,6 +233,10 @@ FFTW for very small transforms of sizes 1,2,4.
 
 For the real symmetric transforms, our library performs at least as well
 as FFTW for most transform sizes, and sometimes much better.
+
+How can that be, provided that our core complex DFT performs worse than
+FFTW? Probably this is because we use more efficient ways of reducing
+these transforms to the core complex one.
 
 ## Precision
 This graph shows how much the results of real transforms differ
@@ -213,15 +255,20 @@ The other transforms exhibit the similar uniform error distribution.
 
 ## Test environment
 The above tests and comparisons are made with the current library source
-compiled with gcc version 7.3.0 on x86_64 with the only optimization
-option -Ofast. The version of FFTW used is 3.3.7-1 packed for Arch Linux
-x86_64. FFTW plans are created with options FFTW_ESTIMATE and
-FFTW_DESTROY_INPUT. The performance measurements are made on an isolated
-core of an Intel® Celeron® N3050 CPU running at 2160 MHz.
+compiled with GCC version 7.3.0 on x86_64 with the only optimization
+option `-Ofast`. Unfortunately, the compiler complained that it was
+unable to vectorize some parts of the code, and sometimes decided that
+it would not be profitable.
 
-The source data files for the graphs, along with the program `chkdft.c`
-used to conduct the above (and many other) tests, are available in the
-`tests` subdirectory.
+The version of FFTW used is 3.3.7-1 packed for Arch Linux x86_64. FFTW
+plans are created with options FFTW_ESTIMATE and FFTW_DESTROY_INPUT.
+
+The performance measurements are made on an isolated core of an Intel®
+Celeron® N3050 CPU running at 2160 MHz.
+
+The source data files for the graphs, along with the programs `chkdft.c`
+and `chkdftf.c` used to conduct the above (and many other) tests, are
+available in the `tests` subdirectory.
 
 The `chkdft.c` program contains a lot of examples of library functions
 usage, and therefore can serve as a reference.
@@ -235,13 +282,13 @@ the forward and inverse complex DFTs. Since they are the core transforms
 to which the other transforms are ultimately reduced, it's worth to
 invest some effort in computing them as fast as possible.
 
-The performance of the hand-written code is much better then of the code
+The performance of the hand-written code is much better than of the code
 emitted by GCC.
 
 Machine-dependent versions are kept in separate branches. At present,
 we provide the following version:
 
-* For [x86-64 with SSE3](../../tree/x86-64-sse3-sysv), using SystemV ABI calling conventions.
+* For [x86-64 with SSE3](../../tree/x86-64-sse3-sysv), using SystemV ABI calling conventions (double precision only).
 
 ## License
 The library is in the public domain.
