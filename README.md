@@ -163,58 +163,12 @@ simplicity, and it behaves particularly cache-friendly, since it refers
 mostly to adjacent memory locations.
 
 All the real transforms are reduced eventually to a half-length complex
-transform. Let's see how.
-
-Everywhere below,
-
-![](docs/exp.svg)
-
-### Real DFT
-Results of the real DFT can be recovered as
-
-![](docs/realdft-recover.svg)
-
-from the results of the complex DFT of length N/2:
-
-![](docs/dft-for-realdft.svg)
-
-Inverse real DFT routine simply plays backwards the steps taken by the
-forward transform routine.
-
-### Type-2 real symmetric transforms
-DCT-2 and DST-2 of length N can be easily reduced to a real DFT of the
-same length:
-
-![](docs/type2-impl.svg)
-
-### Type-3 real symmetric transforms
-Since the type-3 transforms are inverses (up to a multiple) of their
-type-2 counterparts, they are computed by working backwards the steps
-taken by the type-2 routines.
-
-### Type-4 real symmetric transforms
-These transforms can be written as
-
-![](docs/type4-impl.svg)
-
-Consider
-
-![](docs/g-def.svg)
-
-and notice symmetry
-
-![](docs/g-symmetry.svg)
-
-Therefore, we will determine all G if we find those at the even
-positions. Luckily, there's a simple way to compute them:
-
-![](docs/g-even.svg)
-
-This way we reduce a type-4 transform to a half-length complex DFT.
+transform. Further details are given [here](docs/math-details.md).
 
 ## Performance
 These graphs show the execution times of our routines compared with
-those of FFTW. Timings are plotted with three-sigma error intervals.
+those of FFTW. Timings are measured in microseconds per single call, and
+are plotted with three-sigma error intervals.
 
 ### Complex DFT
 ![](docs/perf-dft.svg)
@@ -263,7 +217,7 @@ compiled with gcc version 7.3.0 on x86_64 with the only optimization
 option -Ofast. The version of FFTW used is 3.3.7-1 packed for Arch Linux
 x86_64. FFTW plans are created with options FFTW_ESTIMATE and
 FFTW_DESTROY_INPUT. The performance measurements are made on an isolated
-CPU core.
+core of an Intel® Celeron® N3050 CPU running at 2160 MHz.
 
 The source data files for the graphs, along with the program `chkdft.c`
 used to conduct the above (and many other) tests, are available in the
