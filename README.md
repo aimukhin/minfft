@@ -203,8 +203,9 @@ transform. Further details are given [here](docs/math-details.md).
 ## Performance
 These graphs show the execution times of our routines compared with
 those of FFTW. Here our library is compiled with GCC, which was unable
-to vectorize the code, whereas FFTW codelets are vectorized. The details
-of the test environment are given [below](#test-environment).
+to completely vectorize the code, whereas FFTW codelets are vectorized.
+The details of the test environment are given
+[below](#test-environment).
 
 Timings are measured in microseconds per single call, and are plotted
 with three-sigma error intervals.
