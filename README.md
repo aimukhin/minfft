@@ -255,12 +255,12 @@ The other transforms exhibit the similar uniform error distribution.
 ## Test environment
 The above tests and comparisons are made with the current library source
 compiled with GCC version 7.3.0 on x86_64 with the only optimization
-option `-Ofast`. Unfortunately, the compiler complained that it was
-unable to vectorize some parts of the code, and sometimes decided that
-it would not be profitable.
+option `-Ofast`. Therefore, the compiler constrained itself to the SSE2
+instruction set.
 
-The version of FFTW used is 3.3.7-1 packed for Arch Linux x86_64. FFTW
-plans are created with options FFTW_ESTIMATE and FFTW_DESTROY_INPUT.
+The version of FFTW used is 3.3.7-1 packed for Arch Linux x86_64. It
+also makes use of the SSE2 instructions only. FFTW plans are created with
+options FFTW_ESTIMATE and FFTW_DESTROY_INPUT.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
@@ -287,7 +287,7 @@ emitted by GCC.
 Machine-dependent versions are kept in separate branches. At present,
 we provide the following version:
 
-* For [x86-64 with SSE3](../../tree/x86-64-sse3-sysv), using SystemV ABI calling conventions.
+* For [x86-64 with SSE3](../../tree/x86-64-sse3)
 
 ## License
 The library is in the public domain.
