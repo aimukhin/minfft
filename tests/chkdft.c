@@ -14,7 +14,7 @@ main (void) {
 	complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
-		x[n] = n+1;
+		x[n] = (n+1)*(1+I);
 	// prepare exponent vector and do DFT
 	e = mkexp_dft(N);
 	dft(N,x,y,e);
