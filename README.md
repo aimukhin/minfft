@@ -284,10 +284,10 @@ invest some effort in computing them as fast as possible.
 The performance of the hand-written code is much better than of the code
 emitted by GCC.
 
-Machine-dependent versions are kept in separate branches. At present,
-we provide the following version:
+Machine-dependent versions are kept in separate branches:
 
 * For [x86-64 with SSE3](../../tree/x86-64-sse3)
+* For [ARM with VFPv3 and NEON](../../tree/arm-vfpv3-neon)
 
 ## License
 The library is in the public domain.
