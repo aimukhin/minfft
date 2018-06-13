@@ -10,8 +10,8 @@ main (void) {
 // test complex DFT for the given length
 #if 0
 	int n,N=8;
-	complex x[N],y[N];
-	complex *e;
+	double complex x[N],y[N];
+	double complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = (n+1)*(1+I);
@@ -33,7 +33,7 @@ main (void) {
 #if 0
 	int n,N=8;
 	double x[N],y[N];
-	complex *e;
+	double complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -56,7 +56,7 @@ main (void) {
 #if 0
 	int n,N=4;
 	double x[N],y[N];
-	complex *e;
+	double complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -76,7 +76,7 @@ main (void) {
 #if 0
 	int n,N=4;
 	double x[N],y[N];
-	complex *e;
+	double complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -96,15 +96,15 @@ main (void) {
 	const int MAXBLK=65536*16;
 	int n,N;
 	double *x,*y;
-	complex *z,*w;
-	complex *e; // exponent vector
+	double complex *z,*w;
+	double complex *e; // exponent vector
 	double d,dmax; // maximum absolute error
 	for (N=1; N<=MAXBLK; N*=2) {
 //	N=1024; {
 		x = (double*)malloc(N*sizeof(double));
 		y = (double*)malloc(N*sizeof(double));
-		z = (complex*)malloc(8*N*sizeof(complex));
-		w = (complex*)malloc(8*N*sizeof(complex));
+		z = (double complex*)malloc(8*N*sizeof(double complex));
+		w = (double complex*)malloc(8*N*sizeof(double complex));
 #if 0
 		// real DFT
 		// init inputs
@@ -348,16 +348,16 @@ main (void) {
 	int n,N;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	complex *e; // exponent vector
+	double complex *e; // exponent vector
 	for (N=1; N<=MAXBLK; N*=2) {
 //	N=1024; {
 #if 0
 		// complex DFT
-		complex *x,*y,*z,*w;
-		x = (complex*)malloc(N*sizeof(complex));
-		y = (complex*)malloc(N*sizeof(complex));
-		z = (complex*)malloc(N*sizeof(complex));
-		w = (complex*)malloc(N*sizeof(complex));
+		double complex *x,*y,*z,*w;
+		x = (double complex*)malloc(N*sizeof(double complex));
+		y = (double complex*)malloc(N*sizeof(double complex));
+		z = (double complex*)malloc(N*sizeof(double complex));
+		w = (double complex*)malloc(N*sizeof(double complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -380,11 +380,11 @@ main (void) {
 #endif
 #if 0
 		// inverse complex DFT
-		complex *x,*y,*z,*w;
-		x = (complex*)malloc(N*sizeof(complex));
-		y = (complex*)malloc(N*sizeof(complex));
-		z = (complex*)malloc(N*sizeof(complex));
-		w = (complex*)malloc(N*sizeof(complex));
+		double complex *x,*y,*z,*w;
+		x = (double complex*)malloc(N*sizeof(double complex));
+		y = (double complex*)malloc(N*sizeof(double complex));
+		z = (double complex*)malloc(N*sizeof(double complex));
+		w = (double complex*)malloc(N*sizeof(double complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -643,9 +643,9 @@ main (void) {
 	const int MINT=10;
 	const int MAXBLK=65536*16;
 	const int R=100; // repeats
-	complex *z = (complex*)malloc(MAXBLK*sizeof(complex));
-	complex *w = (complex*)malloc(MAXBLK*sizeof(complex));
-	complex *e;
+	double complex *z = (double complex*)malloc(MAXBLK*sizeof(double complex));
+	double complex *w = (double complex*)malloc(MAXBLK*sizeof(double complex));
+	double complex *e;
 	int N,n,r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
@@ -726,7 +726,7 @@ main (void) {
 	const int R=100; // repeats
 	double *x = (double*)malloc(MAXBLK*sizeof(double));
 	double *y = (double*)malloc(MAXBLK*sizeof(double));
-	complex *e;
+	double complex *e;
 	int N,n,r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
@@ -827,14 +827,14 @@ main (void) {
 	const int MAXBLK=65536;
 	int n,N;
 	double d,dmax; // maximum absolute error
-	complex *e; // exponent vector
+	double complex *e; // exponent vector
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex forward and inverse DFT
-		complex *x,*x0,*y;
-		x = (complex*)malloc(N*sizeof(complex));
-		x0 = (complex*)malloc(N*sizeof(complex));
-		y = (complex*)malloc(N*sizeof(complex));
+		double complex *x,*x0,*y;
+		x = (double complex*)malloc(N*sizeof(double complex));
+		x0 = (double complex*)malloc(N*sizeof(double complex));
+		y = (double complex*)malloc(N*sizeof(double complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -1006,10 +1006,10 @@ main (void) {
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex forward and inverse DFT
-		complex *x,*x0,*y;
-		x = (complex*)malloc(N*sizeof(complex));
-		x0 = (complex*)malloc(N*sizeof(complex));
-		y = (complex*)malloc(N*sizeof(complex));
+		double complex *x,*x0,*y;
+		x = (double complex*)malloc(N*sizeof(double complex));
+		x0 = (double complex*)malloc(N*sizeof(double complex));
+		y = (double complex*)malloc(N*sizeof(double complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)

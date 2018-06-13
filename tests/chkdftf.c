@@ -10,8 +10,8 @@ main (void) {
 // test complex DFT for the given length
 #if 0
 	int n,N=8;
-	complex float x[N],y[N];
-	complex float *e;
+	float complex x[N],y[N];
+	float complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = (n+1)*(1+I);
@@ -33,7 +33,7 @@ main (void) {
 #if 0
 	int n,N=8;
 	float x[N],y[N];
-	complex float *e;
+	float complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -56,7 +56,7 @@ main (void) {
 #if 0
 	int n,N=4;
 	float x[N],y[N];
-	complex float *e;
+	float complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -76,7 +76,7 @@ main (void) {
 #if 0
 	int n,N=4;
 	float x[N],y[N];
-	complex float *e;
+	float complex *e;
 	// init input vector
 	for (n=0; n<N; ++n)
 		x[n] = n+1;
@@ -96,15 +96,15 @@ main (void) {
 	const int MAXBLK=65536*16;
 	int n,N;
 	float *x,*y;
-	complex float *z,*w;
-	complex float *e; // exponent vector
+	float complex *z,*w;
+	float complex *e; // exponent vector
 	double d,dmax; // maximum absolute error
 	for (N=1; N<=MAXBLK; N*=2) {
 //	N=1024; {
 		x = (float*)malloc(N*sizeof(float));
 		y = (float*)malloc(N*sizeof(float));
-		z = (complex float*)malloc(8*N*sizeof(complex float));
-		w = (complex float*)malloc(8*N*sizeof(complex float));
+		z = (float complex*)malloc(8*N*sizeof(float complex));
+		w = (float complex*)malloc(8*N*sizeof(float complex));
 #if 0
 		// real DFT
 		// init inputs
@@ -348,16 +348,16 @@ main (void) {
 	int n,N;
 	double d,dmax; // maximum absolute error
 	fftwf_plan p; // plan
-	complex float *e; // exponent vector
+	float complex *e; // exponent vector
 	for (N=1; N<=MAXBLK; N*=2) {
 //	N=1024; {
 #if 0
 		// complex DFT
-		complex float *x,*y,*z,*w;
-		x = (complex float*)malloc(N*sizeof(complex float));
-		y = (complex float*)malloc(N*sizeof(complex float));
-		z = (complex float*)malloc(N*sizeof(complex float));
-		w = (complex float*)malloc(N*sizeof(complex float));
+		float complex *x,*y,*z,*w;
+		x = (float complex*)malloc(N*sizeof(float complex));
+		y = (float complex*)malloc(N*sizeof(float complex));
+		z = (float complex*)malloc(N*sizeof(float complex));
+		w = (float complex*)malloc(N*sizeof(float complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -380,11 +380,11 @@ main (void) {
 #endif
 #if 0
 		// inverse complex DFT
-		complex float *x,*y,*z,*w;
-		x = (complex float*)malloc(N*sizeof(complex float));
-		y = (complex float*)malloc(N*sizeof(complex float));
-		z = (complex float*)malloc(N*sizeof(complex float));
-		w = (complex float*)malloc(N*sizeof(complex float));
+		float complex *x,*y,*z,*w;
+		x = (float complex*)malloc(N*sizeof(float complex));
+		y = (float complex*)malloc(N*sizeof(float complex));
+		z = (float complex*)malloc(N*sizeof(float complex));
+		w = (float complex*)malloc(N*sizeof(float complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -643,9 +643,9 @@ main (void) {
 	const int MINT=10;
 	const int MAXBLK=65536*16;
 	const int R=100; // repeats
-	complex float *z = (complex float*)malloc(MAXBLK*sizeof(complex float));
-	complex float *w = (complex float*)malloc(MAXBLK*sizeof(complex float));
-	complex float *e;
+	float complex *z = (float complex*)malloc(MAXBLK*sizeof(float complex));
+	float complex *w = (float complex*)malloc(MAXBLK*sizeof(float complex));
+	float complex *e;
 	int N,n,r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
@@ -726,7 +726,7 @@ main (void) {
 	const int R=100; // repeats
 	float *x = (float*)malloc(MAXBLK*sizeof(float));
 	float *y = (float*)malloc(MAXBLK*sizeof(float));
-	complex float *e;
+	float complex *e;
 	int N,n,r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
@@ -827,14 +827,14 @@ main (void) {
 	const int MAXBLK=65536;
 	int n,N;
 	double d,dmax; // maximum absolute error
-	complex float *e; // exponent vector
+	float complex *e; // exponent vector
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex forward and inverse DFT
-		complex float *x,*x0,*y;
-		x = (complex float*)malloc(N*sizeof(complex float));
-		x0 = (complex float*)malloc(N*sizeof(complex float));
-		y = (complex float*)malloc(N*sizeof(complex float));
+		float complex *x,*x0,*y;
+		x = (float complex*)malloc(N*sizeof(float complex));
+		x0 = (float complex*)malloc(N*sizeof(float complex));
+		y = (float complex*)malloc(N*sizeof(float complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -1006,10 +1006,10 @@ main (void) {
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex forward and inverse DFT
-		complex float*x,*x0,*y;
-		x = (complex float*)malloc(N*sizeof(complex float));
-		x0 = (complex float*)malloc(N*sizeof(complex float));
-		y = (complex float*)malloc(N*sizeof(complex float));
+		float complex*x,*x0,*y;
+		x = (float complex*)malloc(N*sizeof(float complex));
+		x0 = (float complex*)malloc(N*sizeof(float complex));
+		y = (float complex*)malloc(N*sizeof(float complex));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)

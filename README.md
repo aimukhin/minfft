@@ -52,11 +52,11 @@ computes.
 
 ### Complex DFT
 ```C
-void dft (int N, complex *x, complex *y, const complex *e);
-complex* mkexp_dft (int N);
+void dft (int N, double complex *x, double complex *y, const double complex *e);
+double complex* mkexp_dft (int N);
 
-void dftf (int N, complex float *x, complex float *y, const complex float *e);
-complex float* mkexp_dftf (int N);
+void dftf (int N, float complex *x, float complex *y, const float complex *e);
+float complex* mkexp_dftf (int N);
 ```
 The function computes the complex DFT, defined as usual:
 
@@ -64,22 +64,22 @@ The function computes the complex DFT, defined as usual:
 
 ### Inverse complex DFT
 ```C
-void idft (int N, complex *x, complex *y, const complex *e);
-complex* mkexp_idft (int N);
+void idft (int N, double complex *x, double complex *y, const double complex *e);
+double complex* mkexp_idft (int N);
 
-void idftf (int N, complex float *x, complex float *y, const complex float *e);
-complex float* mkexp_idftf (int N);
+void idftf (int N, float complex *x, float complex *y, const float complex *e);
+float complex* mkexp_idftf (int N);
 ```
 It computes an unnormalized inverse of the complex DFT (that is, N times
 the inverse).
 
 ### Real DFT
 ```C
-void realdft (int N, double *x, double *y, const complex *e);
-complex* mkexp_realdft (int N);
+void realdft (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_realdft (int N);
 
-void realdftf (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_realdftf (int N);
+void realdftf (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_realdftf (int N);
 ```
 This function computes the complex DFT of N reals. Since only half of N
 complex outputs are independent, only those values are returned, packed
@@ -89,11 +89,11 @@ as follows:
 
 ### Inverse real DFT
 ```C
-void irealdft (int N, double *x, double *y, const complex *e);
-complex* mkexp_irealdft (int N);
+void irealdft (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_irealdft (int N);
 
-void irealdftf (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_irealdftf (int N);
+void irealdftf (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_irealdftf (int N);
 ```
 It's an unnormalized inverse of the real DFT (N times the inverse). It
 expects its input in the same format as `realdft` produces output.
@@ -108,21 +108,21 @@ marked with dots are set to zero.
 
 #### DCT-2
 ```C
-void dct2 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t2 (int N);
+void dct2 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t2 (int N);
 
-void dct2f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t2f (int N);
+void dct2f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t2f (int N);
 ```
 ![](docs/dct2-def.svg)
 
 #### DST-2
 ```C
-void dst2 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t2 (int N);
+void dst2 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t2 (int N);
 
-void dst2f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t2f (int N);
+void dst2f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t2f (int N);
 ```
 ![](docs/dst2-def.svg)
 
@@ -130,11 +130,11 @@ complex float* mkexp_t2f (int N);
 
 #### DCT-3
 ```C
-void dct3 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t3 (int N);
+void dct3 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t3 (int N);
 
-void dct3f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t3f (int N);
+void dct3f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t3f (int N);
 ```
 ![](docs/dct3-def.svg)
 
@@ -142,11 +142,11 @@ complex float* mkexp_t3f (int N);
 
 #### DST-3
 ```C
-void dst3 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t3 (int N);
+void dst3 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t3 (int N);
 
-void dst3f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t3f (int N);
+void dst3f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t3f (int N);
 ```
 ![](docs/dst3-def.svg)
 
@@ -154,11 +154,11 @@ complex float* mkexp_t3f (int N);
 
 #### DCT-4
 ```C
-void dct4 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t4 (int N);
+void dct4 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t4 (int N);
 
-void dct4f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t4f (int N);
+void dct4f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t4f (int N);
 ```
 ![](docs/dct4-def.svg)
 
@@ -166,11 +166,11 @@ complex float* mkexp_t4f (int N);
 
 #### DST-4
 ```C
-void dst4 (int N, double *x, double *y, const complex *e);
-complex* mkexp_t4 (int N);
+void dst4 (int N, double *x, double *y, const double complex *e);
+double complex* mkexp_t4 (int N);
 
-void dst4f (int N, float *x, float *y, const complex float *e);
-complex float* mkexp_t4f (int N);
+void dst4f (int N, float *x, float *y, const float complex *e);
+float complex* mkexp_t4f (int N);
 ```
 ![](docs/dst4-def.svg)
 

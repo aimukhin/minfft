@@ -10,9 +10,9 @@
 
 // recursive complex DFT (for internal use)
 static void
-rdftf (int N, complex float *x, complex float *y, int sy, const complex float *e) {
+rdftf (int N, float complex *x, float complex *y, int sy, const float complex *e) {
 	int n; // counter
-	complex float t0,t1,t2,t3; // temporary values
+	float complex t0,t1,t2,t3; // temporary values
 	// split-radix DIF
 	if (N==1) {
 		// trivial terminal case
@@ -57,13 +57,13 @@ rdftf (int N, complex float *x, complex float *y, int sy, const complex float *e
 
 // complex DFT
 void
-dftf (int N, complex float *x, complex float *y, const complex float *e) {
+dftf (int N, float complex *x, float complex *y, const float complex *e) {
 	rdftf(N,x,y,1,e);
 }
 
 // fill the exponent vector for complex DFT (for internal use)
 static void
-fillexp_dftf (int N, complex float *e) {
+fillexp_dftf (int N, float complex *e) {
 	int n; // counter
 	while (N>4) {
 		for (n=0; n<N/4; ++n) {
@@ -75,18 +75,18 @@ fillexp_dftf (int N, complex float *e) {
 }
 
 // allocate and fill the exponent vector for complex DFT
-complex float *
+float complex *
 mkexp_dftf (int N) {
-	complex float *e = (complex float*)malloc(sizeof(complex float)*N);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*N);
 	fillexp_dftf(N,e);
 	return e;
 }
 
 // recursive unnormalized inverse complex DFT (for internal use)
 static void
-ridftf (int N, complex float *x, complex float *y, int sy, const complex float *e) {
+ridftf (int N, float complex *x, float complex *y, int sy, const float complex *e) {
 	int n; // counter
-	complex float t0,t1,t2,t3; // temporary values
+	float complex t0,t1,t2,t3; // temporary values
 	// split-radix DIF
 	if (N==1) {
 		// trivial terminal case
@@ -131,13 +131,13 @@ ridftf (int N, complex float *x, complex float *y, int sy, const complex float *
 
 // unnormalized inverse complex DFT
 void
-idftf (int N, complex float *x, complex float *y, const complex float *e) {
+idftf (int N, float complex *x, float complex *y, const float complex *e) {
 	ridftf(N,x,y,1,e);
 }
 
 // fill the exponent vector for inverse complex DFT (for internal use)
 static void
-fillexp_idftf (int N, complex float *e) {
+fillexp_idftf (int N, float complex *e) {
 	int n; // counter
 	while (N>4) {
 		for (n=0; n<N/4; ++n) {
@@ -149,21 +149,21 @@ fillexp_idftf (int N, complex float *e) {
 }
 
 // allocate and fill the exponent vector for inverse complex DFT
-complex float *
+float complex *
 mkexp_idftf (int N) {
-	complex float *e = (complex float*)malloc(sizeof(complex float)*N);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*N);
 	fillexp_idftf(N,e);
 	return e;
 }
 
 // real DFT
 void
-realdftf (int N, float *x, float *y, const complex float *e) {
-	complex float *z,*w; // real vectors viewed as complex ones
+realdftf (int N, float *x, float *y, const float complex *e) {
+	float complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
-	complex float a,b; // temporary values
-	z = (complex float*)x;
-	w = (complex float*)y;
+	float complex a,b; // temporary values
+	z = (float complex*)x;
+	w = (float complex*)y;
 	if (N==1) {
 		// trivial case
 		y[0] = x[0];
@@ -191,7 +191,7 @@ realdftf (int N, float *x, float *y, const complex float *e) {
 
 // fill the exponent vector for real DFT (for internal use)
 static void
-fillexp_realdftf (int N, complex float *e) {
+fillexp_realdftf (int N, float complex *e) {
 	int n; // counter
 	for (n=0; n<N/4; ++n)
 		*e++ = cexpf(-2*M_PI*I*n/N);
@@ -199,21 +199,21 @@ fillexp_realdftf (int N, complex float *e) {
 }
 
 // allocate and fill the exponent vector for real DFT
-complex float *
+float complex *
 mkexp_realdftf (int N) {
-	complex float *e = (complex float*)malloc(sizeof(complex float)*3*N/4);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*3*N/4);
 	fillexp_realdftf(N,e);
 	return e;
 }
 
 // unnormalized inverse real DFT
 void
-irealdftf (int N, float *x, float *y, const complex float *e) {
-	complex float *z,*w; // real vectors viewed as complex ones
+irealdftf (int N, float *x, float *y, const float complex *e) {
+	float complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
-	complex float a,b; // temporary values
-	z = (complex float*)x;
-	w = (complex float*)y;
+	float complex a,b; // temporary values
+	z = (float complex*)x;
+	w = (float complex*)y;
 	if (N==1) {
 		// trivial case
 		y[0] = x[0];
@@ -241,7 +241,7 @@ irealdftf (int N, float *x, float *y, const complex float *e) {
 
 // fill the exponent vector for inverse real DFT (for internal use)
 static void
-fillexp_irealdftf (int N, complex float *e) {
+fillexp_irealdftf (int N, float complex *e) {
 	int n; // counter
 	for (n=0; n<N/4; ++n)
 		*e++ = cexpf(2*M_PI*I*n/N);
@@ -249,16 +249,16 @@ fillexp_irealdftf (int N, complex float *e) {
 }
 
 // allocate and fill the exponent vector for inverse real DFT
-complex float *
+float complex *
 mkexp_irealdftf (int N) {
-	complex float *e = (complex float*)malloc(sizeof(complex float)*3*N/4);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*3*N/4);
 	fillexp_irealdftf(N,e);
 	return e;
 }
 
 // DCT-2 of N reals
 void
-dct2f (int N, float *x, float *y, const complex float *e) {
+dct2f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
 	float c,s,a,b; // temporary values
 	if (N==1) {
@@ -290,7 +290,7 @@ dct2f (int N, float *x, float *y, const complex float *e) {
 
 // DST-2 of N reals
 void
-dst2f (int N, float *x, float *y, const complex float *e) {
+dst2f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
 	float c,s,a,b; // temporary values
 	if (N==1) {
@@ -321,10 +321,10 @@ dst2f (int N, float *x, float *y, const complex float *e) {
 }
 
 // allocate and fill the exponent vector for the 2-nd type transforms
-complex float *
+float complex *
 mkexp_t2f (int N) {
 	int n; // counter
-	complex float *e = (complex float*)malloc(sizeof(complex float)*5*N/4);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*5*N/4);
 	for (n=0; n<N/2; ++n)
 		e[n] = cexpf(-2*M_PI*I*n/(4*N));
 	fillexp_realdftf(N,e+N/2);
@@ -333,7 +333,7 @@ mkexp_t2f (int N) {
 
 // DCT-3 of N reals
 void
-dct3f (int N, float *x, float *y, const complex float *e) {
+dct3f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
 	float c,s,a,b; // temporary values
 	if (N==1) {
@@ -364,7 +364,7 @@ dct3f (int N, float *x, float *y, const complex float *e) {
 
 // DST-3 of N reals
 void
-dst3f (int N, float *x, float *y, const complex float *e) {
+dst3f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
 	float c,s,a,b; // temporary values
 	if (N==1) {
@@ -394,10 +394,10 @@ dst3f (int N, float *x, float *y, const complex float *e) {
 }
 
 // allocate and fill the exponent vector for the 3-rd type transforms
-complex float *
+float complex *
 mkexp_t3f (int N) {
 	int n; // counter
-	complex float *e = (complex float*)malloc(sizeof(complex float)*5*N/4);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*5*N/4);
 	for (n=0; n<N/2; ++n)
 		e[n] = cexpf(-2*M_PI*I*n/(4*N));
 	fillexp_irealdftf(N,e+N/2);
@@ -406,11 +406,11 @@ mkexp_t3f (int N) {
 
 // DCT-4 of N reals
 void
-dct4f (int N, float *x, float *y, const complex float *e) {
+dct4f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
-	complex float *z,*w; // real vectors viewed as complex ones
-	z = (complex float*)y;
-	w = (complex float*)x;
+	float complex *z,*w; // real vectors viewed as complex ones
+	z = (float complex*)y;
+	w = (float complex*)x;
 	if (N==1) {
 		// trivial case
 		y[0] = 2*M_SQRT2*x[0];
@@ -420,7 +420,7 @@ dct4f (int N, float *x, float *y, const complex float *e) {
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n)
 		z[n] = 2*e[n]*(x[2*n]+I*x[N-1-2*n]);
-	// do complex float DFT
+	// do float complex DFT
 	dftf(N/2,z,w,e+N/2);
 	// recover results
 	e += N;
@@ -432,11 +432,11 @@ dct4f (int N, float *x, float *y, const complex float *e) {
 
 // DST-4 of N reals
 void
-dst4f (int N, float *x, float *y, const complex float *e) {
+dst4f (int N, float *x, float *y, const float complex *e) {
 	int n; // counter
-	complex float *z,*w; // real vectors viewed as complex ones
-	z = (complex float*)y;
-	w = (complex float*)x;
+	float complex *z,*w; // real vectors viewed as complex ones
+	z = (float complex*)y;
+	w = (float complex*)x;
 	if (N==1) {
 		// trivial case
 		y[0] = -2*M_SQRT2*x[0];
@@ -446,7 +446,7 @@ dst4f (int N, float *x, float *y, const complex float *e) {
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n)
 		z[n] = 2*e[n]*(x[2*n]-I*x[N-1-2*n]);
-	// do complex float DFT
+	// do float complex DFT
 	dftf(N/2,z,w,e+N/2);
 	// recover results
 	e += N;
@@ -457,10 +457,10 @@ dst4f (int N, float *x, float *y, const complex float *e) {
 }
 
 // allocate and fill the exponent vector for the 4-th type transforms
-complex float *
+float complex *
 mkexp_t4f (int N) {
 	int n; // counter
-	complex float *e = (complex float*)malloc(sizeof(complex float)*2*N);
+	float complex *e = (float complex*)malloc(sizeof(float complex)*2*N);
 	for (n=0; n<N/2; ++n)
 		e[n] = cexpf(-2*M_PI*I*n/(2*N));
 	fillexp_dftf(N/2,e+N/2);
