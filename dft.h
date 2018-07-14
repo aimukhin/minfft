@@ -4,26 +4,18 @@
 
 #include <complex.h>
 
-void dft (int N, double complex *x, double complex *y, const double complex *e);
-double complex* mkexp_dft (int N);
-
-void idft (int N, double complex *x, double complex *y, const double complex *e);
-double complex* mkexp_idft (int N);
-
-void realdft (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_realdft (int N);
-
-void irealdft (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_irealdft (int N);
-
-void dct2 (int N, double *x, double *y, const double complex *e);
-void dst2 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t2 (int N);
-
-void dct3 (int N, double *x, double *y, const double complex *e);
-void dst3 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t3 (int N);
-
-void dct4 (int N, double *x, double *y, const double complex *e);
-void dst4 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t4 (int N);
+struct aux {
+	int N; // number of elements to transform
+	void *t; // temporary buffer
+	void *e; // exponent vector
+	struct aux *sub1; // next structure
+	struct aux *sub2; // next structure
+};
+void dft(double complex *x, double complex *y, const struct aux *a);
+void realdft_1d(double *x, double *y, const struct aux *a);
+void dct2(double *x, double *y, const struct aux *a);
+void dst2(double *x, double *y, const struct aux *a);
+struct aux *mkaux_dft(int d, int *n);
+struct aux *mkaux_realdft_1d(int N);
+struct aux *mkaux_t2(int d, int *n);
+void free_aux(struct aux *a);

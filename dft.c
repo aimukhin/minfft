@@ -8,9 +8,68 @@
 #define M_PI 3.14159265358979323846
 #define M_SQRT2 1.41421356237309504880
 
-// recursive complex DFT (for internal use)
-static void
-rdft (int N, double complex *x, double complex *y, int sy, const double complex *e) {
+// *** meta-functions ***
+
+// make a strided any-dimensional complex transform
+// by repeated application of its strided one-dimensional routine
+inline static void
+make_complex_transform (
+	double complex *x, // source data
+	double complex *y, // destination buffer
+	int sy, // stride on y
+	const struct aux *a, // aux data
+	void (*s_1d) \
+	(double complex*,double complex*,int,const struct aux*) // strided 1d xform
+) {
+	if (a->sub2==NULL)
+		(*s_1d)(x,y,sy,a);
+	else {
+		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
+		int n; // counter
+		double complex *t=a->t; // temporary buffer
+		for (n=0; n<N2; ++n)
+			make_complex_transform(x+n*N1,t+n,N2,a->sub1,s_1d);
+		for (n=0; n<N1; ++n)
+			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
+	}
+}
+
+// make a strided any-dimensional real transform
+// by repeated application of its strided one-dimensional routine
+inline static void
+make_real_transform (
+	double *x, // source data
+	double *y, // destination buffer
+	int sy, // stride on y
+	const struct aux *a, // aux data
+	void (*s_1d) \
+	(double*,double*,int,const struct aux*) // strided 1d xform
+) {
+	if (a->sub2==NULL)
+		(*s_1d)(x,y,sy,a);
+	else {
+		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
+		int n; // counter
+		double *t=a->t; // temporary buffer
+		for (n=0; n<N2; ++n)
+			make_real_transform(x+n*N1,t+n,N2,a->sub1,s_1d);
+		for (n=0; n<N1; ++n)
+			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
+	}
+}
+
+// *** complex transforms ***
+
+// recursive strided one-dimensional DFT
+inline static void
+rs_dft_1d (
+	int N, // transform length
+	double complex *x, // source data
+	double complex *t, // temporary buffer
+	double complex *y, // destination buffer
+	int sy, // stride on y
+	const double complex *e // exponent vector
+) {
 	int n; // counter
 	double complex t0,t1,t2,t3; // temporary values
 	// split-radix DIF
@@ -21,8 +80,10 @@ rdft (int N, double complex *x, double complex *y, int sy, const double complex 
 	}
 	if (N==2) {
 		// terminal case
-		y[0] = x[0]+x[1];
-	  	y[sy] = x[0]-x[1];
+		t0 = x[0]+x[1];
+	  	t1 = x[0]-x[1];
+		y[0] = t0;
+	  	y[sy] = t1;
 		return;
 	}
 	if (N==4) {
@@ -37,78 +98,36 @@ rdft (int N, double complex *x, double complex *y, int sy, const double complex 
 		y[3*sy] = t2+t3;
 		return;
 	}
-	// recursion
-	// prepare sub-transform inputs
-	for (n=0; n<N/4; ++n) {
-		t0 = x[n]+x[n+N/2];
-		t1 = x[n+N/4]+x[n+3*N/4];
-		t2 = x[n]-x[n+N/2];
-		t3 = I*(x[n+N/4]-x[n+3*N/4]);
-		x[n] = t0;
-		x[n+N/4] = t1;
-		x[n+N/2] = (t2-t3)*e[2*n];
-		x[n+3*N/4] = (t2+t3)*e[2*n+1];
-	}
-	// call sub-transforms
-	rdft(N/2,x,y,2*sy,e+N/2);
-	rdft(N/4,x+N/2,y+sy,4*sy,e+3*N/4);
-	rdft(N/4,x+3*N/4,y+3*sy,4*sy,e+3*N/4);
-}
-
-// complex DFT
-void
-dft (int N, double complex *x, double complex *y, const double complex *e) {
-	rdft(N,x,y,1,e);
-}
-
-// fill the exponent vector for complex DFT (for internal use)
-static void
-fillexp_dft (int N, double complex *e) {
-	int n; // counter
-	while (N>4) {
-		for (n=0; n<N/4; ++n) {
-			*e++ = cexp(-2*M_PI*I*n/N);
-			*e++ = cexp(-2*M_PI*I*3*n/N);
-		}
-		N /= 2;
-	}
-}
-
-// allocate and fill the exponent vector for complex DFT
-double complex *
-mkexp_dft (int N) {
-	double complex *e = (double complex*)malloc(sizeof(double complex)*N);
-	fillexp_dft(N,e);
-	return e;
-}
-
-// recursive unnormalized inverse complex DFT (for internal use)
-static void
-ridft (int N, double complex *x, double complex *y, int sy, const double complex *e) {
-	int n; // counter
-	double complex t0,t1,t2,t3; // temporary values
-	// split-radix DIF
-	if (N==1) {
-		// trivial terminal case
-		y[0] = x[0];
-		return;
-	}
-	if (N==2) {
+	if (N==8) {
 		// terminal case
-		y[0] = x[0]+x[1];
-	  	y[sy] = x[0]-x[1];
-		return;
-	}
-	if (N==4) {
-		// terminal case
-		t0 = x[0]+x[2];
-		t1 = x[1]+x[3];
-		t2 = x[0]-x[2];
-		t3 = I*(x[1]-x[3]);
-		y[0] = t0+t1;
-		y[sy] = t2+t3;
-		y[2*sy] = t0-t1;
-		y[3*sy] = t2-t3;
+		double complex t00,t01,t02,t03;
+		double complex t10,t11,t12,t13;
+		const double complex E1=0.70710678118654752440*(1-I);
+		const double complex E3=0.70710678118654752440*(-1-I);
+		t0 = x[0]+x[4];
+		t1 = x[2]+x[6];
+		t2 = x[0]-x[4];
+		t3 = I*(x[2]-x[6]);
+		t00 = t0+t1;
+		t01 = t2-t3;
+		t02 = t0-t1;
+		t03 = t2+t3;
+		t0 = x[1]+x[5];
+		t1 = x[3]+x[7];
+		t2 = x[1]-x[5];
+		t3 = I*(x[3]-x[7]);
+		t10 = t0+t1;
+		t11 = (t2-t3)*E1;
+		t12 = (t0-t1)*(-I);
+		t13 = (t2+t3)*E3;
+		y[0] = t00+t10;
+		y[sy] = t01+t11;
+		y[2*sy] = t02+t12;
+		y[3*sy] = t03+t13;
+		y[4*sy] = t00-t10;
+		y[5*sy] = t01-t11;
+		y[6*sy] = t02-t12;
+		y[7*sy] = t03-t13;
 		return;
 	}
 	// recursion
@@ -118,50 +137,45 @@ ridft (int N, double complex *x, double complex *y, int sy, const double complex
 		t1 = x[n+N/4]+x[n+3*N/4];
 		t2 = x[n]-x[n+N/2];
 		t3 = I*(x[n+N/4]-x[n+3*N/4]);
-		x[n] = t0;
-		x[n+N/4] = t1;
-		x[n+N/2] = (t2+t3)*e[2*n];
-		x[n+3*N/4] = (t2-t3)*e[2*n+1];
+		t[n] = t0;
+		t[n+N/4] = t1;
+		t[n+N/2] = (t2-t3)*e[2*n];
+		t[n+3*N/4] = (t2+t3)*e[2*n+1];
 	}
 	// call sub-transforms
-	ridft(N/2,x,y,2*sy,e+N/2);
-	ridft(N/4,x+N/2,y+sy,4*sy,e+3*N/4);
-	ridft(N/4,x+3*N/4,y+3*sy,4*sy,e+3*N/4);
+	rs_dft_1d(N/2,t,t,y,2*sy,e+N/2);
+	rs_dft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
+	rs_dft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
 }
 
-// unnormalized inverse complex DFT
+// strided one-dimensional DFT
+inline static void
+s_dft_1d (double complex *x, double complex *y, int sy, const struct aux *a) {
+	rs_dft_1d(a->N,x,a->t,y,sy,a->e);
+}
+
+// strided DFT of arbitrary dimension
+inline static void
+s_dft (double complex *x, double complex *y, int sy, const struct aux *a) {
+	make_complex_transform(x,y,sy,a,s_dft_1d);
+}
+
+// user interface
 void
-idft (int N, double complex *x, double complex *y, const double complex *e) {
-	ridft(N,x,y,1,e);
+dft (double complex *x, double complex *y, const struct aux *a) {
+	s_dft(x,y,1,a);
 }
 
-// fill the exponent vector for inverse complex DFT (for internal use)
-static void
-fillexp_idft (int N, double complex *e) {
-	int n; // counter
-	while (N>4) {
-		for (n=0; n<N/4; ++n) {
-			*e++ = cexp(2*M_PI*I*n/N);
-			*e++ = cexp(2*M_PI*I*3*n/N);
-		}
-		N /= 2;
-	}
-}
+// *** real transforms ***
 
-// allocate and fill the exponent vector for inverse complex DFT
-double complex *
-mkexp_idft (int N) {
-	double complex *e = (double complex*)malloc(sizeof(double complex)*N);
-	fillexp_idft(N,e);
-	return e;
-}
-
-// real DFT
+// one-dimensional real DFT
 void
-realdft (int N, double *x, double *y, const double complex *e) {
+realdft_1d (double *x, double *y, const struct aux *a) {
 	double complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
-	double complex a,b; // temporary values
+	double complex u,v; // temporary values
+	int N=a->N; // transform length
+	double complex *e=a->e; // exponent vector
 	z = (double complex*)x;
 	w = (double complex*)y;
 	if (N==1) {
@@ -171,96 +185,37 @@ realdft (int N, double *x, double *y, const double complex *e) {
 	}
 	if (N==2) {
 		// trivial case
-		y[0] = x[0]+x[1];
-	  	y[1] = x[0]-x[1];
+		double t0,t1; // temporary values
+		t0 = x[0]+x[1];
+	  	t1 = x[0]-x[1];
+		y[0] = t0;
+		y[1] = t1;
 		return;
 	}
 	// reduce to complex DFT of length N/2
 	// do complex DFT
-	dft(N/2,z,w,e+N/4);
+	dft(z,w,a->sub1);
 	// recover real DFT
 	w[0] = (y[0]+y[1])+I*(y[0]-y[1]);
 	for (n=1; n<N/4; ++n) {
-		a = (w[n]+conj(w[N/2-n]))/2;
-		b = (w[n]-conj(w[N/2-n]))*e[n]/(2*I);
-		w[n] = a+b;
-		w[N/2-n] = conj(a-b);
+		u = (w[n]+conj(w[N/2-n]))/2;
+		v = (w[n]-conj(w[N/2-n]))*e[n]/(2*I);
+		w[n] = u+v;
+		w[N/2-n] = conj(u-v);
 	}
 	w[N/4] = conj(w[N/4]);
 }
 
-// fill the exponent vector for real DFT (for internal use)
-static void
-fillexp_realdft (int N, double complex *e) {
+// *** real symmetric transforms ***
+
+// strided one-dimensional DCT-2
+inline static void
+s_dct2_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
-	for (n=0; n<N/4; ++n)
-		*e++ = cexp(-2*M_PI*I*n/N);
-	fillexp_dft(N/2,e);
-}
-
-// allocate and fill the exponent vector for real DFT
-double complex *
-mkexp_realdft (int N) {
-	double complex *e = (double complex*)malloc(sizeof(double complex)*3*N/4);
-	fillexp_realdft(N,e);
-	return e;
-}
-
-// unnormalized inverse real DFT
-void
-irealdft (int N, double *x, double *y, const double complex *e) {
-	double complex *z,*w; // real vectors viewed as complex ones
-	int n; // counter
-	double complex a,b; // temporary values
-	z = (double complex*)x;
-	w = (double complex*)y;
-	if (N==1) {
-		// trivial case
-		y[0] = x[0];
-		return;
-	}
-	if (N==2) {
-		// trivial case
-		y[0] = x[0]+x[1];
-	  	y[1] = x[0]-x[1];
-		return;
-	}
-	// reduce to inverse complex DFT of length N/2
-	// prepare complex DFT inputs
-	z[0] = (x[0]+x[1])+I*(x[0]-x[1]);
-	for (n=1; n<N/4; ++n) {
-		a = z[n]+conj(z[N/2-n]);
-		b = I*(z[n]-conj(z[N/2-n]))*e[n];
-		z[n] = a+b;
-		z[N/2-n] = conj(a-b);
-	}
-	z[N/4] = 2*conj(z[N/4]);
-	// make inverse complex DFT
-	idft(N/2,z,w,e+N/4);
-}
-
-// fill the exponent vector for inverse real DFT (for internal use)
-static void
-fillexp_irealdft (int N, double complex *e) {
-	int n; // counter
-	for (n=0; n<N/4; ++n)
-		*e++ = cexp(2*M_PI*I*n/N);
-	fillexp_idft(N/2,e);
-}
-
-// allocate and fill the exponent vector for inverse real DFT
-double complex *
-mkexp_irealdft (int N) {
-	double complex *e = (double complex*)malloc(sizeof(double complex)*3*N/4);
-	fillexp_irealdft(N,e);
-	return e;
-}
-
-// DCT-2 of N reals
-void
-dct2 (int N, double *x, double *y, const double complex *e) {
-	int n; // counter
-	double c,s,a,b; // temporary values
+	double c,s,u,v; // temporary values
+	int N=a->N; // transform length
+	double *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
 		y[0] = 2*x[0];
@@ -269,30 +224,45 @@ dct2 (int N, double *x, double *y, const double complex *e) {
 	// reduce to real DFT of length N
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n) {
-		y[n] = x[2*n];
-		y[N/2+n] = x[N-1-2*n];
+		t[n] = x[2*n];
+		t[N/2+n] = x[N-1-2*n];
 	}
-        // do real DFT
-	realdft(N,y,x,e+N/2);
+        // do real DFT in-place
+	realdft_1d(t,t,a->sub1);
 	// recover results
 	for (n=1; n<N/2; ++n) {
-		a = x[2*n];
-		b = x[2*n+1];
+		u = t[2*n];
+		v = t[2*n+1];
 		c = creal(e[n]);
 		s = cimag(e[n]);
-		y[n] = 2*(a*c-b*s);
-		y[N-n] = 2*(-b*c-a*s);
+		y[sy*n] = 2*(u*c-v*s);
+		y[sy*(N-n)] = 2*(-v*c-u*s);
 	}
 	// treat boundary cases
-	y[N/2] = M_SQRT2*x[1];
-	y[0] = 2*x[0];
+	y[sy*N/2] = M_SQRT2*t[1];
+	y[0] = 2*t[0];
 }
 
-// DST-2 of N reals
+// strided DCT-2 of arbitrary dimension
+inline static void
+s_dct2 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dct2_1d);
+}
+
+// user interface
 void
-dst2 (int N, double *x, double *y, const double complex *e) {
+dct2 (double *x, double *y, const struct aux *a) {
+	s_dct2(x,y,1,a);
+}
+
+// strided one-dimensional DST-2
+inline static void
+s_dst2_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
-	double c,s,a,b; // temporary values
+	double c,s,u,v; // temporary values
+	int N=a->N; // transform length
+	double *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
 		y[0] = -2*x[0];
@@ -301,170 +271,157 @@ dst2 (int N, double *x, double *y, const double complex *e) {
 	// reduce to real DFT of length N
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n) {
-		y[n] = x[2*n];
-		y[N/2+n] = -x[N-1-2*n];
+		t[n] = x[2*n];
+		t[N/2+n] = -x[N-1-2*n];
 	}
-        // do real DFT
-	realdft(N,y,x,e+N/2);
+        // do real DFT in-place
+	realdft_1d(t,t,a->sub1);
 	// recover results
 	for (n=1; n<N/2; ++n) {
-		a = x[2*n];
-		b = x[2*n+1];
+		u = t[2*n];
+		v = t[2*n+1];
 		c = creal(e[n]);
 		s = cimag(e[n]);
-		y[n] = 2*(-a*c+b*s);
-		y[N-n] = 2*(b*c+a*s);
+		y[sy*n] = 2*(-u*c+v*s);
+		y[sy*(N-n)] = 2*(v*c+u*s);
 	}
 	// treat boundary cases
-	y[N/2] = -M_SQRT2*x[1];
-	y[0] = -2*x[0];
+	y[sy*N/2] = -M_SQRT2*t[1];
+	y[0] = -2*t[0];
 }
 
-// allocate and fill the exponent vector for the 2-nd type transforms
-double complex *
-mkexp_t2 (int N) {
-	int n; // counter
-	double complex *e = (double complex*)malloc(sizeof(double complex)*5*N/4);
-	for (n=0; n<N/2; ++n)
-		e[n] = cexp(-2*M_PI*I*n/(4*N));
-	fillexp_realdft(N,e+N/2);
-	return e;
+// strided DST-2 of arbitrary dimension
+inline static void
+s_dst2 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dst2_1d);
 }
 
-// DCT-3 of N reals
+// user interface
 void
-dct3 (int N, double *x, double *y, const double complex *e) {
-	int n; // counter
-	double c,s,a,b; // temporary values
-	if (N==1) {
-		// trivial case
-		y[0] = 2*x[0];
-		return;
-	}
-	// reduce to inverse real DFT of length N
-	// prepare sub-transform inputs
-	for (n=1; n<N/2; ++n) {
-		a = x[n];
-		b = x[N-n];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		y[2*n] = 2*(a*c-b*s);
-		y[2*n+1] = 2*(-b*c-a*s);
-	}
-	y[0] = 2*x[0];
-	y[1] = 2*M_SQRT2*x[N/2];
-	// do inverse real DFT
-	irealdft(N,y,x,e+N/2);
-	// recover results
-	for (n=0; n<N/2; ++n) {
-		y[2*n] = x[n];
-		y[N-1-2*n] = x[N/2+n];
+dst2 (double *x, double *y, const struct aux *a) {
+	s_dst2(x,y,1,a);
+}
+
+// *** making of aux structures ***
+
+// make aux structure for any transform of arbitrary dimension
+// using its one-dimensional version
+static struct aux *
+mkaux_gen (int d, int *n, struct aux* (*mkaux_1d)(int N)) {
+	struct aux *a;
+	int p; // product of all transform lengths
+	int i; // array index
+	if (d==1)
+		return (*mkaux_1d)(n[0]);
+	else {
+		p = 1;
+		for (i=0; i<d; ++i)
+			p *= n[i];
+		a = malloc(sizeof(struct aux));
+		a->N = p;
+		a->t = malloc(p*sizeof(double complex));
+		a->e = NULL;
+		a->sub1 = mkaux_gen(d-1,n,mkaux_1d);
+		a->sub2 = (*mkaux_1d)(n[d-1]);
+		return a;
 	}
 }
 
-// DST-3 of N reals
+// make aux for one-dimensional DFT
+static struct aux *
+mkaux_dft_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	if (N>=16) {
+		a->t = malloc(N*sizeof(double complex));
+		a->e = malloc(N*sizeof(double complex));
+		e = a->e;
+		while (N>=16) {
+			for (n=0; n<N/4; ++n) {
+				*e++ = cexp(-2*M_PI*I*n/N);
+				*e++ = cexp(-2*M_PI*I*3*n/N);
+			}
+			N /= 2;
+		}
+	} else {
+		a->t = NULL;
+		a->e = NULL;
+	}
+	a->sub1 = a->sub2 = NULL;
+	return a;
+}
+
+// make aux for any-dimensional DFT
+struct aux *
+mkaux_dft (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_dft_1d);
+}
+
+// make aux for one-dimensional real DFT
+struct aux *
+mkaux_realdft_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	a->t = NULL;
+	if (N>=4) {
+		a->e = malloc((N/4)*sizeof(double complex));
+		e = a->e;
+		for (n=0; n<N/4; ++n)
+			*e++ = cexp(-2*M_PI*I*n/N);
+		a->sub1 = mkaux_dft_1d(N/2);
+	} else {
+		a->e = NULL;
+		a->sub1 = NULL;
+	}
+	a->sub2 = NULL;
+	return a;
+}
+
+// make aux for an one-dimensional Type-2 transform
+static struct aux *
+mkaux_t2_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	if (N>=2) {
+		a->t = malloc(N*sizeof(double));
+		a->e = malloc((N/2)*sizeof(double complex));
+		e = a->e;
+		for (n=0; n<N/2; ++n)
+			*e++ = cexp(-2*M_PI*I*n/(4*N));
+	} else {
+		a->t = NULL;
+		a->e = NULL;
+	}
+	a->sub1 = mkaux_realdft_1d(N);
+	a->sub2 = NULL;
+	return a;
+}
+
+// make aux for an any-dimensional Type-2 transform
+struct aux *
+mkaux_t2 (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_t2_1d);
+}
+
+// free aux chain
 void
-dst3 (int N, double *x, double *y, const double complex *e) {
-	int n; // counter
-	double c,s,a,b; // temporary values
-	if (N==1) {
-		// trivial case
-		y[0] = -2*x[0];
-		return;
-	}
-	// reduce to inverse real DFT of length N
-	// prepare sub-transform inputs
-	for (n=1; n<N/2; ++n) {
-		a = x[n];
-		b = x[N-n];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		y[2*n] = 2*(-a*c+b*s);
-		y[2*n+1] = 2*(b*c+a*s);
-	}
-	y[0] = -2*x[0];
-	y[1] = -2*M_SQRT2*x[N/2];
-	// do inverse real DFT
-	irealdft(N,y,x,e+N/2);
-	// recover results
-	for (n=0; n<N/2; ++n) {
-		y[2*n] = x[n];
-		y[N-1-2*n] = -x[N/2+n];
-	}
-}
-
-// allocate and fill the exponent vector for the 3-rd type transforms
-double complex *
-mkexp_t3 (int N) {
-	int n; // counter
-	double complex *e = (double complex*)malloc(sizeof(double complex)*5*N/4);
-	for (n=0; n<N/2; ++n)
-		e[n] = cexp(-2*M_PI*I*n/(4*N));
-	fillexp_irealdft(N,e+N/2);
-	return e;
-}
-
-// DCT-4 of N reals
-void
-dct4 (int N, double *x, double *y, const double complex *e) {
-	int n; // counter
-	double complex *z,*w; // real vectors viewed as complex ones
-	z = (double complex*)y;
-	w = (double complex*)x;
-	if (N==1) {
-		// trivial case
-		y[0] = 2*M_SQRT2*x[0];
-		return;
-	}
-	// reduce to complex DFT of length N/2
-	// prepare sub-transform inputs
-	for (n=0; n<N/2; ++n)
-		z[n] = 2*e[n]*(x[2*n]+I*x[N-1-2*n]);
-	// do complex DFT
-	dft(N/2,z,w,e+N/2);
-	// recover results
-	e += N;
-	for (n=0; n<N/2; ++n) {
-		y[2*n] = 2*creal(*e++*w[n]);
-		y[2*n+1] = 2*creal(*e++*conj(w[N/2-1-n]));
-	}
-}
-
-// DST-4 of N reals
-void
-dst4 (int N, double *x, double *y, const double complex *e) {
-	int n; // counter
-	double complex *z,*w; // real vectors viewed as complex ones
-	z = (double complex*)y;
-	w = (double complex*)x;
-	if (N==1) {
-		// trivial case
-		y[0] = -2*M_SQRT2*x[0];
-		return;
-	}
-	// reduce to complex DFT of length N/2
-	// prepare sub-transform inputs
-	for (n=0; n<N/2; ++n)
-		z[n] = 2*e[n]*(x[2*n]-I*x[N-1-2*n]);
-	// do complex DFT
-	dft(N/2,z,w,e+N/2);
-	// recover results
-	e += N;
-	for (n=0; n<N/2; ++n) {
-		y[2*n] = 2*cimag(*e++*w[n]);
-		y[2*n+1] = 2*cimag(*e++*conj(w[N/2-1-n]));
-	}
-}
-
-// allocate and fill the exponent vector for the 4-th type transforms
-double complex *
-mkexp_t4 (int N) {
-	int n; // counter
-	double complex *e = (double complex*)malloc(sizeof(double complex)*2*N);
-	for (n=0; n<N/2; ++n)
-		e[n] = cexp(-2*M_PI*I*n/(2*N));
-	fillexp_dft(N/2,e+N/2);
-	for (n=0; n<N; ++n)
-		e[N+n] = cexp(-2*M_PI*I*(2*n+1)/(8*N));
-	return e;
+free_aux (struct aux *a) {
+	if (a->t)
+		free(a->t);
+	if (a->e)
+		free(a->e);
+	if (a->sub1)
+		free_aux(a->sub1);
+	if (a->sub2)
+		free_aux(a->sub2);
+	free(a);
 }
