@@ -313,7 +313,7 @@ main (void) {
 #endif
 
 // performance test of one-dimensional transforms
-#if 0
+#if 1
 	const int MINT=10;
 	const int MAXBLK=65536*16;
 	const int R=100; // repeats
@@ -323,8 +323,8 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
-#if 0
-		// complex DFT
+#if 1
+		// complex transforms
 		double complex *x = malloc(N*sizeof(double complex));
 		double complex *y = malloc(N*sizeof(double complex));
 		// prepare test vector
@@ -334,7 +334,7 @@ main (void) {
 				  I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
 //		a = mkaux_dft(1,&N);
-//		a = mkaux_idft(1,&N);
+		a = mkaux_idft(1,&N);
 		// do tests
 		T = MINT*MAXBLK/N;
 		s = q = 0.0;
@@ -342,7 +342,7 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				dft(x,y,a);
-//				idft(x,y,a);
+				idft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -410,7 +410,7 @@ main (void) {
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
-		// complex DFT
+		// complex transforms
 		fftw_complex *x = fftw_malloc(N*sizeof(double complex));
 		fftw_complex *y = fftw_malloc(N*sizeof(double complex));
 		// prepare test vector
@@ -739,7 +739,7 @@ main (void) {
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
-		// complex DFT
+		// complex transforms
 		double complex *x = malloc(N*N*sizeof(double complex));
 		double complex *y = malloc(N*N*sizeof(double complex));
 		// prepare test vector
@@ -749,14 +749,16 @@ main (void) {
 				  I*((double)rand()/RAND_MAX-0.5);
 		ns[0]=ns[1]=N;
 		// prepare aux data
-		a = mkaux_dft(2,ns);
+//		a = mkaux_dft(2,ns);
+//		a = mkaux_idft(2,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				dft(x,y,a);
+//				dft(x,y,a);
+//				idft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -777,14 +779,21 @@ main (void) {
 			*xptr++ =(double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// prepare aux data
-		a = mkaux_t2(2,ns);
+//		a = mkaux_t2(2,ns);
+//		a = mkaux_t3(2,ns);
+//		a = mkaux_t4(2,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				dct2(x,y,a);
+//				dct2(x,y,a);
+//				dst2(x,y,a);
+//				dct3(x,y,a);
+//				dst3(x,y,a);
+//				dct4(x,y,a);
+//				dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -814,7 +823,7 @@ main (void) {
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
-		// complex DFT
+		// complex transforms
 		fftw_complex *x = fftw_malloc(N*N*sizeof(fftw_complex));
 		fftw_complex *y = fftw_malloc(N*N*sizeof(fftw_complex));
 		// prepare test vector
@@ -823,7 +832,8 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5+ \
 				  I*((double)rand()/RAND_MAX-0.5);
 		// prepare plan
-		p = fftw_plan_dft_2d(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_2d(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_2d(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
 		s = q = 0.0;
@@ -851,6 +861,11 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5;
 		// prepare plan
 //		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
 		s = q = 0.0;
@@ -1133,7 +1148,7 @@ main (void) {
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
-		// complex DFT
+		// complex transforms
 		double complex *x = malloc(N*N*N*sizeof(double complex));
 		double complex *y = malloc(N*N*N*sizeof(double complex));
 		// prepare test vector
@@ -1143,14 +1158,16 @@ main (void) {
 				  I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_dft(3,ns);
+//		a = mkaux_dft(3,ns);
+//		a = mkaux_idft(3,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				dft(x,y,a);
+//				dft(x,y,a);
+//				idft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1171,14 +1188,21 @@ main (void) {
 			*xptr++ =(double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=ns[2]=N;
 		// prepare aux data
-		a = mkaux_t2(3,ns);
+//		a = mkaux_t2(3,ns);
+//		a = mkaux_t3(3,ns);
+//		a = mkaux_t4(3,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				dct2(x,y,a);
+//				dct2(x,y,a);
+//				dst2(x,y,a);
+//				dct3(x,y,a);
+//				dst3(x,y,a);
+//				dct4(x,y,a);
+//				dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1208,7 +1232,7 @@ main (void) {
 	struct timeval t1,t2;
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
-		// complex DFT
+		// complex transforms
 		fftw_complex *x = fftw_malloc(N*N*N*sizeof(fftw_complex));
 		fftw_complex *y = fftw_malloc(N*N*N*sizeof(fftw_complex));
 		// prepare test vector
@@ -1217,7 +1241,8 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5+ \
 				  I*((double)rand()/RAND_MAX-0.5);
 		// prepare plan
-		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
 		s = q = 0.0;
@@ -1244,7 +1269,12 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			*xptr++ = (double)rand()/RAND_MAX-0.5;
 		// prepare plan
-		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
 		s = q = 0.0;
