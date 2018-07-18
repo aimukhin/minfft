@@ -446,6 +446,98 @@ dst2 (double *x, double *y, const struct aux *a) {
 	s_dst2(x,y,1,a);
 }
 
+// strided one-dimensional DCT-3
+void
+s_dct3_1d (double *x, double *y, int sy, const struct aux *a) {
+	int n; // counter
+	double c,s,u,v; // temporary values
+	int N=a->N; // transform length
+	double *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
+	if (N==1) {
+		// trivial case
+		y[0] = 2*x[0];
+		return;
+	}
+	// reduce to inverse real DFT of length N
+	// prepare sub-transform inputs
+	for (n=1; n<N/2; ++n) {
+		u = x[n];
+		v = x[N-n];
+		c = creal(e[n]);
+		s = cimag(e[n]);
+		t[2*n] = 2*(u*c-v*s);
+		t[2*n+1] = 2*(-v*c-u*s);
+	}
+	t[0] = 2*x[0];
+	t[1] = 2*M_SQRT2*x[N/2];
+	// do inverse real DFT in-place
+	irealdft_1d(t,t,a->sub1);
+	// recover results
+	for (n=0; n<N/2; ++n) {
+		y[sy*2*n] = t[n];
+		y[sy*(N-1-2*n)] = t[N/2+n];
+	}
+}
+
+// strided DCT-3 of arbitrary dimension
+inline static void
+s_dct3 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dct3_1d);
+}
+
+// user interface
+void
+dct3 (double *x, double *y, const struct aux *a) {
+	s_dct3(x,y,1,a);
+}
+
+// strided one-dimensional DST-3
+void
+s_dst3_1d (double *x, double *y, int sy, const struct aux *a) {
+	int n; // counter
+	double c,s,u,v; // temporary values
+	int N=a->N; // transform length
+	double *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
+	if (N==1) {
+		// trivial case
+		y[0] = -2*x[0];
+		return;
+	}
+	// reduce to inverse real DFT of length N
+	// prepare sub-transform inputs
+	for (n=1; n<N/2; ++n) {
+		u = x[n];
+		v = x[N-n];
+		c = creal(e[n]);
+		s = cimag(e[n]);
+		t[2*n] = 2*(-u*c+v*s);
+		t[2*n+1] = 2*(v*c+u*s);
+	}
+	t[0] = -2*x[0];
+	t[1] = -2*M_SQRT2*x[N/2];
+	// do inverse real DFT in-place
+	irealdft_1d(t,t,a->sub1);
+	// recover results
+	for (n=0; n<N/2; ++n) {
+		y[sy*2*n] = t[n];
+		y[sy*(N-1-2*n)] = -t[N/2+n];
+	}
+}
+
+// strided DST-3 of arbitrary dimension
+inline static void
+s_dst3 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dst3_1d);
+}
+
+// user interface
+void
+dst3 (double *x, double *y, const struct aux *a) {
+	s_dst3(x,y,1,a);
+}
+
 // *** making of aux structures ***
 
 // make aux structure for any transform of arbitrary dimension
@@ -610,6 +702,35 @@ mkaux_t2_1d (int N) {
 struct aux *
 mkaux_t2 (int d, int *n) {
 	return mkaux_gen(d,n,mkaux_t2_1d);
+}
+
+// make aux for an one-dimensional Type-3 transform
+static struct aux *
+mkaux_t3_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	if (N>=2) {
+		a->t = malloc(N*sizeof(double));
+		a->e = malloc((N/2)*sizeof(double complex));
+		e = a->e;
+		for (n=0; n<N/2; ++n)
+			*e++ = cexp(-2*M_PI*I*n/(4*N));
+	} else {
+		a->t = NULL;
+		a->e = NULL;
+	}
+	a->sub1 = mkaux_irealdft_1d(N);
+	a->sub2 = NULL;
+	return a;
+}
+
+// make aux for an any-dimensional Type-3 transform
+struct aux *
+mkaux_t3 (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_t3_1d);
 }
 
 // free aux chain

@@ -11,7 +11,7 @@ main (void) {
 // one-dimensional DFTs
 
 // compare results of one-dimensional transforms with FFTW
-#if 0
+#if 1
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXBLK=65536*16;
@@ -191,6 +191,60 @@ main (void) {
 		double *yptr=y+N-1,*wptr=w;
 		for (n=0; n<N; ++n) {
 			d = log10(fabs(-*yptr---*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-3
+		double *x,*y,*z,*w;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		w = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		a = mkaux_t3(1,&N);
+		dct3(x,y,a);
+		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(*yptr++/2-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 1
+		// DST-3
+		double *x,*y,*z,*w;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		w = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z+N-1;
+		for (n=0; n<N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr-- = *xptr++;
+		}
+		// do transforms
+		a = mkaux_t3(1,&N);
+		dst3(x,y,a);
+		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(-*yptr++/2-*wptr++));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
