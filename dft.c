@@ -447,7 +447,7 @@ dst2 (double *x, double *y, const struct aux *a) {
 }
 
 // strided one-dimensional DCT-3
-void
+inline static void
 s_dct3_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
@@ -493,7 +493,7 @@ dct3 (double *x, double *y, const struct aux *a) {
 }
 
 // strided one-dimensional DST-3
-void
+inline static void
 s_dst3_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
@@ -539,7 +539,7 @@ dst3 (double *x, double *y, const struct aux *a) {
 }
 
 // strided one-dimensional DCT-4
-void
+inline static void
 s_dct4_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
 	int N=a->N; // transform length
@@ -576,7 +576,7 @@ dct4 (double *x, double *y, const struct aux *a) {
 }
 
 // strided one-dimensional DST-4
-void
+inline static void
 s_dst4_1d (double *x, double *y, int sy, const struct aux *a) {
 	int n; // counter
 	int N=a->N; // transform length
