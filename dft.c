@@ -338,16 +338,16 @@ irealdft_1d (double *x, double *y, const struct aux *a) {
 	}
 	// reduce to inverse complex DFT of length N/2
 	// prepare complex DFT inputs
-	z[0] = (x[0]+x[1])+I*(x[0]-x[1]);
+	w[0] = (x[0]+x[1])+I*(x[0]-x[1]);
 	for (n=1; n<N/4; ++n) {
 		u = z[n]+conj(z[N/2-n]);
 		v = I*(z[n]-conj(z[N/2-n]))*e[n];
-		z[n] = u+v;
-		z[N/2-n] = conj(u-v);
+		w[n] = u+v;
+		w[N/2-n] = conj(u-v);
 	}
-	z[N/4] = 2*conj(z[N/4]);
+	w[N/4] = 2*conj(z[N/4]);
 	// make inverse complex DFT
-	idft(z,w,a->sub1);
+	idft(w,w,a->sub1);
 }
 
 // *** real symmetric transforms ***
