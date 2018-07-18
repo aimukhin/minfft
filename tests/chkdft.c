@@ -49,6 +49,34 @@ main (void) {
 		}
 #endif
 #if 0
+		// inverse complex DFT
+		double complex *x,*y,*z,*w;
+		x = malloc(N*sizeof(double complex));
+		y = malloc(N*sizeof(double complex));
+		z = malloc(N*sizeof(double complex));
+		w = malloc(N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		double complex *xptr=x,*zptr=z;
+		for (n=0; n<N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5+ \
+				I*((double)rand()/RAND_MAX-0.5);
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		a = mkaux_idft(1,&N);
+		idft(x,y,a);
+		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double complex *yptr=y,*wptr=w;	
+		for (n=0; n<N; ++n) {
+			d = log10(cabs(*yptr++-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
 		// real DFT
 		double *x,*y,*z,*w;
 		x = malloc(N*sizeof(double));
@@ -79,6 +107,36 @@ main (void) {
 		}
 		for (n=1; n<N/2; ++n) {
 			d = log10(fabs(y[2*n+1]-w[N-n]));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// inverse real DFT
+		double *x,*y,*z,*w;
+		x = (double*)malloc(N*sizeof(double));
+		y = (double*)malloc(N*sizeof(double));
+		z = (double*)malloc(N*sizeof(double));
+		w = (double*)malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		z[0] = x[0];
+		if (N>1)
+			z[N/2] = x[1];
+		for (n=1; n<N/2; ++n) {
+			z[n] = x[2*n];
+			z[N-n] = x[2*n+1];
+		}
+		// do transforms
+		a = mkaux_irealdft_1d(N);
+		irealdft_1d(x,y,a);
+		p = fftw_plan_r2r_1d(N,z,w,FFTW_HC2R,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -167,14 +225,16 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5+ \
 				  I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = mkaux_dft(1,&N);
+//		a = mkaux_dft(1,&N);
+//		a = mkaux_idft(1,&N);
 		// do tests
 		T = MINT*MAXBLK/N;
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				dft(x,y,a);
+//				dft(x,y,a);
+//				idft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -195,6 +255,7 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5;
 		// prepare aux data
 //		a = mkaux_realdft_1d(N);
+//		a = mkaux_irealdft_1d(N);
 //		a = mkaux_t2(1,&N);
 		// do tests
 		T = MAXBLK*MINT/N;
@@ -203,7 +264,9 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				realdft_1d(x,y,a);
+//				irealdft_1d(x,y,a);
 //				dct2(x,y,a);
+//				dst2(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -243,7 +306,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare plan
-		p = fftw_plan_dft_1d(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_1d(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = fftw_plan_dft_1d(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXBLK/N;
 		s = q = 0.0;
@@ -271,7 +335,9 @@ main (void) {
 			*xptr++ = (double)rand()/RAND_MAX-0.5;
 		// prepare plan
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_R2HC,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_HC2R,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
 		// do tests
 		T = MAXBLK*MINT/N;
 		s = q = 0.0;

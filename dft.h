@@ -12,10 +12,14 @@ struct aux {
 	struct aux *sub2; // next structure
 };
 void dft(double complex *x, double complex *y, const struct aux *a);
+void idft(double complex *x, double complex *y, const struct aux *a);
 void realdft_1d(double *x, double *y, const struct aux *a);
+void irealdft_1d(double *x, double *y, const struct aux *a);
 void dct2(double *x, double *y, const struct aux *a);
 void dst2(double *x, double *y, const struct aux *a);
 struct aux *mkaux_dft(int d, int *n);
+struct aux *mkaux_idft(int d, int *n);
 struct aux *mkaux_realdft_1d(int N);
+struct aux *mkaux_irealdft_1d(int N);
 struct aux *mkaux_t2(int d, int *n);
 void free_aux(struct aux *a);

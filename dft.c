@@ -166,6 +166,112 @@ dft (double complex *x, double complex *y, const struct aux *a) {
 	s_dft(x,y,1,a);
 }
 
+// recursive strided one-dimensional inverse DFT
+inline static void
+rs_idft_1d (
+	int N, // transform length
+	double complex *x, // source data
+	double complex *t, // temporary buffer
+	double complex *y, // destination buffer
+	int sy, // stride on y
+	const double complex *e // exponent vector
+) {
+	int n; // counter
+	double complex t0,t1,t2,t3; // temporary values
+	// split-radix DIF
+	if (N==1) {
+		// trivial terminal case
+		y[0] = x[0];
+		return;
+	}
+	if (N==2) {
+		// terminal case
+		t0 = x[0]+x[1];
+	  	t1 = x[0]-x[1];
+		y[0] = t0;
+	  	y[sy] = t1;
+		return;
+	}
+	if (N==4) {
+		// terminal case
+		t0 = x[0]+x[2];
+		t1 = x[1]+x[3];
+		t2 = x[0]-x[2];
+		t3 = I*(x[1]-x[3]);
+		y[0] = t0+t1;
+		y[sy] = t2+t3;
+		y[2*sy] = t0-t1;
+		y[3*sy] = t2-t3;
+		return;
+	}
+	if (N==8) {
+		// terminal case
+		double complex t00,t01,t02,t03;
+		double complex t10,t11,t12,t13;
+		const double complex E1=0.70710678118654752440*(1+I);
+		const double complex E3=0.70710678118654752440*(-1+I);
+		t0 = x[0]+x[4];
+		t1 = x[2]+x[6];
+		t2 = x[0]-x[4];
+		t3 = I*(x[2]-x[6]);
+		t00 = t0+t1;
+		t01 = t2+t3;
+		t02 = t0-t1;
+		t03 = t2-t3;
+		t0 = x[1]+x[5];
+		t1 = x[3]+x[7];
+		t2 = x[1]-x[5];
+		t3 = I*(x[3]-x[7]);
+		t10 = t0+t1;
+		t11 = (t2+t3)*E1;
+		t12 = (t0-t1)*I;
+		t13 = (t2-t3)*E3;
+		y[0] = t00+t10;
+		y[sy] = t01+t11;
+		y[2*sy] = t02+t12;
+		y[3*sy] = t03+t13;
+		y[4*sy] = t00-t10;
+		y[5*sy] = t01-t11;
+		y[6*sy] = t02-t12;
+		y[7*sy] = t03-t13;
+		return;
+	}
+	// recursion
+	// prepare sub-transform inputs
+	for (n=0; n<N/4; ++n) {
+		t0 = x[n]+x[n+N/2];
+		t1 = x[n+N/4]+x[n+3*N/4];
+		t2 = x[n]-x[n+N/2];
+		t3 = I*(x[n+N/4]-x[n+3*N/4]);
+		t[n] = t0;
+		t[n+N/4] = t1;
+		t[n+N/2] = (t2+t3)*e[2*n];
+		t[n+3*N/4] = (t2-t3)*e[2*n+1];
+	}
+	// call sub-transforms
+	rs_idft_1d(N/2,t,t,y,2*sy,e+N/2);
+	rs_idft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
+	rs_idft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
+}
+
+// strided one-dimensional inverse DFT
+inline static void
+s_idft_1d (double complex *x, double complex *y, int sy, const struct aux *a) {
+	rs_idft_1d(a->N,x,a->t,y,sy,a->e);
+}
+
+// strided inverse DFT of arbitrary dimension
+inline static void
+s_idft (double complex *x, double complex *y, int sy, const struct aux *a) {
+	make_complex_transform(x,y,sy,a,s_idft_1d);
+}
+
+// user interface
+void
+idft (double complex *x, double complex *y, const struct aux *a) {
+	s_idft(x,y,1,a);
+}
+
 // *** real transforms ***
 
 // one-dimensional real DFT
@@ -204,6 +310,44 @@ realdft_1d (double *x, double *y, const struct aux *a) {
 		w[N/2-n] = conj(u-v);
 	}
 	w[N/4] = conj(w[N/4]);
+}
+
+// one-dimensional inverse real DFT
+void
+irealdft_1d (double *x, double *y, const struct aux *a) {
+	double complex *z,*w; // real vectors viewed as complex ones
+	int n; // counter
+	double complex u,v; // temporary values
+	int N=a->N; // transform length
+	double complex *e=a->e; // exponent vector
+	z = (double complex*)x;
+	w = (double complex*)y;
+	if (N==1) {
+		// trivial case
+		y[0] = x[0];
+		return;
+	}
+	if (N==2) {
+		// trivial case
+		double t0,t1; // temporary values
+		t0 = x[0]+x[1];
+	  	t1 = x[0]-x[1];
+		y[0] = t0;
+		y[1] = t1;
+		return;
+	}
+	// reduce to inverse complex DFT of length N/2
+	// prepare complex DFT inputs
+	z[0] = (x[0]+x[1])+I*(x[0]-x[1]);
+	for (n=1; n<N/4; ++n) {
+		u = z[n]+conj(z[N/2-n]);
+		v = I*(z[n]-conj(z[N/2-n]))*e[n];
+		z[n] = u+v;
+		z[N/2-n] = conj(u-v);
+	}
+	z[N/4] = 2*conj(z[N/4]);
+	// make inverse complex DFT
+	idft(z,w,a->sub1);
 }
 
 // *** real symmetric transforms ***
@@ -360,6 +504,39 @@ mkaux_dft (int d, int *n) {
 	return mkaux_gen(d,n,mkaux_dft_1d);
 }
 
+// make aux for one-dimensional inverse DFT
+static struct aux *
+mkaux_idft_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	if (N>=16) {
+		a->t = malloc(N*sizeof(double complex));
+		a->e = malloc(N*sizeof(double complex));
+		e = a->e;
+		while (N>=16) {
+			for (n=0; n<N/4; ++n) {
+				*e++ = cexp(2*M_PI*I*n/N);
+				*e++ = cexp(2*M_PI*I*3*n/N);
+			}
+			N /= 2;
+		}
+	} else {
+		a->t = NULL;
+		a->e = NULL;
+	}
+	a->sub1 = a->sub2 = NULL;
+	return a;
+}
+
+// make aux for any-dimensional inverse DFT
+struct aux *
+mkaux_idft (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_idft_1d);
+}
+
 // make aux for one-dimensional real DFT
 struct aux *
 mkaux_realdft_1d (int N) {
@@ -375,6 +552,29 @@ mkaux_realdft_1d (int N) {
 		for (n=0; n<N/4; ++n)
 			*e++ = cexp(-2*M_PI*I*n/N);
 		a->sub1 = mkaux_dft_1d(N/2);
+	} else {
+		a->e = NULL;
+		a->sub1 = NULL;
+	}
+	a->sub2 = NULL;
+	return a;
+}
+
+// make aux for one-dimensional inverse real DFT
+struct aux *
+mkaux_irealdft_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	a->t = NULL;
+	if (N>=4) {
+		a->e = malloc((N/4)*sizeof(double complex));
+		e = a->e;
+		for (n=0; n<N/4; ++n)
+			*e++ = cexp(2*M_PI*I*n/N);
+		a->sub1 = mkaux_idft_1d(N/2);
 	} else {
 		a->e = NULL;
 		a->sub1 = NULL;
