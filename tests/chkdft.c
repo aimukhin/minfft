@@ -365,6 +365,8 @@ main (void) {
 //		a = mkaux_realdft_1d(N);
 //		a = mkaux_irealdft_1d(N);
 //		a = mkaux_t2(1,&N);
+//		a = mkaux_t3(1,&N);
+//		a = mkaux_t4(1,&N);
 		// do tests
 		T = MAXBLK*MINT/N;
 		s = q = 0.0;
@@ -375,6 +377,10 @@ main (void) {
 //				irealdft_1d(x,y,a);
 //				dct2(x,y,a);
 //				dst2(x,y,a);
+//				dct3(x,y,a);
+//				dst3(x,y,a);
+//				dct4(x,y,a);
+//				dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -446,6 +452,10 @@ main (void) {
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_HC2R,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MAXBLK*MINT/N;
 		s = q = 0.0;
@@ -511,6 +521,35 @@ main (void) {
 		}
 #endif
 #if 0
+		// inverse complex DFT
+		double complex *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(double complex));
+		y = malloc(N*N*sizeof(double complex));
+		z = malloc(N*N*sizeof(double complex));
+		w = malloc(N*N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		double complex *xptr=x,*zptr=z;
+		for (n=0; n<N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5+ \
+				I*((double)rand()/RAND_MAX-0.5);
+			*zptr++ = *xptr++;
+		}
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_idft(2,ns);
+		idft(x,y,a);
+		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double complex *yptr=y,*wptr=w;
+		for (n=0; n<N*N; ++n) {
+			d = log10(cabs(*yptr++-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
 		// DCT-2
 		double *x,*y,*z,*w;
 		x = malloc(N*N*sizeof(double));
@@ -563,6 +602,118 @@ main (void) {
 		double *yptr=y+N*N-1,*wptr=w;
 		for (n=0; n<N*N; ++n) {
 			d = log10(fabs(*yptr---*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-3
+		double *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		w = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t3(2,ns);
+		dct3(x,y,a);
+		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(*yptr++/4-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-3
+		double *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		w = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z+N*N-1;
+		for (n=0; n<N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr-- = *xptr++;
+		}
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t3(2,ns);
+		dst3(x,y,a);
+		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(*yptr++/4-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-4
+		double *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		w = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t4(2,ns);
+		dct4(x,y,a);
+		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(*yptr++/4-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-4
+		double *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		w = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t4(2,ns);
+		dst4(x,y,a);
+		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(*yptr++/4-*wptr++));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -765,6 +916,35 @@ main (void) {
 		}
 #endif
 #if 0
+		// inverse complex DFT
+		double complex *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(double complex));
+		y = malloc(N*N*N*sizeof(double complex));
+		z = malloc(N*N*N*sizeof(double complex));
+		w = malloc(N*N*N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		double complex *xptr=x,*zptr=z;
+		for (n=0; n<N*N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5+ \
+				I*((double)rand()/RAND_MAX-0.5);
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_idft(3,ns);
+		idft(x,y,a);
+		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double complex *yptr=y,*wptr=w;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(cabs(*yptr++-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
 		// DCT-2
 		double *x,*y,*z,*w;
 		x = malloc(N*N*N*sizeof(double));
@@ -817,6 +997,118 @@ main (void) {
 		double *yptr=y+N*N*N-1,*wptr=w;
 		for (n=0; n<N*N*N; ++n) {
 			d = log10(fabs(-*yptr---*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-3
+		double *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		w = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t3(3,ns);
+		dct3(x,y,a);
+		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(*yptr++/8-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-3
+		double *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		w = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z+N*N*N-1;
+		for (n=0; n<N*N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr-- = *xptr++;
+		}
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t3(3,ns);
+		dst3(x,y,a);
+		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(-*yptr++/8-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-4
+		double *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		w = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t4(3,ns);
+		dct4(x,y,a);
+		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(*yptr++/8-*wptr++));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-4
+		double *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		w = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		double *xptr=x,*zptr=z;
+		for (n=0; n<N*N*N; ++n) {
+			*xptr = (double)rand()/RAND_MAX-0.5;
+			*zptr++ = *xptr++;
+		}
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t4(3,ns);
+		dst4(x,y,a);
+		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+		fftw_execute(p);
+		// compare results
+		dmax = -HUGE_VAL;
+		double *yptr=y,*wptr=w;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(-*yptr++/8-*wptr++));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
