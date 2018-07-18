@@ -538,6 +538,80 @@ dst3 (double *x, double *y, const struct aux *a) {
 	s_dst3(x,y,1,a);
 }
 
+// strided one-dimensional DCT-4
+void
+s_dct4_1d (double *x, double *y, int sy, const struct aux *a) {
+	int n; // counter
+	int N=a->N; // transform length
+	double complex *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
+	if (N==1) {
+		// trivial case
+		y[0] = 2*M_SQRT2*x[0];
+		return;
+	}
+	// reduce to complex DFT of length N/2
+	// prepare sub-transform inputs
+	for (n=0; n<N/2; ++n)
+		t[n] = 2**e++*(x[2*n]+I*x[N-1-2*n]);
+	// do complex DFT in-place
+	dft(t,t,a->sub1);
+	// recover results
+	for (n=0; n<N/2; ++n) {
+		y[sy*2*n] = 2*creal(*e++*t[n]);
+		y[sy*(2*n+1)] = 2*creal(*e++*conj(t[N/2-1-n]));
+	}
+}
+
+// strided DCT-4 of arbitrary dimension
+inline static void
+s_dct4 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dct4_1d);
+}
+
+// user interface
+void
+dct4 (double *x, double *y, const struct aux *a) {
+	s_dct4(x,y,1,a);
+}
+
+// strided one-dimensional DST-4
+void
+s_dst4_1d (double *x, double *y, int sy, const struct aux *a) {
+	int n; // counter
+	int N=a->N; // transform length
+	double complex *t=a->t; // temporary buffer
+	double complex *e=a->e; // exponent vector
+	if (N==1) {
+		// trivial case
+		y[0] = -2*M_SQRT2*x[0];
+		return;
+	}
+	// reduce to complex DFT of length N/2
+	// prepare sub-transform inputs
+	for (n=0; n<N/2; ++n)
+		t[n] = 2**e++*(x[2*n]-I*x[N-1-2*n]);
+	// do complex DFT in-place
+	dft(t,t,a->sub1);
+	// recover results
+	for (n=0; n<N/2; ++n) {
+		y[sy*2*n] = 2*cimag(*e++*t[n]);
+		y[sy*(2*n+1)] = 2*cimag(*e++*conj(t[N/2-1-n]));
+	}
+}
+
+// strided DST-4 of arbitrary dimension
+inline static void
+s_dst4 (double *x, double *y, int sy, const struct aux *a) {
+	make_real_transform(x,y,sy,a,s_dst4_1d);
+}
+
+// user interface
+void
+dst4 (double *x, double *y, const struct aux *a) {
+	s_dst4(x,y,1,a);
+}
+
 // *** making of aux structures ***
 
 // make aux structure for any transform of arbitrary dimension
@@ -731,6 +805,37 @@ mkaux_t3_1d (int N) {
 struct aux *
 mkaux_t3 (int d, int *n) {
 	return mkaux_gen(d,n,mkaux_t3_1d);
+}
+
+// make aux for an one-dimensional Type-4 transform
+static struct aux *
+mkaux_t4_1d (int N) {
+	struct aux *a;
+	int n;
+	double complex *e;
+	a = malloc(sizeof(struct aux));
+	a->N = N;
+	if (N>=2) {
+		a->t = malloc((N/2)*sizeof(double complex));
+		a->e = malloc((N/2+N)*sizeof(double complex));
+		e = a->e;
+		for (n=0; n<N/2; ++n)
+			*e++ = cexp(-2*M_PI*I*n/(2*N));
+		for (n=0; n<N; ++n)
+			*e++ = cexp(-2*M_PI*I*(2*n+1)/(8*N));
+	} else {
+		a->t = NULL;
+		a->e = NULL;
+	}
+	a->sub1 = mkaux_dft_1d(N/2);
+	a->sub2 = NULL;
+	return a;
+}
+
+// make aux for an any-dimensional Type-4 transform
+struct aux *
+mkaux_t4 (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_t4_1d);
 }
 
 // free aux chain
