@@ -245,8 +245,8 @@ rs_idft_1d (
 		t3 = I*(x[n+N/4]-x[n+3*N/4]);
 		t[n] = t0;
 		t[n+N/4] = t1;
-		t[n+N/2] = (t2+t3)*e[2*n];
-		t[n+3*N/4] = (t2-t3)*e[2*n+1];
+		t[n+N/2] = (t2+t3)*conj(e[2*n]);
+		t[n+3*N/4] = (t2-t3)*conj(e[2*n+1]);
 	}
 	// call sub-transforms
 	rs_idft_1d(N/2,t,t,y,2*sy,e+N/2);
@@ -341,7 +341,7 @@ irealdft_1d (double *x, double *y, const struct aux *a) {
 	w[0] = (x[0]+x[1])+I*(x[0]-x[1]);
 	for (n=1; n<N/4; ++n) {
 		u = z[n]+conj(z[N/2-n]);
-		v = I*(z[n]-conj(z[N/2-n]))*e[n];
+		v = I*(z[n]-conj(z[N/2-n]))*conj(e[n]);
 		w[n] = u+v;
 		w[N/2-n] = conj(u-v);
 	}
@@ -637,9 +637,9 @@ mkaux_gen (int d, int *n, struct aux* (*mkaux_1d)(int N)) {
 	}
 }
 
-// make aux for one-dimensional DFT
+// make aux for one-dimensional forward or inverse complex DFT
 static struct aux *
-mkaux_dft_1d (int N) {
+mkaux_complex_1d (int N) {
 	struct aux *a;
 	int n;
 	double complex *e;
@@ -664,48 +664,15 @@ mkaux_dft_1d (int N) {
 	return a;
 }
 
-// make aux for any-dimensional DFT
+// make aux for any-dimensional forward or inverse complex DFT
 struct aux *
-mkaux_dft (int d, int *n) {
-	return mkaux_gen(d,n,mkaux_dft_1d);
+mkaux_complex (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_complex_1d);
 }
 
-// make aux for one-dimensional inverse DFT
-static struct aux *
-mkaux_idft_1d (int N) {
-	struct aux *a;
-	int n;
-	double complex *e;
-	a = malloc(sizeof(struct aux));
-	a->N = N;
-	if (N>=16) {
-		a->t = malloc(N*sizeof(double complex));
-		a->e = malloc(N*sizeof(double complex));
-		e = a->e;
-		while (N>=16) {
-			for (n=0; n<N/4; ++n) {
-				*e++ = cexp(2*M_PI*I*n/N);
-				*e++ = cexp(2*M_PI*I*3*n/N);
-			}
-			N /= 2;
-		}
-	} else {
-		a->t = NULL;
-		a->e = NULL;
-	}
-	a->sub1 = a->sub2 = NULL;
-	return a;
-}
-
-// make aux for any-dimensional inverse DFT
+// make aux for one-dimensional forward or inverse real DFT
 struct aux *
-mkaux_idft (int d, int *n) {
-	return mkaux_gen(d,n,mkaux_idft_1d);
-}
-
-// make aux for one-dimensional real DFT
-struct aux *
-mkaux_realdft_1d (int N) {
+mkaux_real_1d (int N) {
 	struct aux *a;
 	int n;
 	double complex *e;
@@ -717,7 +684,7 @@ mkaux_realdft_1d (int N) {
 		e = a->e;
 		for (n=0; n<N/4; ++n)
 			*e++ = cexp(-2*M_PI*I*n/N);
-		a->sub1 = mkaux_dft_1d(N/2);
+		a->sub1 = mkaux_complex_1d(N/2);
 	} else {
 		a->e = NULL;
 		a->sub1 = NULL;
@@ -726,32 +693,9 @@ mkaux_realdft_1d (int N) {
 	return a;
 }
 
-// make aux for one-dimensional inverse real DFT
-struct aux *
-mkaux_irealdft_1d (int N) {
-	struct aux *a;
-	int n;
-	double complex *e;
-	a = malloc(sizeof(struct aux));
-	a->N = N;
-	a->t = NULL;
-	if (N>=4) {
-		a->e = malloc((N/4)*sizeof(double complex));
-		e = a->e;
-		for (n=0; n<N/4; ++n)
-			*e++ = cexp(2*M_PI*I*n/N);
-		a->sub1 = mkaux_idft_1d(N/2);
-	} else {
-		a->e = NULL;
-		a->sub1 = NULL;
-	}
-	a->sub2 = NULL;
-	return a;
-}
-
-// make aux for an one-dimensional Type-2 transform
+// make aux for one-dimensional Type-2 or Type-3 transforms
 static struct aux *
-mkaux_t2_1d (int N) {
+mkaux_t2t3_1d (int N) {
 	struct aux *a;
 	int n;
 	double complex *e;
@@ -767,44 +711,15 @@ mkaux_t2_1d (int N) {
 		a->t = NULL;
 		a->e = NULL;
 	}
-	a->sub1 = mkaux_realdft_1d(N);
+	a->sub1 = mkaux_real_1d(N);
 	a->sub2 = NULL;
 	return a;
 }
 
-// make aux for an any-dimensional Type-2 transform
+// make aux for any-dimensional Type-2 or Type-3 transforms
 struct aux *
-mkaux_t2 (int d, int *n) {
-	return mkaux_gen(d,n,mkaux_t2_1d);
-}
-
-// make aux for an one-dimensional Type-3 transform
-static struct aux *
-mkaux_t3_1d (int N) {
-	struct aux *a;
-	int n;
-	double complex *e;
-	a = malloc(sizeof(struct aux));
-	a->N = N;
-	if (N>=2) {
-		a->t = malloc(N*sizeof(double));
-		a->e = malloc((N/2)*sizeof(double complex));
-		e = a->e;
-		for (n=0; n<N/2; ++n)
-			*e++ = cexp(-2*M_PI*I*n/(4*N));
-	} else {
-		a->t = NULL;
-		a->e = NULL;
-	}
-	a->sub1 = mkaux_irealdft_1d(N);
-	a->sub2 = NULL;
-	return a;
-}
-
-// make aux for an any-dimensional Type-3 transform
-struct aux *
-mkaux_t3 (int d, int *n) {
-	return mkaux_gen(d,n,mkaux_t3_1d);
+mkaux_t2t3 (int d, int *n) {
+	return mkaux_gen(d,n,mkaux_t2t3_1d);
 }
 
 // make aux for an one-dimensional Type-4 transform
@@ -827,7 +742,7 @@ mkaux_t4_1d (int N) {
 		a->t = NULL;
 		a->e = NULL;
 	}
-	a->sub1 = mkaux_dft_1d(N/2);
+	a->sub1 = mkaux_complex_1d(N/2);
 	a->sub2 = NULL;
 	return a;
 }

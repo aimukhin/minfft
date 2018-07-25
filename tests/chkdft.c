@@ -10,7 +10,7 @@ main (void) {
 
 // one-dimensional DFTs
 
-// compare results of one-dimensional transforms with FFTW
+// compare precision of one-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
@@ -34,7 +34,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_dft(1,&N);
+		a = mkaux_complex(1,&N);
 		dft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -59,7 +59,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_idft(1,&N);
+		a = mkaux_complex(1,&N);
 		idft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -82,7 +82,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_realdft_1d(N);
+		a = mkaux_real_1d(N);
 		realdft_1d(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_R2HC,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -120,7 +120,7 @@ main (void) {
 			z[N-n] = x[2*n+1];
 		}
 		// do transforms
-		a = mkaux_irealdft_1d(N);
+		a = mkaux_real_1d(N);
 		irealdft_1d(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_HC2R,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -143,7 +143,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2(1,&N);
+		a = mkaux_t2t3(1,&N);
 		dct2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -166,7 +166,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2(1,&N);
+		a = mkaux_t2t3(1,&N);
 		dst2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -189,7 +189,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t3(1,&N);
+		a = mkaux_t2t3(1,&N);
 		dct3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -212,7 +212,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t3(1,&N);
+		a = mkaux_t2t3(1,&N);
 		dst3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -300,8 +300,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-//		a = mkaux_dft(1,&N);
-//		a = mkaux_idft(1,&N);
+		a = mkaux_complex(1,&N);
 		// do tests
 		T = MINT*MAXBLK/N;
 		s = q = 0.0;
@@ -328,10 +327,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = mkaux_realdft_1d(N);
-//		a = mkaux_irealdft_1d(N);
-//		a = mkaux_t2(1,&N);
-//		a = mkaux_t3(1,&N);
+//		a = mkaux_real_1d(N);
+//		a = mkaux_t2t3(1,&N);
 //		a = mkaux_t4(1,&N);
 		// do tests
 		T = MAXBLK*MINT/N;
@@ -445,7 +442,7 @@ main (void) {
 
 // two-dimensional DFTs
 
-// compare results of two-dimensional transforms with FFTW
+// compare precision of two-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
@@ -470,7 +467,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_dft(2,ns);
+		a = mkaux_complex(2,ns);
 		dft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -496,7 +493,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_idft(2,ns);
+		a = mkaux_complex(2,ns);
 		idft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -520,7 +517,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_t2(2,ns);
+		a = mkaux_t2t3(2,ns);
 		dct2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -544,7 +541,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_t2(2,ns);
+		a = mkaux_t2t3(2,ns);
 		dst2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -568,7 +565,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_t3(2,ns);
+		a = mkaux_t2t3(2,ns);
 		dct3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -592,7 +589,7 @@ main (void) {
 			z[N*N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// do transforms
-		a = mkaux_t3(2,ns);
+		a = mkaux_t2t3(2,ns);
 		dst3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -683,8 +680,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		ns[0]=ns[1]=N;
 		// prepare aux data
-//		a = mkaux_dft(2,ns);
-//		a = mkaux_idft(2,ns);
+		a = mkaux_complex(2,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
 		s = q = 0.0;
@@ -712,8 +708,7 @@ main (void) {
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// prepare aux data
-//		a = mkaux_t2(2,ns);
-//		a = mkaux_t3(2,ns);
+//		a = mkaux_t2t3(2,ns);
 //		a = mkaux_t4(2,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK)/(N*N);
@@ -823,7 +818,7 @@ main (void) {
 
 // three-dimensional DFTs
 
-// compare results of three-dimensional transforms with FFTW
+// compare precision of three-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
@@ -848,7 +843,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_dft(3,ns);
+		a = mkaux_complex(3,ns);
 		dft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -874,7 +869,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_idft(3,ns);
+		a = mkaux_complex(3,ns);
 		idft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -898,7 +893,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_t2(3,ns);
+		a = mkaux_t2t3(3,ns);
 		dct2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -922,7 +917,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_t2(3,ns);
+		a = mkaux_t2t3(3,ns);
 		dst2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -946,7 +941,7 @@ main (void) {
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_t3(3,ns);
+		a = mkaux_t2t3(3,ns);
 		dct3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -970,7 +965,7 @@ main (void) {
 			z[N*N*N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
-		a = mkaux_t3(3,ns);
+		a = mkaux_t2t3(3,ns);
 		dst3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1060,8 +1055,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
 		ns[0]=ns[1]=ns[2]=N;
-//		a = mkaux_dft(3,ns);
-//		a = mkaux_idft(3,ns);
+		a = mkaux_complex(3,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
 		s = q = 0.0;
@@ -1089,8 +1083,7 @@ main (void) {
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=ns[2]=N;
 		// prepare aux data
-//		a = mkaux_t2(3,ns);
-//		a = mkaux_t3(3,ns);
+//		a = mkaux_t2t3(3,ns);
 //		a = mkaux_t4(3,ns);
 		// do tests
 		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
