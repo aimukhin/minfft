@@ -1,4 +1,4 @@
-// DFT library (double-precision version).
+// DFT library.
 // Written by Alexander Mukhin.
 // Public domain.
 
