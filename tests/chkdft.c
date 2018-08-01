@@ -104,10 +104,10 @@ main (void) {
 #if 0
 		// inverse real DFT
 		double *x,*y,*z,*w;
-		x = (double*)malloc(N*sizeof(double));
-		y = (double*)malloc(N*sizeof(double));
-		z = (double*)malloc(N*sizeof(double));
-		w = (double*)malloc(N*sizeof(double));
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		w = malloc(N*sizeof(double));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
@@ -281,15 +281,15 @@ main (void) {
 
 // performance test of one-dimensional transforms
 #if 0
-	const int MINT=10;
-	const int MAXBLK=65536*16;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=65536*16;
+	const int R=10;
 	struct dft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		double complex *x = malloc(N*sizeof(double complex));
@@ -302,7 +302,7 @@ main (void) {
 		// prepare aux data
 		a = mkaux_complex(1,&N);
 		// do tests
-		T = MINT*MAXBLK/N;
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -317,7 +317,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,cabs(y[0]));
 #endif
 #if 0
 		// real transforms
@@ -331,7 +332,7 @@ main (void) {
 //		a = mkaux_t2t3(1,&N);
 //		a = mkaux_t4(1,&N);
 		// do tests
-		T = MAXBLK*MINT/N;
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -352,7 +353,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,y[0]);
 #endif
 		free(x);
 		free(y);
@@ -363,15 +365,15 @@ main (void) {
 // performance test of one-dimensional FFTW
 #if 0
 #include <fftw3.h>
-	const int MINT=10;
-	const int MAXBLK=65536*16;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=65536*16;
+	const int R=10;
 	fftw_plan p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		fftw_complex *x = fftw_malloc(N*sizeof(double complex));
@@ -385,7 +387,7 @@ main (void) {
 //		p = fftw_plan_dft_1d(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
 //		p = fftw_plan_dft_1d(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
-		T = MINT*MAXBLK/N;
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -399,7 +401,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,cabs(y[0]));
 #endif
 #if 0
 		// real transforms
@@ -418,7 +421,7 @@ main (void) {
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
-		T = MAXBLK*MINT/N;
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -432,7 +435,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,y[0]);
 #endif
 		free(x);
 		free(y);
@@ -660,15 +664,15 @@ main (void) {
 
 // performance test of two-dimensional transforms
 #if 0
-	const int MINT=10;
-	const int MAXBLK=1024;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=1024;
+	const int R=10;
 	struct dft_aux *a;
 	int N,n,ns[2];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		double complex *x = malloc(N*N*sizeof(double complex));
@@ -682,7 +686,7 @@ main (void) {
 		// prepare aux data
 		a = mkaux_complex(2,ns);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK)/(N*N);
+		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -711,7 +715,7 @@ main (void) {
 //		a = mkaux_t2t3(2,ns);
 //		a = mkaux_t4(2,ns);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK)/(N*N);
+		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -741,15 +745,15 @@ main (void) {
 // performance test of two-dimensional FFTW
 #if 0
 #include <fftw3.h>
-	const int MINT=10;
-	const int MAXBLK=1024;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=1024;
+	const int R=10;
 	fftw_plan p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		fftw_complex *x = fftw_malloc(N*N*sizeof(fftw_complex));
@@ -763,7 +767,7 @@ main (void) {
 //		p = fftw_plan_dft_2d(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
 //		p = fftw_plan_dft_2d(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK)/(N*N);
+		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -794,7 +798,7 @@ main (void) {
 //		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK)/(N*N);
+		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -1035,15 +1039,15 @@ main (void) {
 
 // performance test of three-dimensional transforms
 #if 0
-	const int MINT=10;
-	const int MAXBLK=128;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=128;
+	const int R=10;
 	struct dft_aux *a;
 	int N,n,ns[3];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		double complex *x = malloc(N*N*N*sizeof(double complex));
@@ -1057,7 +1061,7 @@ main (void) {
 		ns[0]=ns[1]=ns[2]=N;
 		a = mkaux_complex(3,ns);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
+		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -1086,7 +1090,7 @@ main (void) {
 //		a = mkaux_t2t3(3,ns);
 //		a = mkaux_t4(3,ns);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
+		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -1116,15 +1120,15 @@ main (void) {
 // performance test of three-dimensional FFTW
 #if 0
 #include <fftw3.h>
-	const int MINT=10;
-	const int MAXBLK=128;
-	const int R=100; // repeats
+	const int MINT=1;
+	const int MAXN=128;
+	const int R=10;
 	fftw_plan p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
 		fftw_complex *x = fftw_malloc(N*N*N*sizeof(fftw_complex));
@@ -1138,7 +1142,7 @@ main (void) {
 //		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
 //		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
+		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
@@ -1169,7 +1173,7 @@ main (void) {
 //		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
-		T = MINT*(MAXBLK*MAXBLK*MAXBLK)/(N*N*N);
+		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
