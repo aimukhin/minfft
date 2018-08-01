@@ -10,6 +10,11 @@
 
 // *** meta-functions ***
 
+// a pointer to a strided 1d complex transform routine
+typedef
+void (*strided_complex_1d_xform)
+(double complex*,double complex*,int,const struct dft_aux*);
+
 // make a strided any-dimensional complex transform
 // by repeated application of its strided one-dimensional routine
 inline static void
@@ -18,9 +23,7 @@ make_complex_transform (
 	double complex *y, // destination buffer
 	int sy, // stride on y
 	const struct dft_aux *a, // aux data
-	void (*s_1d) \
-	(double complex*,double complex*,int,const struct aux*) // strided 1d xform
-
+	strided_complex_1d_xform s_1d // strided 1d xform routine
 ) {
 	if (a->sub2==NULL)
 		(*s_1d)(x,y,sy,a);
@@ -35,6 +38,11 @@ make_complex_transform (
 	}
 }
 
+// a pointer to a strided 1d real transform routine
+typedef
+void (*strided_real_1d_xform)
+(double*,double*,int,const struct dft_aux*);
+
 // make a strided any-dimensional real transform
 // by repeated application of its strided one-dimensional routine
 inline static void
@@ -43,8 +51,7 @@ make_real_transform (
 	double *y, // destination buffer
 	int sy, // stride on y
 	const struct dft_aux *a, // aux data
-	void (*s_1d) \
-	(double*,double*,int,const struct dft_aux*) // strided 1d xform
+	strided_real_1d_xform s_1d // strided 1d xform routine
 ) {
 	if (a->sub2==NULL)
 		(*s_1d)(x,y,sy,a);
