@@ -18,7 +18,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct aux *a; // aux data
+	struct dft_aux *a; // aux data
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex DFT
@@ -60,7 +60,7 @@ main (void) {
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = mkaux_complex(1,&N);
-		idft(x,y,a);
+		invdft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -121,7 +121,7 @@ main (void) {
 		}
 		// do transforms
 		a = mkaux_real_1d(N);
-		irealdft_1d(x,y,a);
+		invrealdft_1d(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_HC2R,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -284,7 +284,7 @@ main (void) {
 	const int MINT=10;
 	const int MAXBLK=65536*16;
 	const int R=100; // repeats
-	struct aux *a;
+	struct dft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -308,7 +308,7 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				dft(x,y,a);
-//				idft(x,y,a);
+//				invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -337,7 +337,7 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				realdft_1d(x,y,a);
-//				irealdft_1d(x,y,a);
+//				invrealdft_1d(x,y,a);
 //				dct2(x,y,a);
 //				dst2(x,y,a);
 //				dct3(x,y,a);
@@ -450,7 +450,7 @@ main (void) {
 	int N,n,ns[2];
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct aux *a; // aux data
+	struct dft_aux *a; // aux data
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex DFT
@@ -494,7 +494,7 @@ main (void) {
 		ns[0]=ns[1]=N;
 		// do transforms
 		a = mkaux_complex(2,ns);
-		idft(x,y,a);
+		invdft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -663,7 +663,7 @@ main (void) {
 	const int MINT=10;
 	const int MAXBLK=1024;
 	const int R=100; // repeats
-	struct aux *a;
+	struct dft_aux *a;
 	int N,n,ns[2];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -688,7 +688,7 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				dft(x,y,a);
-//				idft(x,y,a);
+//				invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -826,7 +826,7 @@ main (void) {
 	int N,n,ns[3];
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct aux *a; // aux data
+	struct dft_aux *a; // aux data
 	for (N=1; N<=MAXBLK; N*=2) {
 #if 0
 		// complex DFT
@@ -870,7 +870,7 @@ main (void) {
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
 		a = mkaux_complex(3,ns);
-		idft(x,y,a);
+		invdft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -1038,7 +1038,7 @@ main (void) {
 	const int MINT=10;
 	const int MAXBLK=128;
 	const int R=100; // repeats
-	struct aux *a;
+	struct dft_aux *a;
 	int N,n,ns[3];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1063,7 +1063,7 @@ main (void) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 //				dft(x,y,a);
-//				idft(x,y,a);
+//				invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
