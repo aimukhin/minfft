@@ -625,7 +625,7 @@ dst4 (double *x, double *y, const struct dft_aux *a) {
 // make aux structure for any transform of arbitrary dimension
 // using its one-dimensional version
 static struct dft_aux *
-mkaux_gen (int d, int *Ns, struct dft_aux* (*mkaux_1d)(int N)) {
+mkaux_gen (int d, int *Ns, int datasz, struct dft_aux* (*mkaux_1d)(int N)) {
 	struct dft_aux *a;
 	int p; // product of all transform lengths
 	int i; // array index
@@ -637,9 +637,9 @@ mkaux_gen (int d, int *Ns, struct dft_aux* (*mkaux_1d)(int N)) {
 			p *= Ns[i];
 		a = malloc(sizeof(struct dft_aux));
 		a->N = p;
-		a->t = malloc(p*sizeof(double complex));
+		a->t = malloc(p*datasz);
 		a->e = NULL;
-		a->sub1 = mkaux_gen(d-1,Ns,mkaux_1d);
+		a->sub1 = mkaux_gen(d-1,Ns,datasz,mkaux_1d);
 		a->sub2 = (*mkaux_1d)(Ns[d-1]);
 		return a;
 	}
@@ -675,7 +675,7 @@ mkaux_complex_1d (int N) {
 // make aux for any-dimensional forward or inverse complex DFT
 struct dft_aux *
 mkaux_complex (int d, int *Ns) {
-	return mkaux_gen(d,Ns,mkaux_complex_1d);
+	return mkaux_gen(d,Ns,sizeof(double complex),mkaux_complex_1d);
 }
 
 // make aux for one-dimensional forward or inverse real DFT
@@ -727,7 +727,7 @@ mkaux_t2t3_1d (int N) {
 // make aux for any-dimensional Type-2 or Type-3 transforms
 struct dft_aux *
 mkaux_t2t3 (int d, int *Ns) {
-	return mkaux_gen(d,Ns,mkaux_t2t3_1d);
+	return mkaux_gen(d,Ns,sizeof(double),mkaux_t2t3_1d);
 }
 
 // make aux for an one-dimensional Type-4 transform
@@ -758,7 +758,7 @@ mkaux_t4_1d (int N) {
 // make aux for an any-dimensional Type-4 transform
 struct dft_aux *
 mkaux_t4 (int d, int *Ns) {
-	return mkaux_gen(d,Ns,mkaux_t4_1d);
+	return mkaux_gen(d,Ns,sizeof(double),mkaux_t4_1d);
 }
 
 // free aux chain
