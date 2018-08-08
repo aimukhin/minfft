@@ -283,7 +283,7 @@ invdft (double complex *x, double complex *y, const struct dft_aux *a) {
 // *** real transforms ***
 
 // one-dimensional real DFT
-void
+inline static void
 realdft_1d (double *x, double *y, const struct dft_aux *a) {
 	double complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
@@ -321,7 +321,7 @@ realdft_1d (double *x, double *y, const struct dft_aux *a) {
 }
 
 // one-dimensional inverse real DFT
-void
+inline static void
 invrealdft_1d (double *x, double *y, const struct dft_aux *a) {
 	double complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
@@ -679,7 +679,7 @@ mkaux_complex (int d, int *Ns) {
 }
 
 // make aux for one-dimensional forward or inverse real DFT
-struct dft_aux *
+static struct dft_aux *
 mkaux_real_1d (int N) {
 	struct dft_aux *a;
 	int n;

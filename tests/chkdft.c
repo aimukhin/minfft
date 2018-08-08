@@ -71,67 +71,6 @@ main (void) {
 		}
 #endif
 #if 0
-		// real DFT
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
-		// init inputs
-		srand(getpid());
-		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
-		// do transforms
-		a = mkaux_real_1d(N);
-		realdft_1d(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_R2HC,FFTW_ESTIMATE);
-		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N/2; ++n) {
-			d = log10(fabs(y[2*n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
-		if (N>1) {
-			d = log10(fabs(y[1]-w[N/2]));
-			dmax = (d>dmax)?d:dmax;
-		}
-		for (n=1; n<N/2; ++n) {
-			d = log10(fabs(y[2*n+1]-w[N-n]));
-			dmax = (d>dmax)?d:dmax;
-		}
-#endif
-#if 0
-		// inverse real DFT
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
-		// init inputs
-		srand(getpid());
-		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
-		z[0] = x[0];
-		if (N>1)
-			z[N/2] = x[1];
-		for (n=1; n<N/2; ++n) {
-			z[n] = x[2*n];
-			z[N-n] = x[2*n+1];
-		}
-		// do transforms
-		a = mkaux_real_1d(N);
-		invrealdft_1d(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_HC2R,FFTW_ESTIMATE);
-		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
-#endif
-#if 0
 		// DCT-2
 		double *x,*y,*z,*w;
 		x = malloc(N*sizeof(double));
@@ -451,7 +390,6 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = mkaux_real_1d(N);
 //		a = mkaux_t2t3(1,&N);
 //		a = mkaux_t4(1,&N);
 		// do tests
@@ -460,8 +398,6 @@ main (void) {
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				realdft_1d(x,y,a);
-//				invrealdft_1d(x,y,a);
 //				dct2(x,y,a);
 //				dst2(x,y,a);
 //				dct3(x,y,a);
@@ -535,8 +471,6 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_R2HC,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_HC2R,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
 //		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
