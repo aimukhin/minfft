@@ -279,6 +279,129 @@ main (void) {
 	}
 #endif
 
+// compare precision of forward and inverse one-dimensional transforms
+#if 0
+#include <unistd.h>
+	const int MAXBLK=65536*16;
+	int N,n;
+	double d,dmax; // maximum absolute error
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXBLK; N*=2) {
+#if 0
+		// forward and inverse complex DFT
+		double complex *x,*y,*z;
+		x = malloc(N*sizeof(double complex));
+		y = malloc(N*sizeof(double complex));
+		z = malloc(N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+		// do transforms
+		a = mkaux_complex(1,&N);
+		dft(x,y,a);
+		invdft(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(cabs(x[n]-z[n]/N));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-2 and DCT-3
+		double *x,*y,*z;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		a = mkaux_t2t3(1,&N);
+		dct2(x,y,a);
+		dct3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-2 and DST-3
+		double *x,*y,*z;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		a = mkaux_t2t3(1,&N);
+		dst2(x,y,a);
+		dst3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-4
+		double *x,*y,*z;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		a = mkaux_t4(1,&N);
+		dct4(x,y,a);
+		dct4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-4
+		double *x,*y,*z;
+		x = malloc(N*sizeof(double));
+		y = malloc(N*sizeof(double));
+		z = malloc(N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		a = mkaux_t4(1,&N);
+		dst4(x,y,a);
+		dst4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free_aux(a);
+		printf("%8d %g\n",N,dmax);
+	}
+#endif
+
 // performance test of one-dimensional transforms
 #if 0
 	const int MINT=1;
@@ -662,6 +785,134 @@ main (void) {
 	}
 #endif
 
+// compare precision of forward and inverse two-dimensional transforms
+#if 0
+#include <unistd.h>
+	const int MAXBLK=1024;
+	int N,n,ns[2];
+	double d,dmax; // maximum absolute error
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXBLK; N*=2) {
+#if 0
+		// forward and inverse complex DFT
+		double complex *x,*y,*z;
+		x = malloc(N*N*sizeof(double complex));
+		y = malloc(N*N*sizeof(double complex));
+		z = malloc(N*N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n)
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_complex(2,ns);
+		dft(x,y,a);
+		invdft(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(cabs(x[n]-z[n]/(N*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-2 and DCT-3
+		double *x,*y,*z;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t2t3(2,ns);
+		dct2(x,y,a);
+		dct3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N*4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-2 and DST-3
+		double *x,*y,*z;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t2t3(2,ns);
+		dst2(x,y,a);
+		dst3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N*4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-4
+		double *x,*y,*z;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t4(2,ns);
+		dct4(x,y,a);
+		dct4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8*N*8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-4
+		double *x,*y,*z;
+		x = malloc(N*N*sizeof(double));
+		y = malloc(N*N*sizeof(double));
+		z = malloc(N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		ns[0]=ns[1]=N;
+		// do transforms
+		a = mkaux_t4(2,ns);
+		dst4(x,y,a);
+		dst4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8*N*8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free_aux(a);
+		printf("%5d**2 %g\n",N,dmax);
+	}
+#endif
+
 // performance test of two-dimensional transforms
 #if 0
 	const int MINT=1;
@@ -1029,10 +1280,139 @@ main (void) {
 		}
 #endif
 		free(x);
+		free(y);
 		free(z);
 		free(w);
 		free_aux(a);
 		fftw_destroy_plan(p);
+		printf("%5d**3 %g\n",N,dmax);
+	}
+#endif
+
+// compare precision of forward and inverse three-dimensional transforms
+#if 0
+#include <unistd.h>
+	const int MAXBLK=256;
+	int N,n,ns[3];
+	double d,dmax; // maximum absolute error
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXBLK; N*=2) {
+#if 0
+		// forward and inverse complex DFT
+		double complex *x,*y,*z;
+		x = malloc(N*N*N*sizeof(double complex));
+		y = malloc(N*N*N*sizeof(double complex));
+		z = malloc(N*N*N*sizeof(double complex));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n)
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_complex(3,ns);
+		dft(x,y,a);
+		invdft(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(cabs(x[n]-z[n]/(N*N*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-2 and DCT-3
+		double *x,*y,*z;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t2t3(3,ns);
+		dct2(x,y,a);
+		dct3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N*4*N*4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-2 and DST-3
+		double *x,*y,*z;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t2t3(3,ns);
+		dst2(x,y,a);
+		dst3(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(4*N*4*N*4*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DCT-4
+		double *x,*y,*z;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t4(3,ns);
+		dct4(x,y,a);
+		dct4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8L*N*8*N*8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// DST-4
+		double *x,*y,*z;
+		x = malloc(N*N*N*sizeof(double));
+		y = malloc(N*N*N*sizeof(double));
+		z = malloc(N*N*N*sizeof(double));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n)
+			x[n] = (double)rand()/RAND_MAX-0.5;
+		// do transforms
+		ns[0]=ns[1]=ns[2]=N;
+		a = mkaux_t4(3,ns);
+		dst4(x,y,a);
+		dst4(y,z,a);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(fabs(x[n]-z[n]/(8L*N*8*N*8*N)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free_aux(a);
 		printf("%5d**3 %g\n",N,dmax);
 	}
 #endif
