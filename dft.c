@@ -417,7 +417,7 @@ s_dst2_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
-		y[0] = -2*x[0];
+		y[0] = 2*x[0];
 		return;
 	}
 	// reduce to real DFT of length N
@@ -434,12 +434,12 @@ s_dst2_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 		v = t[2*n+1];
 		c = creal(e[n]);
 		s = cimag(e[n]);
-		y[sy*n] = 2*(-u*c+v*s);
-		y[sy*(N-n)] = 2*(v*c+u*s);
+		y[sy*(n-1)] = 2*(-v*c-u*s);
+		y[sy*(N-n-1)] = 2*(u*c-v*s);
 	}
 	// treat boundary cases
-	y[sy*N/2] = -M_SQRT2*t[1];
-	y[0] = -2*t[0];
+	y[sy*(N/2-1)] = M_SQRT2*t[1];
+	y[sy*(N-1)] = 2*t[0];
 }
 
 // strided DST-2 of arbitrary dimension
@@ -464,7 +464,7 @@ s_dct3_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
-		y[0] = 2*x[0];
+		y[0] = x[0];
 		return;
 	}
 	// reduce to inverse real DFT of length N
@@ -474,11 +474,11 @@ s_dct3_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 		v = x[N-n];
 		c = creal(e[n]);
 		s = cimag(e[n]);
-		t[2*n] = 2*(u*c-v*s);
-		t[2*n+1] = 2*(-v*c-u*s);
+		t[2*n] = u*c-v*s;
+		t[2*n+1] = -v*c-u*s;
 	}
-	t[0] = 2*x[0];
-	t[1] = 2*M_SQRT2*x[N/2];
+	t[0] = x[0];
+	t[1] = M_SQRT2*x[N/2];
 	// do inverse real DFT in-place
 	invrealdft_1d(t,t,a->sub1);
 	// recover results
@@ -510,21 +510,21 @@ s_dst3_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
-		y[0] = -2*x[0];
+		y[0] = x[0];
 		return;
 	}
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
 	for (n=1; n<N/2; ++n) {
-		u = x[n];
-		v = x[N-n];
+		u = x[n-1];
+		v = x[N-n-1];
 		c = creal(e[n]);
 		s = cimag(e[n]);
-		t[2*n] = 2*(-u*c+v*s);
-		t[2*n+1] = 2*(v*c+u*s);
+		t[2*n] = v*c-u*s;
+		t[2*n+1] = -u*c-v*s;
 	}
-	t[0] = -2*x[0];
-	t[1] = -2*M_SQRT2*x[N/2];
+	t[0] = x[N-1];
+	t[1] = M_SQRT2*x[N/2-1];
 	// do inverse real DFT in-place
 	invrealdft_1d(t,t,a->sub1);
 	// recover results
@@ -555,13 +555,13 @@ s_dct4_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
-		y[0] = 2*M_SQRT2*x[0];
+		y[0] = M_SQRT2*x[0];
 		return;
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n)
-		t[n] = 2**e++*(x[2*n]+I*x[N-1-2*n]);
+		t[n] = *e++*(x[2*n]+I*x[N-1-2*n]);
 	// do complex DFT in-place
 	dft(t,t,a->sub1);
 	// recover results
@@ -592,13 +592,13 @@ s_dst4_1d (double *x, double *y, int sy, const struct dft_aux *a) {
 	double complex *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
-		y[0] = -2*M_SQRT2*x[0];
+		y[0] = M_SQRT2*x[0];
 		return;
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
 	for (n=0; n<N/2; ++n)
-		t[n] = 2**e++*(x[2*n]-I*x[N-1-2*n]);
+		t[n] = -*e++*(x[2*n]-I*x[N-1-2*n]);
 	// do complex DFT in-place
 	dft(t,t,a->sub1);
 	// recover results

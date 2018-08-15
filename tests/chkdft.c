@@ -112,7 +112,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(-y[N-1-n]-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -135,7 +135,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]/2-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -149,7 +149,7 @@ main (void) {
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = mkaux_t2t3(1,&N);
 		dst3(x,y,a);
@@ -158,7 +158,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(-y[n]/2-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -181,7 +181,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]/2-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -204,7 +204,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(-y[n]/2-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -266,7 +266,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -287,7 +287,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -308,7 +308,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -329,7 +329,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -609,7 +609,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[N*N-1-n]-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -633,7 +633,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]/4-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -647,7 +647,7 @@ main (void) {
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[N*N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		ns[0]=ns[1]=N;
 		// do transforms
 		a = mkaux_t2t3(2,ns);
@@ -657,7 +657,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]/4-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -681,7 +681,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]/4-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -705,7 +705,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]/4-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -769,7 +769,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N*4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -791,7 +791,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N*4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -813,7 +813,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8*N*8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -835,7 +835,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8*N*8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1113,7 +1113,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(-y[N*N*N-1-n]-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1137,7 +1137,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]/8-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1151,7 +1151,7 @@ main (void) {
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[N*N*N-1-n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
 		ns[0]=ns[1]=ns[2]=N;
 		a = mkaux_t2t3(3,ns);
@@ -1161,7 +1161,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(-y[n]/8-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1185,7 +1185,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]/8-w[n]));
+			d = log10(fabs(y[n]-w[n]));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1273,7 +1273,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N*4*N*4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1295,7 +1295,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(4*N*4*N*4*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1317,7 +1317,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8L*N*8*N*8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
@@ -1339,7 +1339,7 @@ main (void) {
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(8L*N*8*N*8*N)));
+			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
 			dmax = (d>dmax)?d:dmax;
 		}
 #endif
