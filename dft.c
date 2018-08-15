@@ -646,7 +646,7 @@ mkaux_gen (int d, int *Ns, int datasz, struct dft_aux* (*mkaux_1d)(int N)) {
 }
 
 // make aux for one-dimensional forward or inverse complex DFT
-static struct dft_aux *
+struct dft_aux *
 mkaux_complex_1d (int N) {
 	struct dft_aux *a;
 	int n;
@@ -678,6 +678,18 @@ mkaux_complex (int d, int *Ns) {
 	return mkaux_gen(d,Ns,sizeof(double complex),mkaux_complex_1d);
 }
 
+// convenience routines for two- and three-dimensional complex DFT
+struct dft_aux *
+mkaux_complex_2d (int N1, int N2) {
+	int Ns[2]={N1,N2};
+	return mkaux_complex(2,Ns);
+}
+struct dft_aux *
+mkaux_complex_3d (int N1, int N2, int N3) {
+	int Ns[3]={N1,N2,N3};
+	return mkaux_complex(3,Ns);
+}
+
 // make aux for one-dimensional forward or inverse real DFT
 static struct dft_aux *
 mkaux_real_1d (int N) {
@@ -702,7 +714,7 @@ mkaux_real_1d (int N) {
 }
 
 // make aux for one-dimensional Type-2 or Type-3 transforms
-static struct dft_aux *
+struct dft_aux *
 mkaux_t2t3_1d (int N) {
 	struct dft_aux *a;
 	int n;
@@ -730,8 +742,20 @@ mkaux_t2t3 (int d, int *Ns) {
 	return mkaux_gen(d,Ns,sizeof(double),mkaux_t2t3_1d);
 }
 
+// convenience routines for two- and three-dimensional Type 2 or 3 transforms
+struct dft_aux *
+mkaux_t2t3_2d (int N1, int N2) {
+	int Ns[2]={N1,N2};
+	return mkaux_t2t3(2,Ns);
+}
+struct dft_aux *
+mkaux_t2t3_3d (int N1, int N2, int N3) {
+	int Ns[3]={N1,N2,N3};
+	return mkaux_t2t3(3,Ns);
+}
+
 // make aux for an one-dimensional Type-4 transform
-static struct dft_aux *
+struct dft_aux *
 mkaux_t4_1d (int N) {
 	struct dft_aux *a;
 	int n;
@@ -759,6 +783,18 @@ mkaux_t4_1d (int N) {
 struct dft_aux *
 mkaux_t4 (int d, int *Ns) {
 	return mkaux_gen(d,Ns,sizeof(double),mkaux_t4_1d);
+}
+
+// convenience routines for two- and three-dimensional Type 4 transforms
+struct dft_aux *
+mkaux_t4_2d (int N1, int N2) {
+	int Ns[2]={N1,N2};
+	return mkaux_t4(2,Ns);
+}
+struct dft_aux *
+mkaux_t4_3d (int N1, int N2, int N3) {
+	int Ns[3]={N1,N2,N3};
+	return mkaux_t4(3,Ns);
 }
 
 // free aux chain
