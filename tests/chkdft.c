@@ -14,12 +14,12 @@ main (void) {
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
-	const int MAXBLK=65536*16;
+	const int MAXN=65536*16;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
 		double complex *x,*y,*z,*w;
@@ -218,14 +218,92 @@ main (void) {
 	}
 #endif
 
+// compare precision of one-dimensional transforms with Kiss FFT
+#if 0
+#include <unistd.h>
+#include "kiss_fft.h"
+	const int MAXN=65536*16;
+	int N,n;
+	double d,dmax; // maximum absolute error
+	kiss_fft_cfg cfg; // Kiss FFT config
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXN; N*=2) {
+#if 0
+		// complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*sizeof(double complex));
+		y = malloc(N*sizeof(double complex));
+		z = malloc(N*sizeof(kiss_fft_cpx));
+		w = malloc(N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_1d(N);
+		dft(x,y,a);
+		cfg = kiss_fft_alloc(N,0,NULL,NULL);
+		kiss_fft(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// inverse complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*sizeof(double complex));
+		y = malloc(N*sizeof(double complex));
+		z = malloc(N*sizeof(kiss_fft_cpx));
+		w = malloc(N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_1d(N);
+		invdft(x,y,a);
+		cfg = kiss_fft_alloc(N,1,NULL,NULL);
+		kiss_fft(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free(w);
+		free_aux(a);
+		free(cfg);
+		printf("%8d %g\n",N,dmax);
+	}
+#endif
+
 // compare precision of forward and inverse one-dimensional transforms
 #if 0
 #include <unistd.h>
-	const int MAXBLK=65536*16;
+	const int MAXN=65536*16;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
 		double complex *x,*y,*z;
@@ -501,18 +579,63 @@ main (void) {
 	}
 #endif
 
+// performance test of one-dimensional Kiss FFT
+#if 0
+#include "kiss_fft.h"
+	const int MINT=1;
+	const int MAXN=65536*16;
+	const int R=10;
+	kiss_fft_cfg cfg;
+	int N,n;
+	int r,T,t;
+	double d,v,s,q,avg,stdd;
+	struct timeval t1,t2;
+	for (N=1; N<=MAXN; N*=2) {
+		// complex transforms
+		kiss_fft_cpx *x = malloc(N*sizeof(kiss_fft_cpx));
+		kiss_fft_cpx *y = malloc(N*sizeof(kiss_fft_cpx));
+		// prepare test vector
+		for (n=0; n<N; ++n) {
+			x[n].r = (double)rand()/RAND_MAX-0.5;
+			x[n].i = (double)rand()/RAND_MAX-0.5;
+		}
+		// prepare config
+//		cfg = kiss_fft_alloc(N,0,NULL,NULL);
+//		cfg = kiss_fft_alloc(N,1,NULL,NULL);
+		// do tests
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
+		s = q = 0.0;
+		for (r=0; r<R; ++r) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+				kiss_fft(cfg,x,y);
+			gettimeofday(&t2,NULL);
+			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
+			v = log2(d/T);
+			s += v;
+			q += v*v;
+		}
+		avg = s/R;
+		stdd = sqrt((q-s*s/R)/(R-1));
+		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+		free(x);
+		free(y);
+		free(cfg);
+#endif
+
 // two-dimensional DFTs
 
 // compare precision of two-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
-	const int MAXBLK=1024;
+	const int MAXN=1024;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
 		double complex *x,*y,*z,*w;
@@ -711,14 +834,94 @@ main (void) {
 	}
 #endif
 
+// compare precision of two-dimensional transforms with Kiss FFT
+#if 0
+#include <unistd.h>
+#include "kiss_fftnd.h"
+	const int MAXN=1024;
+	int N,n,Ns[2];
+	double d,dmax; // maximum absolute error
+	kiss_fftnd_cfg cfg; // Kiss FFT config
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXN; N*=2) {
+#if 0
+		// complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*N*sizeof(double complex));
+		y = malloc(N*N*sizeof(double complex));
+		z = malloc(N*N*sizeof(kiss_fft_cpx));
+		w = malloc(N*N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_2d(N,N);
+		dft(x,y,a);
+		Ns[0] = Ns[1] = N;
+		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
+		kiss_fftnd(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// inverse complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*N*sizeof(double complex));
+		y = malloc(N*N*sizeof(double complex));
+		z = malloc(N*N*sizeof(kiss_fft_cpx));
+		w = malloc(N*N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_2d(N,N);
+		invdft(x,y,a);
+		Ns[0] = Ns[1] = N;
+		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
+		kiss_fftnd(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free(w);
+		free_aux(a);
+		free(cfg);
+		printf("%5d**2 %g\n",N,dmax);
+	}
+#endif
+
 // compare precision of forward and inverse two-dimensional transforms
 #if 0
 #include <unistd.h>
-	const int MAXBLK=1024;
+	const int MAXN=1024;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
 		double complex *x,*y,*z;
@@ -990,18 +1193,65 @@ main (void) {
 	}
 #endif
 
+// performance test of two-dimensional Kiss FFT
+#if 0
+#include "kiss_fftnd.h"
+	const int MINT=1;
+	const int MAXN=1024;
+	const int R=10;
+	kiss_fftnd_cfg cfg;
+	int N,n,Ns[2];
+	int r,T,t;
+	double d,v,s,q,avg,stdd;
+	struct timeval t1,t2;
+	for (N=1; N<=MAXN; N*=2) {
+		// complex transforms
+		kiss_fft_cpx *x = malloc(N*N*sizeof(kiss_fft_cpx));
+		kiss_fft_cpx *y = malloc(N*N*sizeof(kiss_fft_cpx));
+		// prepare test vector
+		for (n=0; n<N*N; ++n) {
+			x[n].r = (double)rand()/RAND_MAX-0.5;
+			x[n].i = (double)rand()/RAND_MAX-0.5;
+		}
+		// prepare config
+		Ns[0] = Ns[1] = N;
+//		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
+//		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
+		// do tests
+		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
+		s = q = 0.0;
+		for (r=0; r<R; ++r) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+				kiss_fftnd(cfg,x,y);
+			gettimeofday(&t2,NULL);
+			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
+			v = log2(d/T);
+			s += v;
+			q += v*v;
+		}
+		avg = s/R;
+		stdd = sqrt((q-s*s/R)/(R-1));
+		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+		free(x);
+		free(y);
+		free(cfg);
+	}
+#endif
+
 // three-dimensional DFTs
 
 // compare precision of three-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
-	const int MAXBLK=256;
+	const int MAXN=128;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
 		double complex *x,*y,*z,*w;
@@ -1200,14 +1450,94 @@ main (void) {
 	}
 #endif
 
+// compare precision of three-dimensional transforms with Kiss FFT
+#if 0
+#include <unistd.h>
+#include "kiss_fftnd.h"
+	const int MAXN=128;
+	int N,n,Ns[3];
+	double d,dmax; // maximum absolute error
+	kiss_fftnd_cfg cfg; // Kiss FFT config
+	struct dft_aux *a; // aux data
+	for (N=1; N<=MAXN; N*=2) {
+#if 0
+		// complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*N*N*sizeof(double complex));
+		y = malloc(N*N*N*sizeof(double complex));
+		z = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		w = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_3d(N,N,N);
+		dft(x,y,a);
+		Ns[0] = Ns[1] = Ns[2] = N;
+		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
+		kiss_fftnd(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+#if 0
+		// inverse complex DFT
+		double complex *x,*y;
+		kiss_fft_cpx *z,*w;
+		x = malloc(N*N*N*sizeof(double complex));
+		y = malloc(N*N*N*sizeof(double complex));
+		z = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		w = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N*N*N; ++n) {
+			x[n] = \
+			(double)rand()/RAND_MAX-0.5+ \
+			I*((double)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = mkaux_complex_3d(N,N,N);
+		invdft(x,y,a);
+		Ns[0] = Ns[1] = Ns[2] = N;
+		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
+		kiss_fftnd(cfg,z,w);
+		// compare results
+		dmax = -HUGE_VAL;
+		for (n=0; n<N*N*N; ++n) {
+			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
+			dmax = (d>dmax)?d:dmax;
+		}
+#endif
+		free(x);
+		free(y);
+		free(z);
+		free(w);
+		free_aux(a);
+		free(cfg);
+		printf("%5d**3 %g\n",N,dmax);
+	}
+#endif
+
 // compare precision of forward and inverse three-dimensional transforms
 #if 0
 #include <unistd.h>
-	const int MAXBLK=256;
+	const int MAXN=256;
 	int N,n;
 	double d,dmax; // maximum absolute error
 	struct dft_aux *a; // aux data
-	for (N=1; N<=MAXBLK; N*=2) {
+	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
 		double complex *x,*y,*z;
@@ -1476,6 +1806,53 @@ main (void) {
 		free(x);
 		free(y);
 		fftw_destroy_plan(p);
+	}
+#endif
+
+// performance test of three-dimensional Kiss FFT
+#if 0
+#include "kiss_fftnd.h"
+	const int MINT=1;
+	const int MAXN=128;
+	const int R=10;
+	kiss_fftnd_cfg cfg;
+	int N,n,Ns[3];
+	int r,T,t;
+	double d,v,s,q,avg,stdd;
+	struct timeval t1,t2;
+	for (N=1; N<=MAXN; N*=2) {
+		// complex transforms
+		kiss_fft_cpx *x = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		kiss_fft_cpx *y = malloc(N*N*N*sizeof(kiss_fft_cpx));
+		// prepare test vector
+		for (n=0; n<N*N*N; ++n) {
+			x[n].r = (double)rand()/RAND_MAX-0.5;
+			x[n].i = (double)rand()/RAND_MAX-0.5;
+		}
+		// prepare config
+		Ns[0] = Ns[1] = Ns[2] = N;
+//		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
+//		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
+		// do tests
+		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
+		s = q = 0.0;
+		for (r=0; r<R; ++r) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+				kiss_fftnd(cfg,x,y);
+			gettimeofday(&t2,NULL);
+			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
+			v = log2(d/T);
+			s += v;
+			q += v*v;
+		}
+		avg = s/R;
+		stdd = sqrt((q-s*s/R)/(R-1));
+		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+		free(x);
+		free(y);
+		free(cfg);
 	}
 #endif
 }
