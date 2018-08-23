@@ -1,293 +1,213 @@
-# fourier
-This is a library of routines for computing most widely used
-1-dimensional discrete Fourier transforms:
+# minfft
+A minimalistic Fast Fourier Transform library.
 
-* Complex DFT and its inverse,
-* DFT of real values and its inverse,
-* Real symmetric transforms (DCT and DST) of types 2, 3, and 4.
+Its goal is to achieve high performance by simple means.
 
-It combines high performance with simplicity of implementation.
+## Overview
+The library provides routines for computing:
+
+* Forward and inverse complex DFT,
+* Real symmetric transforms (DCT and DST) of the types 2, 3, and 4
+
+of any dimensionality and power-of-two lengths.
 
 ## Contents
 - [Interface](#interface)
 - [Transforms](#transforms)
   - [Complex DFT](#complex-dft)
   - [Inverse complex DFT](#inverse-complex-dft)
-  - [Real DFT](#real-dft)
-  - [Inverse real DFT](#inverse-real-dft)
   - [DCT-2](#dct-2)
   - [DST-2](#dst-2)
   - [DCT-3](#dct-3)
   - [DST-3](#dst-3)
   - [DCT-4](#dct-4)
   - [DST-4](#dst-4)
+- [Memory requirements](#memory-requirements)
 - [Implementation details](#implementation-details)
 - [Performance](#performance)
-- [Precision](#precision)
-- [Compliance](#compliance)
-- [Manually optimized versions](#manually-optimized-versions)
+- [Test environment](#test-environment)
+- [Conformance](#conformance)
 - [License](#license)
 
 ## Interface
-All transform functions take four arguments:
+All transform routines take three arguments:
 
-* transform length `N` (a power of 2),
-* pointer to the input vector `x` (its values will be destroyed),
-* pointer to the output vector `y`,
-* pointer to the constant *exponent vector* `e`.
+* a pointer to the input data `x`,
+* a pointer to the output data `y`,
+* a pointer to the *auxiliary structure* `a`.
 
-The exponent vector contains precomputed constants for the given
-transform type and length. The library provides functions for allocating
-and filling the exponent vectors for each transform type.
+The transform routines are capable of both in-place and out-out-place
+operation. In the latter case the input data would be left intact.
 
-All transforms are implemented in two ways - with single and double
-precision. Files `dft.h` and `dft.c` contain double precision versions,
-whereas `dftf.h` and `dftf.c` provide their single-precision
-counterparts.
+An auxiliary structure contains chains of precomputed constants and
+temporary memory buffers required by a transform routine to do its job.
+The library provides means for allocating and filling the auxiliary
+structures for each transform type, dimensionality, and lengths.
+Transform routines do not modify their auxiliary data. Therefore,
+once allocated, an auxiliary structure can be reused as many times as
+needed. Also, the same auxiliary structure fits for both forward and
+inverse transforms of the same kind.
+
+The memory consumed by the auxiliary data can be freed by the
+`minfft_free_aux()` routine.
+
+Here is an example to give you a feeling how the library functions are
+used:
+```C
+	double complex x[N],y[N];
+	struct minfft_aux *a = minfft_aux_dft_1d(N);
+	minfft_dft(x,y,a);
+	minfft_invdft(y,x,a);
+	minfft_free_aux(a);
+```
 
 ## Transforms
-Here goes a description of every transform function (along with its
-exponent vector generator) with a short explanation of what it
-computes.
+Below is a list of transform functions and their auxiliary data
+makers. For convenience, we provide makers for one-, two-, and
+three-dimensional transforms, along with a generic any-dimensional one.
+
+Also we give a formal definition of each transform for an
+one-dimensional case.
+
+Our definitions of transforms, and input and output data format of the
+transform routines, are fully compatible with FFTW.
 
 ### Complex DFT
+![](docs/dft.svg)
 ```C
-void dft (int N, double complex *x, double complex *y, const double complex *e);
-double complex* mkexp_dft (int N);
-
-void dftf (int N, float complex *x, float complex *y, const float complex *e);
-float complex* mkexp_dftf (int N);
+struct minfft_aux* minfft_aux_dft_1d (int N);
+struct minfft_aux* minfft_aux_dft_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_dft_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_dft (int d, int *Ns);
+void minfft_dft (double complex *x, double complex *y, const struct minfft_aux *a);
 ```
-The function computes the complex DFT, defined as usual:
-
-![](docs/dft-def.svg)
 
 ### Inverse complex DFT
+![](docs/invdft.svg)
 ```C
-void idft (int N, double complex *x, double complex *y, const double complex *e);
-double complex* mkexp_idft (int N);
-
-void idftf (int N, float complex *x, float complex *y, const float complex *e);
-float complex* mkexp_idftf (int N);
+struct minfft_aux* minfft_aux_dft_1d (int N);
+struct minfft_aux* minfft_aux_dft_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_dft_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_dft (int d, int *Ns);
+void minfft_invdft (double complex *x, double complex *y, const struct minfft_aux *a);
 ```
-It computes an unnormalized inverse of the complex DFT (that is, N times
-the inverse).
-
-### Real DFT
-```C
-void realdft (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_realdft (int N);
-
-void realdftf (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_realdftf (int N);
-```
-This function computes the complex DFT of N reals. Since only half of N
-complex outputs are independent, only those values are returned, packed
-as follows:
-
-![](docs/realdft-format.svg)
-
-### Inverse real DFT
-```C
-void irealdft (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_irealdft (int N);
-
-void irealdftf (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_irealdftf (int N);
-```
-It's an unnormalized inverse of the real DFT (N times the inverse). It
-expects its input in the same format as `realdft` produces output.
-
-### Real symmetric transforms
-These transforms are actually real DFTs of a source vector extended by
-symmetry to 4 or 8 times its length. Instead of writing down cumbersome
-and unenlightening formulas, we'll show an example of what these
-transforms do with a four-element input vector. Everywhere below, `abcd`
-is the input vector `x`, and `ABCD` is the output vector `y`. Entries
-marked with dots are set to zero.
 
 #### DCT-2
+![](docs/dct2.svg)
 ```C
-void dct2 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t2 (int N);
-
-void dct2f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t2f (int N);
+struct minfft_aux* minfft_aux_t2t3_1d (int N);
+struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+void minfft_dct2 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dct2-def.svg)
 
 #### DST-2
+![](docs/dst2.svg)
 ```C
-void dst2 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t2 (int N);
-
-void dst2f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t2f (int N);
+struct minfft_aux* minfft_aux_t2t3_1d (int N);
+struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+void minfft_dst2 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dst2-def.svg)
-
-*NB: see [compatibility notes](#notes-on-compatibility).*
 
 #### DCT-3
+![](docs/dct3.svg)
 ```C
-void dct3 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t3 (int N);
-
-void dct3f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t3f (int N);
+struct minfft_aux* minfft_aux_t2t3_1d (int N);
+struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+void minfft_dct3 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dct3-def.svg)
-
-*NB: see [compatibility notes](#notes-on-compatibility).*
 
 #### DST-3
+![](docs/dst3.svg)
 ```C
-void dst3 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t3 (int N);
-
-void dst3f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t3f (int N);
+struct minfft_aux* minfft_aux_t2t3_1d (int N);
+struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+void minfft_dst3 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dst3-def.svg)
-
-*NB: see [compatibility notes](#notes-on-compatibility).*
 
 #### DCT-4
+![](docs/dct4.svg)
 ```C
-void dct4 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t4 (int N);
-
-void dct4f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t4f (int N);
+struct minfft_aux* minfft_aux_t4_1d (int N);
+struct minfft_aux* minfft_aux_t4_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t4_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t4 (int d, int *Ns);
+void minfft_dct4 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dct4-def.svg)
-
-*NB: see [compatibility notes](#notes-on-compatibility).*
 
 #### DST-4
+![](docs/dst4.svg)
 ```C
-void dst4 (int N, double *x, double *y, const double complex *e);
-double complex* mkexp_t4 (int N);
-
-void dst4f (int N, float *x, float *y, const float complex *e);
-float complex* mkexp_t4f (int N);
+struct minfft_aux* minfft_aux_t4_1d (int N);
+struct minfft_aux* minfft_aux_t4_2d (int N1, int N2);
+struct minfft_aux* minfft_aux_t4_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_aux_t4 (int d, int *Ns);
+void minfft_dst4 (double *x, double *y, const struct minfft_aux *a);
 ```
-![](docs/dst4-def.svg)
 
-*NB: see [compatibility notes](#notes-on-compatibility).*
+## Memory requirements
+The amounts of memory allocated inside the auxiliary structures of the
+one-dimensional transforms are given below:
 
-#### Notes on compatibility
-Our definitions of real symmetric transforms differ somewhat from the
-commonly used ones. Here is the summary of differences between our
-definitions and those used in FFTW:
+Transform                                | Auxiliary data size
+-----------------------------------------|---------------------
+Complex DFT of length `N`                | `2N` complex numbers
+Type-2 or Type-3 transform of length `N` | `4.5N` real numbers
+Type-4 transform of length `N`           | `6N` real numbers
 
-Transform | Difference
-----------|-----------
-`DCT-2`   | No difference
-`DST-2`   | Reverse order of outputs, our transform differs by constant `-1`
-`DCT-3`   | Our transform differs by constant `2`
-`DST-3`   | Reverse order of inputs, our transform differs by constant `-2`
-`DCT-4`   | Our transform differs by constant `2`
-`DST-4`   | Our transform differs by constant `-2`
+Multi-dimensional transforms use a temporary buffer of the same size as
+the input data. This value is the dominant term in their auxiliary data
+size.
 
 ## Implementation details
-The complex DFT is computed by a split-radix (2/4)
-decimation-in-frequency explicitly recursive fast Fourier transform.
-This method achieves a remarkable balance between performance and
-simplicity, and it behaves particularly cache-friendly, since it refers
-mostly to adjacent memory locations.
+The complex DFT is computed by a split-radix (2/4), decimation in
+frequency, explicitly recursive fast Fourier transform. This method
+achieves a remarkable balance between performance and simplicity, and it
+behaves particularly cache-friendly, since it refers mostly to adjacent
+memory locations.
 
-All the real transforms are reduced eventually to a half-length complex
-transform. Further details are given [here](docs/math-details.md).
+The real transforms are reduced eventually to a half-length complex
+transform.
+
+For each transform, we first implement its one-dimensional,
+out-of-place, input-preserving, sequential input, strided output
+routine. This allows us to compute a multi-dimensional transform by
+repeated application of its one-dimensional routine along each
+dimension.
 
 ## Performance
-These graphs show the execution times of our routines compared with
-those of FFTW. Here our library is compiled with GCC on x86_64. The
-details of the test environment are given [below](#test-environment).
+Below is the plot of the execution times of our one-dimensional complex
+DFT routine compared with FFTW and Kiss FFT. The results are measured
+in microseconds per call.
 
-Timings are measured in microseconds per single call, and are plotted
-with three-sigma error intervals.
-
-### Complex DFT
-![](docs/perf-dft.svg)
-
-### Real DFT
-![](docs/perf-realdft.svg)
-
-For the complex DFTs, our library performs slower than FFTW by 1.5-2
-times (and even more for the single-precision routines). This is not
-surprising, considering the sophistication of FFTW and lack of
-vectorization ability for this particular compiler.
-
-Nevertheless, for the real transforms things begin to look better, and
-our performance approaches to, and sometimes exceeds that of FFTW. One
-can notice two areas where our library performs better - for the very
-small and very big transforms.
-
-### DCT-2
-![](docs/perf-dct2.svg)
-
-### DCT-4
-![](docs/perf-dct4.svg)
-
-For the real symmetric transforms, our library performs at least as well
-as FFTW for most transform sizes, and sometimes much better.
-
-How can that be, provided that our core complex DFT performs worse than
-FFTW? Probably this is because we use more efficient ways of reducing
-these transforms to the core complex one.
-
-## Precision
-This graph shows how much the results of real transforms differ
-from the results obtained by direct computation of the underlying
-complex DFT. Absent data mean the difference is exactly zero.
-
-![](docs/prec.svg)
-
-And this graph shows the distribution of an absolute error within the
-transform results. Here, the DCT-4 of length N=1024 is compared with its
-direct computation by the complex DFT of length 8N:
-
-![](docs/prec-dct4-1024.svg)
-
-The other transforms exhibit the similar uniform error distribution.
+![](docs/perf-dft-1d.svg)
 
 ## Test environment
-The above tests and comparisons are made with the current library source
-compiled with GCC version 7.3.0 on x86_64 with the only optimization
-option `-Ofast`. Therefore, the compiler constrained itself to the SSE2
-instruction set.
+The libraries being compared are built with the GNU C compiler version
+8.1.1 for the x86_64 platform. The only optimization option set is
+`-Ofast`.
 
-The version of FFTW used is 3.3.7-1 packed for Arch Linux x86_64. It
-also makes use of the SSE2 instructions only. FFTW plans are created with
-options FFTW_ESTIMATE and FFTW_DESTROY_INPUT.
+The version of FFTW used is 3.3.8 with all SIMD optimizations disabled,
+since we're trying to compare machine-independent code. FFTW plans are
+created with the option FFTW_ESTIMATE.
+
+The version of Kiss FFT used is 1.3.0.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
-The source data files for the graphs, along with the programs `chkdft.c`
-and `chkdftf.c` used to conduct the above (and many other) tests, are
-available in the `tests` subdirectory.
+The results of many performance and precision tests, along with the
+program used to conduct them, are available in the `tests` subdirectory.
 
-The `chkdft.c` program contains a lot of examples of library functions
-usage, and therefore can serve as a reference.
-
-## Compliance
-The source code complies with the C99 standard.
-
-## Manually optimized versions
-We also provide manually written assembly-language implementations of
-the forward and inverse complex DFTs. Since they are the core transforms
-to which the other transforms are ultimately reduced, it's worth to
-invest some effort in computing them as fast as possible.
-
-The performance of the hand-written code is much better than of the code
-emitted by GCC.
-
-Machine-dependent versions are kept in separate branches:
-
-* For [x86-64 with SSE3](../../tree/x86-64-sse3)
-* For [ARM with VFPv3 and NEON](../../tree/arm-vfpv3-neon)
+## Conformance
+The source code conforms to the C99 standard.
 
 ## License
 The library is in the public domain.
