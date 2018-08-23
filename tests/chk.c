@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../dft.h"
+#include "../minfft.h"
 
 int
 main (void) {
@@ -18,7 +18,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -34,8 +34,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_1d(N);
-		dft(x,y,a);
+		a = minfft_aux_dft_1d(N);
+		minfft_dft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -59,8 +59,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_1d(N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_1d(N);
+		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -82,8 +82,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dct2(x,y,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -105,8 +105,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dst2(x,y,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -128,8 +128,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dct3(x,y,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -151,8 +151,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dst3(x,y,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -174,8 +174,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_1d(N);
-		dct4(x,y,a);
+		a = minfft_aux_t4_1d(N);
+		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -197,8 +197,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_1d(N);
-		dst4(x,y,a);
+		a = minfft_aux_t4_1d(N);
+		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -212,7 +212,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		fftw_destroy_plan(p);
 		printf("%8d %g\n",N,dmax);
 	}
@@ -226,7 +226,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	kiss_fft_cfg cfg; // Kiss FFT config
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -246,8 +246,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_1d(N);
-		dft(x,y,a);
+		a = minfft_aux_dft_1d(N);
+		minfft_dft(x,y,a);
 		cfg = kiss_fft_alloc(N,0,NULL,NULL);
 		kiss_fft(cfg,z,w);
 		// compare results
@@ -275,8 +275,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_1d(N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_1d(N);
+		minfft_invdft(x,y,a);
 		cfg = kiss_fft_alloc(N,1,NULL,NULL);
 		kiss_fft(cfg,z,w);
 		// compare results
@@ -290,7 +290,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		free(cfg);
 		printf("%8d %g\n",N,dmax);
 	}
@@ -302,7 +302,7 @@ main (void) {
 	const int MAXN=65536*16;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -317,9 +317,9 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_1d(N);
-		dft(x,y,a);
-		invdft(y,z,a);
+		a = minfft_aux_dft_1d(N);
+		minfft_dft(x,y,a);
+		minfft_invdft(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
@@ -338,9 +338,9 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dct2(x,y,a);
-		dct3(y,z,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dct2(x,y,a);
+		minfft_dct3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
@@ -359,9 +359,9 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_1d(N);
-		dst2(x,y,a);
-		dst3(y,z,a);
+		a = minfft_aux_t2t3_1d(N);
+		minfft_dst2(x,y,a);
+		minfft_dst3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
@@ -380,9 +380,9 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_1d(N);
-		dct4(x,y,a);
-		dct4(y,z,a);
+		a = minfft_aux_t4_1d(N);
+		minfft_dct4(x,y,a);
+		minfft_dct4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
@@ -401,9 +401,9 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_1d(N);
-		dst4(x,y,a);
-		dst4(y,z,a);
+		a = minfft_aux_t4_1d(N);
+		minfft_dst4(x,y,a);
+		minfft_dst4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N; ++n) {
@@ -414,7 +414,7 @@ main (void) {
 		free(x);
 		free(y);
 		free(z);
-		free_aux(a);
+		minfft_free_aux(a);
 		printf("%8d %g\n",N,dmax);
 	}
 #endif
@@ -424,7 +424,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=65536*16;
 	const int R=10;
-	struct dft_aux *a;
+	struct minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -440,15 +440,15 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = mkaux_complex_1d(N);
+		a = minfft_aux_dft_1d(N);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dft(x,y,a);
-//				invdft(x,y,a);
+//				minfft_dft(x,y,a);
+//				minfft_invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -468,20 +468,20 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = mkaux_t2t3_1d(N);
-//		a = mkaux_t4_1d(N);
+//		a = minfft_aux_t2t3_1d(N);
+//		a = minfft_aux_t4_1d(N);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dct2(x,y,a);
-//				dst2(x,y,a);
-//				dct3(x,y,a);
-//				dst3(x,y,a);
-//				dct4(x,y,a);
-//				dst4(x,y,a);
+//				minfft_dct2(x,y,a);
+//				minfft_dst2(x,y,a);
+//				minfft_dct3(x,y,a);
+//				minfft_dst3(x,y,a);
+//				minfft_dct4(x,y,a);
+//				minfft_dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -495,7 +495,7 @@ main (void) {
 #endif
 		free(x);
 		free(y);
-		free_aux(a);
+		minfft_free_aux(a);
 	}
 #endif
 
@@ -634,7 +634,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -650,8 +650,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_2d(N,N);
-		dft(x,y,a);
+		a = minfft_aux_dft_2d(N,N);
+		minfft_dft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -675,8 +675,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_2d(N,N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_2d(N,N);
+		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -698,8 +698,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dct2(x,y,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -721,8 +721,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dst2(x,y,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -744,8 +744,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dct3(x,y,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -767,8 +767,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dst3(x,y,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -790,8 +790,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_2d(N,N);
-		dct4(x,y,a);
+		a = minfft_aux_t4_2d(N,N);
+		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -813,8 +813,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_2d(N,N);
-		dst4(x,y,a);
+		a = minfft_aux_t4_2d(N,N);
+		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -828,7 +828,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		fftw_destroy_plan(p);
 		printf("%5d**2 %g\n",N,dmax);
 	}
@@ -842,7 +842,7 @@ main (void) {
 	int N,n,Ns[2];
 	double d,dmax; // maximum absolute error
 	kiss_fftnd_cfg cfg; // Kiss FFT config
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -862,8 +862,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_2d(N,N);
-		dft(x,y,a);
+		a = minfft_aux_dft_2d(N,N);
+		minfft_dft(x,y,a);
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
@@ -892,8 +892,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_2d(N,N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_2d(N,N);
+		minfft_invdft(x,y,a);
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
@@ -908,7 +908,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		free(cfg);
 		printf("%5d**2 %g\n",N,dmax);
 	}
@@ -920,7 +920,7 @@ main (void) {
 	const int MAXN=1024;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -935,9 +935,9 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_2d(N,N);
-		dft(x,y,a);
-		invdft(y,z,a);
+		a = minfft_aux_dft_2d(N,N);
+		minfft_dft(x,y,a);
+		minfft_invdft(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
@@ -956,9 +956,9 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dct2(x,y,a);
-		dct3(y,z,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dct2(x,y,a);
+		minfft_dct3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
@@ -977,9 +977,9 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_2d(N,N);
-		dst2(x,y,a);
-		dst3(y,z,a);
+		a = minfft_aux_t2t3_2d(N,N);
+		minfft_dst2(x,y,a);
+		minfft_dst3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
@@ -998,9 +998,9 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_2d(N,N);
-		dct4(x,y,a);
-		dct4(y,z,a);
+		a = minfft_aux_t4_2d(N,N);
+		minfft_dct4(x,y,a);
+		minfft_dct4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
@@ -1019,9 +1019,9 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_2d(N,N);
-		dst4(x,y,a);
-		dst4(y,z,a);
+		a = minfft_aux_t4_2d(N,N);
+		minfft_dst4(x,y,a);
+		minfft_dst4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N; ++n) {
@@ -1032,7 +1032,7 @@ main (void) {
 		free(x);
 		free(y);
 		free(z);
-		free_aux(a);
+		minfft_free_aux(a);
 		printf("%5d**2 %g\n",N,dmax);
 	}
 #endif
@@ -1042,7 +1042,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=1024;
 	const int R=10;
-	struct dft_aux *a;
+	struct minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1058,15 +1058,15 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = mkaux_complex_2d(N,N);
+		a = minfft_aux_dft_2d(N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dft(x,y,a);
-//				invdft(x,y,a);
+//				minfft_dft(x,y,a);
+//				minfft_invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1085,20 +1085,20 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = mkaux_t2t3_2d(N,N);
-//		a = mkaux_t4_2d(N,N);
+//		a = minfft_aux_t2t3_2d(N,N);
+//		a = minfft_aux_t4_2d(N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dct2(x,y,a);
-//				dst2(x,y,a);
-//				dct3(x,y,a);
-//				dst3(x,y,a);
-//				dct4(x,y,a);
-//				dst4(x,y,a);
+//				minfft_dct2(x,y,a);
+//				minfft_dst2(x,y,a);
+//				minfft_dct3(x,y,a);
+//				minfft_dst3(x,y,a);
+//				minfft_dct4(x,y,a);
+//				minfft_dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1111,7 +1111,7 @@ main (void) {
 #endif
 		free(x);
 		free(y);
-		free_aux(a);
+		minfft_free_aux(a);
 	}
 #endif
 
@@ -1250,7 +1250,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -1266,8 +1266,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_3d(N,N,N);
-		dft(x,y,a);
+		a = minfft_aux_dft_3d(N,N,N);
+		minfft_dft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -1291,8 +1291,8 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_3d(N,N,N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_3d(N,N,N);
+		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
 		// compare results
@@ -1314,8 +1314,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dct2(x,y,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1337,8 +1337,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dst2(x,y,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1360,8 +1360,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dct3(x,y,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1383,8 +1383,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dst3(x,y,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1406,8 +1406,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_3d(N,N,N);
-		dct4(x,y,a);
+		a = minfft_aux_t4_3d(N,N,N);
+		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1429,8 +1429,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_3d(N,N,N);
-		dst4(x,y,a);
+		a = minfft_aux_t4_3d(N,N,N);
+		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
 		// compare results
@@ -1444,7 +1444,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		fftw_destroy_plan(p);
 		printf("%5d**3 %g\n",N,dmax);
 	}
@@ -1458,7 +1458,7 @@ main (void) {
 	int N,n,Ns[3];
 	double d,dmax; // maximum absolute error
 	kiss_fftnd_cfg cfg; // Kiss FFT config
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -1478,8 +1478,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_3d(N,N,N);
-		dft(x,y,a);
+		a = minfft_aux_dft_3d(N,N,N);
+		minfft_dft(x,y,a);
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
@@ -1508,8 +1508,8 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = mkaux_complex_3d(N,N,N);
-		invdft(x,y,a);
+		a = minfft_aux_dft_3d(N,N,N);
+		minfft_invdft(x,y,a);
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
@@ -1524,7 +1524,7 @@ main (void) {
 		free(y);
 		free(z);
 		free(w);
-		free_aux(a);
+		minfft_free_aux(a);
 		free(cfg);
 		printf("%5d**3 %g\n",N,dmax);
 	}
@@ -1533,10 +1533,10 @@ main (void) {
 // compare precision of forward and inverse three-dimensional transforms
 #if 0
 #include <unistd.h>
-	const int MAXN=256;
+	const int MAXN=128;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct dft_aux *a; // aux data
+	struct minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -1551,9 +1551,9 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = mkaux_complex_3d(N,N,N);
-		dft(x,y,a);
-		invdft(y,z,a);
+		a = minfft_aux_dft_3d(N,N,N);
+		minfft_dft(x,y,a);
+		minfft_invdft(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
@@ -1572,9 +1572,9 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dct2(x,y,a);
-		dct3(y,z,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dct2(x,y,a);
+		minfft_dct3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
@@ -1593,9 +1593,9 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t2t3_3d(N,N,N);
-		dst2(x,y,a);
-		dst3(y,z,a);
+		a = minfft_aux_t2t3_3d(N,N,N);
+		minfft_dst2(x,y,a);
+		minfft_dst3(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
@@ -1614,9 +1614,9 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_3d(N,N,N);
-		dct4(x,y,a);
-		dct4(y,z,a);
+		a = minfft_aux_t4_3d(N,N,N);
+		minfft_dct4(x,y,a);
+		minfft_dct4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
@@ -1635,9 +1635,9 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = mkaux_t4_3d(N,N,N);
-		dst4(x,y,a);
-		dst4(y,z,a);
+		a = minfft_aux_t4_3d(N,N,N);
+		minfft_dst4(x,y,a);
+		minfft_dst4(y,z,a);
 		// compare results
 		dmax = -HUGE_VAL;
 		for (n=0; n<N*N*N; ++n) {
@@ -1648,7 +1648,7 @@ main (void) {
 		free(x);
 		free(y);
 		free(z);
-		free_aux(a);
+		minfft_free_aux(a);
 		printf("%5d**3 %g\n",N,dmax);
 	}
 #endif
@@ -1658,7 +1658,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=128;
 	const int R=10;
-	struct dft_aux *a;
+	struct minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1674,15 +1674,15 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = mkaux_complex_3d(N,N,N);
+		a = minfft_aux_dft_3d(N,N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dft(x,y,a);
-//				invdft(x,y,a);
+//				minfft_dft(x,y,a);
+//				minfft_invdft(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1701,20 +1701,20 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = mkaux_t2t3_3d(N,N,N);
-//		a = mkaux_t4_3d(N,N,N);
+//		a = minfft_aux_t2t3_3d(N,N,N);
+//		a = minfft_aux_t4_3d(N,N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				dct2(x,y,a);
-//				dst2(x,y,a);
-//				dct3(x,y,a);
-//				dst3(x,y,a);
-//				dct4(x,y,a);
-//				dst4(x,y,a);
+//				minfft_dct2(x,y,a);
+//				minfft_dst2(x,y,a);
+//				minfft_dct3(x,y,a);
+//				minfft_dst3(x,y,a);
+//				minfft_dct4(x,y,a);
+//				minfft_dst4(x,y,a);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1727,7 +1727,7 @@ main (void) {
 #endif
 		free(x);
 		free(y);
-		free_aux(a);
+		minfft_free_aux(a);
 	}
 #endif
 
