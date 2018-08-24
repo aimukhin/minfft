@@ -41,12 +41,11 @@ operation. In the latter case the input data would be left intact.
 
 An auxiliary structure contains chains of precomputed constants and
 temporary memory buffers required by a transform routine to do its job.
-The library provides means for allocating and filling the auxiliary
-structures for each transform type, dimensionality, and lengths.
-Transform routines do not modify their auxiliary data. Therefore,
-once allocated, an auxiliary structure can be reused as many times as
-needed. Also, the same auxiliary structure fits for both forward and
-inverse transforms of the same kind.
+
+The library contains functions for preparing auxiliary structures for
+all transforms. Once prepared, an auxiliary structure can be reused as
+many times as needed. Also, the same auxiliary structure fits for both
+forward and inverse transforms of the same kind.
 
 The memory consumed by the auxiliary data can be freed by the
 `minfft_free_aux()` routine.
@@ -55,9 +54,12 @@ Here is an example to give you a feeling how the library functions are
 used:
 ```C
 	double complex x[N],y[N];
+	// prepare aux structure
 	struct minfft_aux *a = minfft_aux_dft_1d(N);
+	// do transforms
 	minfft_dft(x,y,a);
 	minfft_invdft(y,x,a);
+	// free aux data
 	minfft_free_aux(a);
 ```
 
@@ -66,7 +68,7 @@ Below is a list of transform functions and their auxiliary data
 makers. For convenience, we provide makers for one-, two-, and
 three-dimensional transforms, along with a generic any-dimensional one.
 
-Also we give a formal definition of each transform for an
+Also we give a formal definition of each transform for the
 one-dimensional case.
 
 Our definitions of transforms, and input and output data format of the
@@ -183,7 +185,7 @@ repeated application of its one-dimensional routine along each
 dimension.
 
 ## Performance
-Below is the plot of the execution times of our one-dimensional complex
+Below is a plot of the execution times of our one-dimensional complex
 DFT routine compared with FFTW and Kiss FFT. The results are measured
 in microseconds per call.
 
@@ -194,9 +196,10 @@ The libraries being compared are built with the GNU C compiler version
 8.1.1 for the x86_64 platform. The only optimization option set is
 `-Ofast`.
 
-The version of FFTW used is 3.3.8 with all SIMD optimizations disabled,
-since we're trying to compare machine-independent code. FFTW plans are
-created with the option FFTW_ESTIMATE.
+The version of FFTW used is 3.3.8. To make a fair comparison, we disable
+all its SIMD optimizations, and therefore compare performance of the
+machine-independent code. FFTW plans are created with the option
+FFTW_ESTIMATE.
 
 The version of Kiss FFT used is 1.3.0.
 
