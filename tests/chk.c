@@ -34,7 +34,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -59,7 +59,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -82,7 +82,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -105,7 +105,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -128,7 +128,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -151,7 +151,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -174,7 +174,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_1d(N);
+		a = minfft_mkaux_t4_1d(N);
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -197,7 +197,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_1d(N);
+		a = minfft_mkaux_t4_1d(N);
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -246,7 +246,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		minfft_dft(x,y,a);
 		cfg = kiss_fft_alloc(N,0,NULL,NULL);
 		kiss_fft(cfg,z,w);
@@ -275,7 +275,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		minfft_invdft(x,y,a);
 		cfg = kiss_fft_alloc(N,1,NULL,NULL);
 		kiss_fft(cfg,z,w);
@@ -317,7 +317,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
@@ -338,7 +338,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
@@ -359,7 +359,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_1d(N);
+		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
@@ -380,7 +380,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_1d(N);
+		a = minfft_mkaux_t4_1d(N);
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
@@ -401,7 +401,7 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_1d(N);
+		a = minfft_mkaux_t4_1d(N);
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
@@ -440,7 +440,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = minfft_aux_dft_1d(N);
+		a = minfft_mkaux_dft_1d(N);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
@@ -468,8 +468,8 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_aux_t2t3_1d(N);
-//		a = minfft_aux_t4_1d(N);
+//		a = minfft_mkaux_t2t3_1d(N);
+//		a = minfft_mkaux_t4_1d(N);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
@@ -650,7 +650,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -675,7 +675,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -698,7 +698,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -721,7 +721,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -744,7 +744,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -767,7 +767,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -790,7 +790,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_2d(N,N);
+		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -813,7 +813,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_2d(N,N);
+		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -862,7 +862,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		minfft_dft(x,y,a);
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
@@ -892,7 +892,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		minfft_invdft(x,y,a);
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
@@ -935,7 +935,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
@@ -956,7 +956,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
@@ -977,7 +977,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_2d(N,N);
+		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
@@ -998,7 +998,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_2d(N,N);
+		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
@@ -1019,7 +1019,7 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_2d(N,N);
+		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
@@ -1058,7 +1058,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = minfft_aux_dft_2d(N,N);
+		a = minfft_mkaux_dft_2d(N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
@@ -1085,8 +1085,8 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_aux_t2t3_2d(N,N);
-//		a = minfft_aux_t4_2d(N,N);
+//		a = minfft_mkaux_t2t3_2d(N,N);
+//		a = minfft_mkaux_t4_2d(N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
@@ -1266,7 +1266,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -1291,7 +1291,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
@@ -1314,7 +1314,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1337,7 +1337,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1360,7 +1360,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1383,7 +1383,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1406,7 +1406,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_3d(N,N,N);
+		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1429,7 +1429,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_3d(N,N,N);
+		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
@@ -1478,7 +1478,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_dft(x,y,a);
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
@@ -1508,7 +1508,7 @@ main (void) {
 			z[n].i = cimag(x[n]);
 		}
 		// do transforms
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_invdft(x,y,a);
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
@@ -1551,7 +1551,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// do transforms
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
@@ -1572,7 +1572,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
@@ -1593,7 +1593,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t2t3_3d(N,N,N);
+		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
@@ -1614,7 +1614,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_3d(N,N,N);
+		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
@@ -1635,7 +1635,7 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (double)rand()/RAND_MAX-0.5;
 		// do transforms
-		a = minfft_aux_t4_3d(N,N,N);
+		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
@@ -1674,7 +1674,7 @@ main (void) {
 			(double)rand()/RAND_MAX-0.5+ \
 			I*((double)rand()/RAND_MAX-0.5);
 		// prepare aux data
-		a = minfft_aux_dft_3d(N,N,N);
+		a = minfft_mkaux_dft_3d(N,N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
@@ -1701,8 +1701,8 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] =(double)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_aux_t2t3_3d(N,N,N);
-//		a = minfft_aux_t4_3d(N,N,N);
+//		a = minfft_mkaux_t2t3_3d(N,N,N);
+//		a = minfft_mkaux_t4_3d(N,N,N);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;

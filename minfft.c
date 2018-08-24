@@ -647,7 +647,7 @@ make_aux (int d, int *Ns, int datasz, struct minfft_aux* (*aux_1d)(int N)) {
 
 // make aux for one-dimensional forward or inverse complex DFT
 struct minfft_aux *
-minfft_aux_dft_1d (int N) {
+minfft_mkaux_dft_1d (int N) {
 	struct minfft_aux *a;
 	int n;
 	double complex *e;
@@ -674,25 +674,25 @@ minfft_aux_dft_1d (int N) {
 
 // make aux for any-dimensional forward or inverse complex DFT
 struct minfft_aux *
-minfft_aux_dft (int d, int *Ns) {
-	return make_aux(d,Ns,sizeof(double complex),minfft_aux_dft_1d);
+minfft_mkaux_dft (int d, int *Ns) {
+	return make_aux(d,Ns,sizeof(double complex),minfft_mkaux_dft_1d);
 }
 
 // convenience routines for two- and three-dimensional complex DFT
 struct minfft_aux *
-minfft_aux_dft_2d (int N1, int N2) {
+minfft_mkaux_dft_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
-	return minfft_aux_dft(2,Ns);
+	return minfft_mkaux_dft(2,Ns);
 }
 struct minfft_aux *
-minfft_aux_dft_3d (int N1, int N2, int N3) {
+minfft_mkaux_dft_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
-	return minfft_aux_dft(3,Ns);
+	return minfft_mkaux_dft(3,Ns);
 }
 
 // make aux for one-dimensional forward or inverse real DFT
 static struct minfft_aux *
-aux_real_1d (int N) {
+mkaux_realdft_1d (int N) {
 	struct minfft_aux *a;
 	int n;
 	double complex *e;
@@ -704,7 +704,7 @@ aux_real_1d (int N) {
 		e = a->e;
 		for (n=0; n<N/4; ++n)
 			*e++ = cexp(-2*M_PI*I*n/N);
-		a->sub1 = minfft_aux_dft_1d(N/2);
+		a->sub1 = minfft_mkaux_dft_1d(N/2);
 	} else {
 		a->e = NULL;
 		a->sub1 = NULL;
@@ -715,7 +715,7 @@ aux_real_1d (int N) {
 
 // make aux for one-dimensional Type-2 or Type-3 transforms
 struct minfft_aux *
-minfft_aux_t2t3_1d (int N) {
+minfft_mkaux_t2t3_1d (int N) {
 	struct minfft_aux *a;
 	int n;
 	double complex *e;
@@ -731,32 +731,32 @@ minfft_aux_t2t3_1d (int N) {
 		a->t = NULL;
 		a->e = NULL;
 	}
-	a->sub1 = aux_real_1d(N);
+	a->sub1 = mkaux_realdft_1d(N);
 	a->sub2 = NULL;
 	return a;
 }
 
 // make aux for any-dimensional Type-2 or Type-3 transforms
 struct minfft_aux *
-minfft_aux_t2t3 (int d, int *Ns) {
-	return make_aux(d,Ns,sizeof(double),minfft_aux_t2t3_1d);
+minfft_mkaux_t2t3 (int d, int *Ns) {
+	return make_aux(d,Ns,sizeof(double),minfft_mkaux_t2t3_1d);
 }
 
 // convenience routines for two- and three-dimensional Type 2 or 3 transforms
 struct minfft_aux *
-minfft_aux_t2t3_2d (int N1, int N2) {
+minfft_mkaux_t2t3_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
-	return minfft_aux_t2t3(2,Ns);
+	return minfft_mkaux_t2t3(2,Ns);
 }
 struct minfft_aux *
-minfft_aux_t2t3_3d (int N1, int N2, int N3) {
+minfft_mkaux_t2t3_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
-	return minfft_aux_t2t3(3,Ns);
+	return minfft_mkaux_t2t3(3,Ns);
 }
 
 // make aux for an one-dimensional Type-4 transform
 struct minfft_aux *
-minfft_aux_t4_1d (int N) {
+minfft_mkaux_t4_1d (int N) {
 	struct minfft_aux *a;
 	int n;
 	double complex *e;
@@ -774,27 +774,27 @@ minfft_aux_t4_1d (int N) {
 		a->t = NULL;
 		a->e = NULL;
 	}
-	a->sub1 = minfft_aux_dft_1d(N/2);
+	a->sub1 = minfft_mkaux_dft_1d(N/2);
 	a->sub2 = NULL;
 	return a;
 }
 
 // make aux for an any-dimensional Type-4 transform
 struct minfft_aux *
-minfft_aux_t4 (int d, int *Ns) {
-	return make_aux(d,Ns,sizeof(double),minfft_aux_t4_1d);
+minfft_mkaux_t4 (int d, int *Ns) {
+	return make_aux(d,Ns,sizeof(double),minfft_mkaux_t4_1d);
 }
 
 // convenience routines for two- and three-dimensional Type 4 transforms
 struct minfft_aux *
-minfft_aux_t4_2d (int N1, int N2) {
+minfft_mkaux_t4_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
-	return minfft_aux_t4(2,Ns);
+	return minfft_mkaux_t4(2,Ns);
 }
 struct minfft_aux *
-minfft_aux_t4_3d (int N1, int N2, int N3) {
+minfft_mkaux_t4_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
-	return minfft_aux_t4(3,Ns);
+	return minfft_mkaux_t4(3,Ns);
 }
 
 // free aux chain

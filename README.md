@@ -55,7 +55,7 @@ used:
 ```C
 	double complex x[N],y[N];
 	// prepare aux structure
-	struct minfft_aux *a = minfft_aux_dft_1d(N);
+	struct minfft_aux *a = minfft_mkaux_dft_1d(N);
 	// do transforms
 	minfft_dft(x,y,a);
 	minfft_invdft(y,x,a);
@@ -77,80 +77,80 @@ transform routines, are fully compatible with FFTW.
 ### Complex DFT
 ![](docs/dft.svg)
 ```C
-struct minfft_aux* minfft_aux_dft_1d (int N);
-struct minfft_aux* minfft_aux_dft_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_dft_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_dft (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_dft_1d (int N);
+struct minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_dft (int d, int *Ns);
 void minfft_dft (double complex *x, double complex *y, const struct minfft_aux *a);
 ```
 
 ### Inverse complex DFT
 ![](docs/invdft.svg)
 ```C
-struct minfft_aux* minfft_aux_dft_1d (int N);
-struct minfft_aux* minfft_aux_dft_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_dft_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_dft (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_dft_1d (int N);
+struct minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_dft (int d, int *Ns);
 void minfft_invdft (double complex *x, double complex *y, const struct minfft_aux *a);
 ```
 
 #### DCT-2
 ![](docs/dct2.svg)
 ```C
-struct minfft_aux* minfft_aux_t2t3_1d (int N);
-struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
+struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dct2 (double *x, double *y, const struct minfft_aux *a);
 ```
 
 #### DST-2
 ![](docs/dst2.svg)
 ```C
-struct minfft_aux* minfft_aux_t2t3_1d (int N);
-struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
+struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dst2 (double *x, double *y, const struct minfft_aux *a);
 ```
 
 #### DCT-3
 ![](docs/dct3.svg)
 ```C
-struct minfft_aux* minfft_aux_t2t3_1d (int N);
-struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
+struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dct3 (double *x, double *y, const struct minfft_aux *a);
 ```
 
 #### DST-3
 ![](docs/dst3.svg)
 ```C
-struct minfft_aux* minfft_aux_t2t3_1d (int N);
-struct minfft_aux* minfft_aux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t2t3 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
+struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dst3 (double *x, double *y, const struct minfft_aux *a);
 ```
 
 #### DCT-4
 ![](docs/dct4.svg)
 ```C
-struct minfft_aux* minfft_aux_t4_1d (int N);
-struct minfft_aux* minfft_aux_t4_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t4_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t4 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t4_1d (int N);
+struct minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
 void minfft_dct4 (double *x, double *y, const struct minfft_aux *a);
 ```
 
 #### DST-4
 ![](docs/dst4.svg)
 ```C
-struct minfft_aux* minfft_aux_t4_1d (int N);
-struct minfft_aux* minfft_aux_t4_2d (int N1, int N2);
-struct minfft_aux* minfft_aux_t4_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_aux_t4 (int d, int *Ns);
+struct minfft_aux* minfft_mkaux_t4_1d (int N);
+struct minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
+struct minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
+struct minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
 void minfft_dst4 (double *x, double *y, const struct minfft_aux *a);
 ```
 
