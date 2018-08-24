@@ -18,7 +18,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -226,7 +226,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	kiss_fft_cfg cfg; // Kiss FFT config
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -302,7 +302,7 @@ main (void) {
 	const int MAXN=65536*16;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -424,7 +424,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=65536*16;
 	const int R=10;
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -634,7 +634,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -842,7 +842,7 @@ main (void) {
 	int N,n,Ns[2];
 	double d,dmax; // maximum absolute error
 	kiss_fftnd_cfg cfg; // Kiss FFT config
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -920,7 +920,7 @@ main (void) {
 	const int MAXN=1024;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -1042,7 +1042,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=1024;
 	const int R=10;
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1250,7 +1250,7 @@ main (void) {
 	int N,n;
 	double d,dmax; // maximum absolute error
 	fftw_plan p; // plan
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -1458,7 +1458,7 @@ main (void) {
 	int N,n,Ns[3];
 	double d,dmax; // maximum absolute error
 	kiss_fftnd_cfg cfg; // Kiss FFT config
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
@@ -1536,7 +1536,7 @@ main (void) {
 	const int MAXN=128;
 	int N,n;
 	double d,dmax; // maximum absolute error
-	struct minfft_aux *a; // aux data
+	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
@@ -1658,7 +1658,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=128;
 	const int R=10;
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;

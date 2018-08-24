@@ -13,7 +13,7 @@
 // a pointer to a strided 1d complex transform routine
 typedef
 void (*strided_complex_1d_xform)
-(double complex*,double complex*,int,const struct minfft_aux*);
+(double complex*,double complex*,int,const minfft_aux*);
 
 // make a strided any-dimensional complex transform
 // by repeated application of its strided one-dimensional routine
@@ -22,7 +22,7 @@ make_complex_transform (
 	double complex *x, // source data
 	double complex *y, // destination buffer
 	int sy, // stride on y
-	const struct minfft_aux *a, // aux data
+	const minfft_aux *a, // aux data
 	strided_complex_1d_xform s_1d // strided 1d xform routine
 ) {
 	if (a->sub2==NULL)
@@ -41,7 +41,7 @@ make_complex_transform (
 // a pointer to a strided 1d real transform routine
 typedef
 void (*strided_real_1d_xform)
-(double*,double*,int,const struct minfft_aux*);
+(double*,double*,int,const minfft_aux*);
 
 // make a strided any-dimensional real transform
 // by repeated application of its strided one-dimensional routine
@@ -50,7 +50,7 @@ make_real_transform (
 	double *x, // source data
 	double *y, // destination buffer
 	int sy, // stride on y
-	const struct minfft_aux *a, // aux data
+	const minfft_aux *a, // aux data
 	strided_real_1d_xform s_1d // strided 1d xform routine
 ) {
 	if (a->sub2==NULL)
@@ -158,19 +158,19 @@ rs_dft_1d (
 
 // strided one-dimensional DFT
 inline static void
-s_dft_1d (double complex *x, double complex *y, int sy, const struct minfft_aux *a) {
+s_dft_1d (double complex *x, double complex *y, int sy, const minfft_aux *a) {
 	rs_dft_1d(a->N,x,a->t,y,sy,a->e);
 }
 
 // strided DFT of arbitrary dimension
 inline static void
-s_dft (double complex *x, double complex *y, int sy, const struct minfft_aux *a) {
+s_dft (double complex *x, double complex *y, int sy, const minfft_aux *a) {
 	make_complex_transform(x,y,sy,a,s_dft_1d);
 }
 
 // user interface
 void
-minfft_dft (double complex *x, double complex *y, const struct minfft_aux *a) {
+minfft_dft (double complex *x, double complex *y, const minfft_aux *a) {
 	s_dft(x,y,1,a);
 }
 
@@ -264,19 +264,19 @@ rs_invdft_1d (
 
 // strided one-dimensional inverse DFT
 inline static void
-s_invdft_1d (double complex *x, double complex *y, int sy, const struct minfft_aux *a) {
+s_invdft_1d (double complex *x, double complex *y, int sy, const minfft_aux *a) {
 	rs_invdft_1d(a->N,x,a->t,y,sy,a->e);
 }
 
 // strided inverse DFT of arbitrary dimension
 inline static void
-s_invdft (double complex *x, double complex *y, int sy, const struct minfft_aux *a) {
+s_invdft (double complex *x, double complex *y, int sy, const minfft_aux *a) {
 	make_complex_transform(x,y,sy,a,s_invdft_1d);
 }
 
 // user interface
 void
-minfft_invdft (double complex *x, double complex *y, const struct minfft_aux *a) {
+minfft_invdft (double complex *x, double complex *y, const minfft_aux *a) {
 	s_invdft(x,y,1,a);
 }
 
@@ -284,7 +284,7 @@ minfft_invdft (double complex *x, double complex *y, const struct minfft_aux *a)
 
 // one-dimensional real DFT
 inline static void
-realdft_1d (double *x, double *y, const struct minfft_aux *a) {
+realdft_1d (double *x, double *y, const minfft_aux *a) {
 	double complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
 	double complex u,v; // temporary values
@@ -322,7 +322,7 @@ realdft_1d (double *x, double *y, const struct minfft_aux *a) {
 
 // one-dimensional inverse real DFT
 inline static void
-invrealdft_1d (double *x, double *y, const struct minfft_aux *a) {
+invrealdft_1d (double *x, double *y, const minfft_aux *a) {
 	double complex *z,*w; // real vectors viewed as complex ones
 	int n; // counter
 	double complex u,v; // temporary values
@@ -362,7 +362,7 @@ invrealdft_1d (double *x, double *y, const struct minfft_aux *a) {
 
 // strided one-dimensional DCT-2
 inline static void
-s_dct2_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct2_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
 	int N=a->N; // transform length
@@ -397,19 +397,19 @@ s_dct2_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DCT-2 of arbitrary dimension
 inline static void
-s_dct2 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct2 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dct2_1d);
 }
 
 // user interface
 void
-minfft_dct2 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dct2 (double *x, double *y, const minfft_aux *a) {
 	s_dct2(x,y,1,a);
 }
 
 // strided one-dimensional DST-2
 inline static void
-s_dst2_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst2_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
 	int N=a->N; // transform length
@@ -444,19 +444,19 @@ s_dst2_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DST-2 of arbitrary dimension
 inline static void
-s_dst2 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst2 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dst2_1d);
 }
 
 // user interface
 void
-minfft_dst2 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dst2 (double *x, double *y, const minfft_aux *a) {
 	s_dst2(x,y,1,a);
 }
 
 // strided one-dimensional DCT-3
 inline static void
-s_dct3_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct3_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
 	int N=a->N; // transform length
@@ -490,19 +490,19 @@ s_dct3_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DCT-3 of arbitrary dimension
 inline static void
-s_dct3 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct3 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dct3_1d);
 }
 
 // user interface
 void
-minfft_dct3 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dct3 (double *x, double *y, const minfft_aux *a) {
 	s_dct3(x,y,1,a);
 }
 
 // strided one-dimensional DST-3
 inline static void
-s_dst3_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst3_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	double c,s,u,v; // temporary values
 	int N=a->N; // transform length
@@ -536,19 +536,19 @@ s_dst3_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DST-3 of arbitrary dimension
 inline static void
-s_dst3 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst3 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dst3_1d);
 }
 
 // user interface
 void
-minfft_dst3 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dst3 (double *x, double *y, const minfft_aux *a) {
 	s_dst3(x,y,1,a);
 }
 
 // strided one-dimensional DCT-4
 inline static void
-s_dct4_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct4_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	int N=a->N; // transform length
 	double complex *t=a->t; // temporary buffer
@@ -573,19 +573,19 @@ s_dct4_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DCT-4 of arbitrary dimension
 inline static void
-s_dct4 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dct4 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dct4_1d);
 }
 
 // user interface
 void
-minfft_dct4 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dct4 (double *x, double *y, const minfft_aux *a) {
 	s_dct4(x,y,1,a);
 }
 
 // strided one-dimensional DST-4
 inline static void
-s_dst4_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst4_1d (double *x, double *y, int sy, const minfft_aux *a) {
 	int n; // counter
 	int N=a->N; // transform length
 	double complex *t=a->t; // temporary buffer
@@ -610,23 +610,23 @@ s_dst4_1d (double *x, double *y, int sy, const struct minfft_aux *a) {
 
 // strided DST-4 of arbitrary dimension
 inline static void
-s_dst4 (double *x, double *y, int sy, const struct minfft_aux *a) {
+s_dst4 (double *x, double *y, int sy, const minfft_aux *a) {
 	make_real_transform(x,y,sy,a,s_dst4_1d);
 }
 
 // user interface
 void
-minfft_dst4 (double *x, double *y, const struct minfft_aux *a) {
+minfft_dst4 (double *x, double *y, const minfft_aux *a) {
 	s_dst4(x,y,1,a);
 }
 
-// *** making of aux structures ***
+// *** making of aux data ***
 
-// make aux structure for any transform of arbitrary dimension
+// make aux data for any transform of arbitrary dimension
 // using its one-dimensional version
-static struct minfft_aux *
-make_aux (int d, int *Ns, int datasz, struct minfft_aux* (*aux_1d)(int N)) {
-	struct minfft_aux *a;
+static minfft_aux*
+make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
+	minfft_aux *a;
 	int p; // product of all transform lengths
 	int i; // array index
 	if (d==1)
@@ -635,7 +635,7 @@ make_aux (int d, int *Ns, int datasz, struct minfft_aux* (*aux_1d)(int N)) {
 		p = 1;
 		for (i=0; i<d; ++i)
 			p *= Ns[i];
-		a = malloc(sizeof(struct minfft_aux));
+		a = malloc(sizeof(minfft_aux));
 		a->N = p;
 		a->t = malloc(p*datasz);
 		a->e = NULL;
@@ -645,13 +645,13 @@ make_aux (int d, int *Ns, int datasz, struct minfft_aux* (*aux_1d)(int N)) {
 	}
 }
 
-// make aux for one-dimensional forward or inverse complex DFT
-struct minfft_aux *
+// make aux data for one-dimensional forward or inverse complex DFT
+minfft_aux*
 minfft_mkaux_dft_1d (int N) {
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int n;
 	double complex *e;
-	a = malloc(sizeof(struct minfft_aux));
+	a = malloc(sizeof(minfft_aux));
 	a->N = N;
 	if (N>=16) {
 		a->t = malloc(N*sizeof(double complex));
@@ -672,31 +672,31 @@ minfft_mkaux_dft_1d (int N) {
 	return a;
 }
 
-// make aux for any-dimensional forward or inverse complex DFT
-struct minfft_aux *
+// make aux data for any-dimensional forward or inverse complex DFT
+minfft_aux*
 minfft_mkaux_dft (int d, int *Ns) {
 	return make_aux(d,Ns,sizeof(double complex),minfft_mkaux_dft_1d);
 }
 
 // convenience routines for two- and three-dimensional complex DFT
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_dft_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
 	return minfft_mkaux_dft(2,Ns);
 }
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_dft_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
 	return minfft_mkaux_dft(3,Ns);
 }
 
-// make aux for one-dimensional forward or inverse real DFT
-static struct minfft_aux *
+// make aux data for one-dimensional forward or inverse real DFT
+static minfft_aux*
 mkaux_realdft_1d (int N) {
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int n;
 	double complex *e;
-	a = malloc(sizeof(struct minfft_aux));
+	a = malloc(sizeof(minfft_aux));
 	a->N = N;
 	a->t = NULL;
 	if (N>=4) {
@@ -713,13 +713,13 @@ mkaux_realdft_1d (int N) {
 	return a;
 }
 
-// make aux for one-dimensional Type-2 or Type-3 transforms
-struct minfft_aux *
+// make aux data for one-dimensional Type-2 or Type-3 transforms
+minfft_aux*
 minfft_mkaux_t2t3_1d (int N) {
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int n;
 	double complex *e;
-	a = malloc(sizeof(struct minfft_aux));
+	a = malloc(sizeof(minfft_aux));
 	a->N = N;
 	if (N>=2) {
 		a->t = malloc(N*sizeof(double));
@@ -736,31 +736,31 @@ minfft_mkaux_t2t3_1d (int N) {
 	return a;
 }
 
-// make aux for any-dimensional Type-2 or Type-3 transforms
-struct minfft_aux *
+// make aux data for any-dimensional Type-2 or Type-3 transforms
+minfft_aux*
 minfft_mkaux_t2t3 (int d, int *Ns) {
 	return make_aux(d,Ns,sizeof(double),minfft_mkaux_t2t3_1d);
 }
 
 // convenience routines for two- and three-dimensional Type 2 or 3 transforms
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_t2t3_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
 	return minfft_mkaux_t2t3(2,Ns);
 }
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_t2t3_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
 	return minfft_mkaux_t2t3(3,Ns);
 }
 
-// make aux for an one-dimensional Type-4 transform
-struct minfft_aux *
+// make aux data for an one-dimensional Type-4 transform
+minfft_aux*
 minfft_mkaux_t4_1d (int N) {
-	struct minfft_aux *a;
+	minfft_aux *a;
 	int n;
 	double complex *e;
-	a = malloc(sizeof(struct minfft_aux));
+	a = malloc(sizeof(minfft_aux));
 	a->N = N;
 	if (N>=2) {
 		a->t = malloc((N/2)*sizeof(double complex));
@@ -779,19 +779,19 @@ minfft_mkaux_t4_1d (int N) {
 	return a;
 }
 
-// make aux for an any-dimensional Type-4 transform
-struct minfft_aux *
+// make aux data for an any-dimensional Type-4 transform
+minfft_aux*
 minfft_mkaux_t4 (int d, int *Ns) {
 	return make_aux(d,Ns,sizeof(double),minfft_mkaux_t4_1d);
 }
 
 // convenience routines for two- and three-dimensional Type 4 transforms
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_t4_2d (int N1, int N2) {
 	int Ns[2]={N1,N2};
 	return minfft_mkaux_t4(2,Ns);
 }
-struct minfft_aux *
+minfft_aux*
 minfft_mkaux_t4_3d (int N1, int N2, int N3) {
 	int Ns[3]={N1,N2,N3};
 	return minfft_mkaux_t4(3,Ns);
@@ -799,7 +799,7 @@ minfft_mkaux_t4_3d (int N1, int N2, int N3) {
 
 // free aux chain
 void
-minfft_free_aux (struct minfft_aux *a) {
+minfft_free_aux (minfft_aux *a) {
 	if (a->t)
 		free(a->t);
 	if (a->e)

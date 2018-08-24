@@ -22,6 +22,7 @@ of any dimensionality and power-of-two lengths.
   - [DST-3](#dst-3)
   - [DCT-4](#dct-4)
   - [DST-4](#dst-4)
+- [Freeing auxiliary data](#freeing-auxiliary-data)
 - [Memory requirements](#memory-requirements)
 - [Implementation details](#implementation-details)
 - [Performance](#performance)
@@ -34,28 +35,23 @@ All transform routines take three arguments:
 
 * a pointer to the input data `x`,
 * a pointer to the output data `y`,
-* a pointer to the *auxiliary structure* `a`.
+* a pointer to the auxiliary data `a`.
 
 The transform routines are capable of both in-place and out-out-place
 operation. In the latter case the input data would be left intact.
 
-An auxiliary structure contains chains of precomputed constants and
+Auxiliary data contain chains of precomputed constants and
 temporary memory buffers required by a transform routine to do its job.
-
-The library contains functions for preparing auxiliary structures for
-all transforms. Once prepared, an auxiliary structure can be reused as
-many times as needed. Also, the same auxiliary structure fits for both
-forward and inverse transforms of the same kind.
-
-The memory consumed by the auxiliary data can be freed by the
-`minfft_free_aux()` routine.
+Once prepared, the auxiliary data can be reused as many times as
+needed. Also, the same auxiliary data fit for both forward and
+inverse transforms of the same kind.
 
 Here is an example to give you a feeling how the library functions are
 used:
 ```C
 	double complex x[N],y[N];
-	// prepare aux structure
-	struct minfft_aux *a = minfft_mkaux_dft_1d(N);
+	// prepare aux data
+	minfft_aux *a = minfft_mkaux_dft_1d(N);
 	// do transforms
 	minfft_dft(x,y,a);
 	minfft_invdft(y,x,a);
@@ -77,85 +73,92 @@ transform routines, are fully compatible with FFTW.
 ### Complex DFT
 ![](docs/dft.svg)
 ```C
-struct minfft_aux* minfft_mkaux_dft_1d (int N);
-struct minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_dft (int d, int *Ns);
-void minfft_dft (double complex *x, double complex *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_dft_1d (int N);
+minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_dft (int d, int *Ns);
+void minfft_dft (double complex *x, double complex *y, const minfft_aux *a);
 ```
 
 ### Inverse complex DFT
 ![](docs/invdft.svg)
 ```C
-struct minfft_aux* minfft_mkaux_dft_1d (int N);
-struct minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_dft (int d, int *Ns);
-void minfft_invdft (double complex *x, double complex *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_dft_1d (int N);
+minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_dft (int d, int *Ns);
+void minfft_invdft (double complex *x, double complex *y, const minfft_aux *a);
 ```
 
 #### DCT-2
 ![](docs/dct2.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
-struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dct2 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t2t3_1d (int N);
+minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
+void minfft_dct2 (double *x, double *y, const minfft_aux *a);
 ```
 
 #### DST-2
 ![](docs/dst2.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
-struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dst2 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t2t3_1d (int N);
+minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
+void minfft_dst2 (double *x, double *y, const minfft_aux *a);
 ```
 
 #### DCT-3
 ![](docs/dct3.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
-struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dct3 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t2t3_1d (int N);
+minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
+void minfft_dct3 (double *x, double *y, const minfft_aux *a);
 ```
 
 #### DST-3
 ![](docs/dst3.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t2t3_1d (int N);
-struct minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dst3 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t2t3_1d (int N);
+minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
+void minfft_dst3 (double *x, double *y, const minfft_aux *a);
 ```
 
 #### DCT-4
 ![](docs/dct4.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t4_1d (int N);
-struct minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
-void minfft_dct4 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t4_1d (int N);
+minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
+void minfft_dct4 (double *x, double *y, const minfft_aux *a);
 ```
 
 #### DST-4
 ![](docs/dst4.svg)
 ```C
-struct minfft_aux* minfft_mkaux_t4_1d (int N);
-struct minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
-struct minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
-struct minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
-void minfft_dst4 (double *x, double *y, const struct minfft_aux *a);
+minfft_aux* minfft_mkaux_t4_1d (int N);
+minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
+void minfft_dst4 (double *x, double *y, const minfft_aux *a);
+```
+
+## Freeing auxiliary data
+If not needed anymore, the memory consumed by the auxiliary data can
+be freed by the `minfft_free_aux()` routine:
+```C
+void minfft_free_aux (minfft_aux *a);
 ```
 
 ## Memory requirements
-The amounts of memory allocated inside the auxiliary structures of the
+The amounts of memory allocated for the auxiliary data of the
 one-dimensional transforms are given below:
 
 Transform                                | Auxiliary data size
