@@ -1,13 +1,13 @@
 # minfft
 A minimalistic Fast Fourier Transform library.
 
-Its goal is to achieve high performance by simple means.
+It achieves high performance by simple means.
 
 ## Overview
-The library provides routines for computing:
+The library provides routines for computing
 
 * Forward and inverse complex DFT,
-* Real symmetric transforms (DCT and DST) of the types 2, 3, and 4
+* Real symmetric transforms (DCT and DST) of the types 2, 3, 4
 
 of any dimensionality and power-of-two lengths.
 
@@ -37,16 +37,16 @@ All transform routines take three arguments:
 * a pointer to the output data `y`,
 * a pointer to the auxiliary data `a`.
 
-The transform routines are capable of both in-place and out-out-place
+The transform routines are capable of both in-place and out-of-place
 operation. In the latter case the input data would be left intact.
 
-Auxiliary data contain chains of precomputed constants and
-temporary memory buffers required by a transform routine to do its job.
-Once prepared, the auxiliary data can be reused as many times as
-needed. Also, the same auxiliary data fit for both forward and
-inverse transforms of the same kind.
+Auxiliary data contain chains of precomputed constants and temporary
+memory buffers, required by a transform routine to do its job. Once
+prepared, the auxiliary data can be reused as many times as needed.
+Also, the same auxiliary data fit for both forward and inverse
+transforms of the same kind.
 
-Here is an example to give you a feeling how the library functions are
+Here is an example to give you an idea how the library functions are
 used:
 ```C
 	double complex x[N],y[N];
@@ -61,7 +61,7 @@ used:
 
 ## Transforms
 Below is a list of transform functions and their auxiliary data
-makers. For convenience, we provide makers for one-, two-, and
+makers. For convenience, we provide makers for one-, two- and
 three-dimensional transforms, along with a generic any-dimensional one.
 
 Also we give a formal definition of each transform for the
@@ -163,9 +163,9 @@ one-dimensional transforms are given below:
 
 Transform                                | Auxiliary data size
 -----------------------------------------|---------------------
-Complex DFT of length `N`                | `2N` complex numbers
-Type-2 or Type-3 transform of length `N` | `4.5N` real numbers
-Type-4 transform of length `N`           | `6N` real numbers
+Complex DFT of length `N`                | `2N` complex doubles
+Type-2 or Type-3 transform of length `N` | `4.5N` doubles
+Type-4 transform of length `N`           | `6N` doubles
 
 Multi-dimensional transforms use a temporary buffer of the same size as
 the input data. This value is the dominant term in their auxiliary data
@@ -189,7 +189,7 @@ dimension.
 
 ## Performance
 Below is a plot of the execution times of our one-dimensional complex
-DFT routine compared with FFTW and Kiss FFT. The results are measured
+DFT routine, compared with FFTW and Kiss FFT. The results are measured
 in microseconds per call.
 
 ![](docs/perf-dft-1d.svg)
