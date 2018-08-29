@@ -10,13 +10,13 @@ main (void) {
 
 // one-dimensional DFTs
 
-// compare precision of one-dimensional transforms with FFTW
+// compare results of one-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	fftw_plan p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -38,12 +38,6 @@ main (void) {
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -63,12 +57,6 @@ main (void) {
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-2
@@ -86,12 +74,6 @@ main (void) {
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-2
@@ -109,12 +91,6 @@ main (void) {
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-3
@@ -132,12 +108,6 @@ main (void) {
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-3
@@ -155,12 +125,6 @@ main (void) {
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-4
@@ -178,12 +142,6 @@ main (void) {
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-4
@@ -201,30 +159,34 @@ main (void) {
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = cabs(y[n]-w[n]);
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%8d %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
 		fftw_destroy_plan(p);
-		printf("%8d %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of one-dimensional transforms with Kiss FFT
+// compare results of one-dimensional transforms with Kiss FFT
 #if 0
 #include <unistd.h>
 #include "kiss_fft.h"
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fft_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -250,12 +212,6 @@ main (void) {
 		minfft_dft(x,y,a);
 		cfg = kiss_fft_alloc(N,0,NULL,NULL);
 		kiss_fft(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -279,29 +235,34 @@ main (void) {
 		minfft_invdft(x,y,a);
 		cfg = kiss_fft_alloc(N,1,NULL,NULL);
 		kiss_fft(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%8d %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
 		free(cfg);
-		printf("%8d %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of forward and inverse one-dimensional transforms
+// compare forward and inverse one-dimensional transforms
+// with the identity operator
 #if 0
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
@@ -321,10 +282,13 @@ main (void) {
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = log10(cabs(x[n]-z[n]/N));
+			d = cabs(x[n]-z[n]/N);
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -342,10 +306,13 @@ main (void) {
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N)));
+			d = cabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -363,10 +330,13 @@ main (void) {
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N)));
+			d = cabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -384,10 +354,13 @@ main (void) {
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N)));
+			d = cabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -405,17 +378,22 @@ main (void) {
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N)));
+			d = cabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
+		// print results
+		printf("%8d %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		minfft_free_aux(a);
-		printf("%8d %g\n",N,dmax);
 	}
 #endif
 
@@ -626,13 +604,13 @@ main (void) {
 
 // two-dimensional DFTs
 
-// compare precision of two-dimensional transforms with FFTW
+// compare results of two-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=1024;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	fftw_plan p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -654,12 +632,6 @@ main (void) {
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -679,12 +651,6 @@ main (void) {
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-2
@@ -702,12 +668,6 @@ main (void) {
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-2
@@ -725,12 +685,6 @@ main (void) {
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-3
@@ -748,12 +702,6 @@ main (void) {
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-3
@@ -771,12 +719,6 @@ main (void) {
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-4
@@ -794,12 +736,6 @@ main (void) {
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-4
@@ -817,30 +753,34 @@ main (void) {
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N*N; ++n) {
+			d = cabs(y[n]-w[n]);
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%5d**2 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
 		fftw_destroy_plan(p);
-		printf("%5d**2 %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of two-dimensional transforms with Kiss FFT
+// compare results of two-dimensional transforms with Kiss FFT
 #if 0
 #include <unistd.h>
 #include "kiss_fftnd.h"
 	const int MAXN=1024;
 	int N,n,Ns[2];
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fftnd_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -867,12 +807,6 @@ main (void) {
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -897,29 +831,34 @@ main (void) {
 		Ns[0] = Ns[1] = N;
 		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%5d**2 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
 		free(cfg);
-		printf("%5d**2 %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of forward and inverse two-dimensional transforms
+// compare forward and inverse two-dimensional transforms
+// with the identity operator
 #if 0
 #include <unistd.h>
 	const int MAXN=1024;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
@@ -939,10 +878,13 @@ main (void) {
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = log10(cabs(x[n]-z[n]/(N*N)));
+			d = cabs(x[n]-z[n]/(N*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -960,10 +902,13 @@ main (void) {
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -981,10 +926,13 @@ main (void) {
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1002,10 +950,13 @@ main (void) {
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1023,17 +974,22 @@ main (void) {
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
+		// print results
+		printf("%5d**2 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		minfft_free_aux(a);
-		printf("%5d**2 %g\n",N,dmax);
 	}
 #endif
 
@@ -1242,13 +1198,13 @@ main (void) {
 
 // three-dimensional DFTs
 
-// compare precision of three-dimensional transforms with FFTW
+// compare results of three-dimensional transforms with FFTW
 #if 0
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=128;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	fftw_plan p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -1270,12 +1226,6 @@ main (void) {
 		minfft_dft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -1295,12 +1245,6 @@ main (void) {
 		minfft_invdft(x,y,a);
 		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(cabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-2
@@ -1318,12 +1262,6 @@ main (void) {
 		minfft_dct2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-2
@@ -1341,12 +1279,6 @@ main (void) {
 		minfft_dst2(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-3
@@ -1364,12 +1296,6 @@ main (void) {
 		minfft_dct3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-3
@@ -1387,12 +1313,6 @@ main (void) {
 		minfft_dst3(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DCT-4
@@ -1410,12 +1330,6 @@ main (void) {
 		minfft_dct4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// DST-4
@@ -1433,30 +1347,33 @@ main (void) {
 		minfft_dst4(x,y,a);
 		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		fftw_execute(p);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(y[n]-w[n]));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N*N*N; ++n) {
+			d = cabs(y[n]-w[n]);
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%5d**3 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
-		fftw_destroy_plan(p);
-		printf("%5d**3 %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of three-dimensional transforms with Kiss FFT
+// compare results of three-dimensional transforms with Kiss FFT
 #if 0
 #include <unistd.h>
 #include "kiss_fftnd.h"
 	const int MAXN=128;
 	int N,n,Ns[3];
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fftnd_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -1483,12 +1400,6 @@ main (void) {
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
 #if 0
 		// inverse complex DFT
@@ -1513,29 +1424,34 @@ main (void) {
 		Ns[0] = Ns[1] = Ns[2] = N;
 		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
 		kiss_fftnd(cfg,z,w);
-		// compare results
-		dmax = -HUGE_VAL;
-		for (n=0; n<N*N*N; ++n) {
-			d = log10(cabs(y[n]-(w[n].r+I*w[n].i)));
-			dmax = (d>dmax)?d:dmax;
-		}
 #endif
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N*N*N; ++n) {
+			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = cabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		printf("%5d**3 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
 		free(cfg);
-		printf("%5d**3 %g\n",N,dmax);
 	}
 #endif
 
-// compare precision of forward and inverse three-dimensional transforms
+// compare forward and inverse three-dimensional transforms
+// with the identity operator
 #if 0
 #include <unistd.h>
 	const int MAXN=128;
 	int N,n;
-	double d,dmax; // maximum absolute error
+	double d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
@@ -1555,10 +1471,13 @@ main (void) {
 		minfft_dft(x,y,a);
 		minfft_invdft(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(cabs(x[n]-z[n]/(N*N*N)));
+			d = cabs(x[n]-z[n]/(N*N*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1576,10 +1495,13 @@ main (void) {
 		minfft_dct2(x,y,a);
 		minfft_dct3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1597,10 +1519,13 @@ main (void) {
 		minfft_dst2(x,y,a);
 		minfft_dst3(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1618,10 +1543,13 @@ main (void) {
 		minfft_dct4(x,y,a);
 		minfft_dct4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
@@ -1639,17 +1567,22 @@ main (void) {
 		minfft_dst4(x,y,a);
 		minfft_dst4(y,z,a);
 		// compare results
-		dmax = -HUGE_VAL;
+		dmax = 0;
+		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = log10(fabs(x[n]-z[n]/(2*N*2*N*2*N)));
+			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
+			v = cabs(x[n]);
+			vmax = (v>vmax)?v:vmax;
 		}
 #endif
+		// print results
+		printf("%5d**3 %g\n",N,dmax/vmax);
+		// free resources
 		free(x);
 		free(y);
 		free(z);
 		minfft_free_aux(a);
-		printf("%5d**3 %g\n",N,dmax);
 	}
 #endif
 

@@ -209,7 +209,7 @@ The version of Kiss FFT used is 1.3.0.
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
-The results of many performance and precision tests, along with the
+The results of many performance and accuracy tests, along with the
 program used to conduct them, are available in the `tests` subdirectory.
 
 ## Conformance
