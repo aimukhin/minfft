@@ -4,7 +4,7 @@ A minimalistic Fast Fourier Transform library.
 It achieves high performance by simple means.
 
 ## Overview
-The library provides routines for computing
+The library provides routines for computing:
 
 * Forward and inverse complex DFT,
 * Real symmetric transforms (DCT and DST) of the types 2, 3, 4
@@ -13,6 +13,7 @@ of any dimensionality and power-of-two lengths.
 
 ## Contents
 - [Interface](#interface)
+- [Data types](#data-types)
 - [Transforms](#transforms)
   - [Complex DFT](#complex-dft)
   - [Inverse complex DFT](#inverse-complex-dft)
@@ -59,6 +60,15 @@ used:
 	minfft_free_aux(a);
 ```
 
+## Data types
+By default, the library operates with double precision:
+```C
+	typedef double minfft_real;
+	typedef double complex minfft_cmpl;
+```
+By changing these definitions, you can adapt the library to use `float`
+or `long double` instead.
+
 ## Transforms
 Below is a list of transform functions and their auxiliary data
 makers. For convenience, we provide makers for one-, two- and
@@ -77,7 +87,7 @@ minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_dft (int d, int *Ns);
-void minfft_dft (double complex *x, double complex *y, const minfft_aux *a);
+void minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 ```
 
 ### Inverse complex DFT
@@ -87,7 +97,7 @@ minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_dft (int d, int *Ns);
-void minfft_invdft (double complex *x, double complex *y, const minfft_aux *a);
+void minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 ```
 
 #### DCT-2
@@ -97,7 +107,7 @@ minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dct2 (double *x, double *y, const minfft_aux *a);
+void minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-2
@@ -107,7 +117,7 @@ minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dst2 (double *x, double *y, const minfft_aux *a);
+void minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-3
@@ -117,7 +127,7 @@ minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dct3 (double *x, double *y, const minfft_aux *a);
+void minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-3
@@ -127,7 +137,7 @@ minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t2t3_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
-void minfft_dst3 (double *x, double *y, const minfft_aux *a);
+void minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-4
@@ -137,7 +147,7 @@ minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
-void minfft_dct4 (double *x, double *y, const minfft_aux *a);
+void minfft_dct4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-4
@@ -147,7 +157,7 @@ minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_t4_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
-void minfft_dst4 (double *x, double *y, const minfft_aux *a);
+void minfft_dst4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ## Freeing auxiliary data
@@ -163,9 +173,9 @@ one-dimensional transforms are given below:
 
 Transform                                | Auxiliary data size
 -----------------------------------------|---------------------
-Complex DFT of length `N`                | `2N` complex doubles
-Type-2 or Type-3 transform of length `N` | `4.5N` doubles
-Type-4 transform of length `N`           | `6N` doubles
+Complex DFT of length `N`                | `2N` complex numbers
+Type-2 or Type-3 transform of length `N` | `4.5N` real numbers
+Type-4 transform of length `N`           | `6N` real numbers
 
 Multi-dimensional transforms use a temporary buffer of the same size as
 the input data. This value is the dominant term in their auxiliary data

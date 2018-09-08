@@ -4,6 +4,9 @@
 
 #include <complex.h>
 
+typedef double minfft_real;
+typedef double complex minfft_cmpl;
+
 struct minfft_aux {
 	int N; // number of elements to transform
 	void *t; // temporary buffer
@@ -13,14 +16,14 @@ struct minfft_aux {
 };
 typedef struct minfft_aux minfft_aux;
 
-void minfft_dft(double complex *x, double complex *y, const minfft_aux *a);
-void minfft_invdft(double complex *x, double complex *y, const minfft_aux *a);
-void minfft_dct2(double *x, double *y, const minfft_aux *a);
-void minfft_dst2(double *x, double *y, const minfft_aux *a);
-void minfft_dct3(double *x, double *y, const minfft_aux *a);
-void minfft_dst3(double *x, double *y, const minfft_aux *a);
-void minfft_dct4(double *x, double *y, const minfft_aux *a);
-void minfft_dst4(double *x, double *y, const minfft_aux *a);
+void minfft_dft(minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
+void minfft_invdft(minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
+void minfft_dct2(minfft_real *x, minfft_real *y, const minfft_aux *a);
+void minfft_dst2(minfft_real *x, minfft_real *y, const minfft_aux *a);
+void minfft_dct3(minfft_real *x, minfft_real *y, const minfft_aux *a);
+void minfft_dst3(minfft_real *x, minfft_real *y, const minfft_aux *a);
+void minfft_dct4(minfft_real *x, minfft_real *y, const minfft_aux *a);
+void minfft_dst4(minfft_real *x, minfft_real *y, const minfft_aux *a);
 
 minfft_aux* minfft_mkaux_dft_1d(int N);
 minfft_aux* minfft_mkaux_dft_2d(int N1, int N2);

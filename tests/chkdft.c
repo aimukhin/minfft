@@ -2,8 +2,13 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <math.h>
+#include <tgmath.h>
 
 #include "../minfft.h"
+
+#define FFTW(OP) fftw_##OP
+//#define FFTW(OP) fftwf_##OP
+//#define FFTW(OP) fftwl_##OP
 
 int
 main (void) {
@@ -16,167 +21,167 @@ main (void) {
 #include <fftw3.h>
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
-	fftw_plan p; // plan
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	FFTW(plan) p;
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*sizeof(double complex));
-		y = malloc(N*sizeof(double complex));
-		z = malloc(N*sizeof(double complex));
-		w = malloc(N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(minfft_cmpl));
+		w = malloc(N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_1d(N);
 		minfft_dft(x,y,a);
-		p = fftw_plan_dft_1d(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_1d)(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*sizeof(double complex));
-		y = malloc(N*sizeof(double complex));
-		z = malloc(N*sizeof(double complex));
-		w = malloc(N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(minfft_cmpl));
+		w = malloc(N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_1d(N);
 		minfft_invdft(x,y,a);
-		p = fftw_plan_dft_1d(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_1d)(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-2
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct2(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-2
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst2(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-3
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct3(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-3
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst3(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_1d(N);
 		minfft_dct4(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z,*w;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
-		w = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
+		w = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_1d(N);
 		minfft_dst4(x,y,a);
-		p = fftw_plan_r2r_1d(N,z,w,FFTW_RODFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_RODFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 		// compare results
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(y[n]-w[n]);
+			d = fabs(y[n]-w[n]);
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%8d %g\n",N,dmax/vmax);
+		printf("%8d %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
-		fftw_destroy_plan(p);
+		FFTW(destroy_plan)(p);
 	}
 #endif
 
@@ -186,24 +191,24 @@ main (void) {
 #include "kiss_fft.h"
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fft_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*sizeof(double complex));
-		y = malloc(N*sizeof(double complex));
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
 		z = malloc(N*sizeof(kiss_fft_cpx));
 		w = malloc(N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -215,18 +220,18 @@ main (void) {
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*sizeof(double complex));
-		y = malloc(N*sizeof(double complex));
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
 		z = malloc(N*sizeof(kiss_fft_cpx));
 		w = malloc(N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -240,12 +245,12 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			d = fabs(y[n]-(w[n].r+I*w[n].i));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%8d %g\n",N,dmax/vmax);
+		printf("%8d %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -257,26 +262,26 @@ main (void) {
 #endif
 
 // compare forward and inverse one-dimensional transforms
-// with the identity operator
+// with the identity transform
 #if 0
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
-		double complex *x,*y,*z;
-		x = malloc(N*sizeof(double complex));
-		y = malloc(N*sizeof(double complex));
-		z = malloc(N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z;
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_1d(N);
 		minfft_dft(x,y,a);
@@ -285,22 +290,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(x[n]-z[n]/N);
+			d = fabs(x[n]-z[n]/N);
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-2 and DCT-3
-		double *x,*y,*z;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dct2(x,y,a);
@@ -309,22 +314,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N));
+			d = fabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-2 and DST-3
-		double *x,*y,*z;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_1d(N);
 		minfft_dst2(x,y,a);
@@ -333,22 +338,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N));
+			d = fabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_1d(N);
 		minfft_dct4(x,y,a);
@@ -357,22 +362,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N));
+			d = fabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z;
-		x = malloc(N*sizeof(double));
-		y = malloc(N*sizeof(double));
-		z = malloc(N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc(N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_1d(N);
 		minfft_dst4(x,y,a);
@@ -381,14 +386,14 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N));
+			d = fabs(x[n]-z[n]/(2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 		// print results
-		printf("%8d %g\n",N,dmax/vmax);
+		printf("%8d %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -410,13 +415,13 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		double complex *x = malloc(N*sizeof(double complex));
-		double complex *y = malloc(N*sizeof(double complex));
+		minfft_cmpl *x = malloc(N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = malloc(N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare aux data
 		a = minfft_mkaux_dft_1d(N);
 		// do tests
@@ -436,15 +441,15 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,cabs(y[0]));
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = malloc(N*sizeof(double));
-		double *y = malloc(N*sizeof(double));
+		minfft_real *x = malloc(N*sizeof(minfft_real));
+		minfft_real *y = malloc(N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
 //		a = minfft_mkaux_t2t3_1d(N);
 //		a = minfft_mkaux_t4_1d(N);
@@ -469,7 +474,7 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,y[0]);
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
@@ -483,7 +488,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=65536*16;
 	const int R=10;
-	fftw_plan p;
+	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -491,23 +496,23 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		fftw_complex *x = fftw_malloc(N*sizeof(double complex));
-		fftw_complex *y = fftw_malloc(N*sizeof(double complex));
+		minfft_cmpl *x = fftw_malloc(N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = fftw_malloc(N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = fftw_plan_dft_1d(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = fftw_plan_dft_1d(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_1d)(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_1d)(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -517,29 +522,29 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,cabs(y[0]));
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = fftw_malloc(N*sizeof(double));
-		double *y = fftw_malloc(N*sizeof(double));
+		minfft_real *x = fftw_malloc(N*sizeof(minfft_real));
+		minfft_real *y = fftw_malloc(N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_1d(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -549,11 +554,11 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,y[0]);
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
-		fftw_destroy_plan(p);
+		FFTW(destroy_plan)(p);
 	}
 #endif
 
@@ -574,8 +579,8 @@ main (void) {
 		kiss_fft_cpx *y = malloc(N*sizeof(kiss_fft_cpx));
 		// prepare test vector
 		for (n=0; n<N; ++n) {
-			x[n].r = (double)rand()/RAND_MAX-0.5;
-			x[n].i = (double)rand()/RAND_MAX-0.5;
+			x[n].r = (minfft_real)rand()/RAND_MAX-0.5;
+			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
 		}
 		// prepare config
 //		cfg = kiss_fft_alloc(N,0,NULL,NULL);
@@ -596,10 +601,11 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 		free(x);
 		free(y);
 		free(cfg);
+	}
 #endif
 
 // two-dimensional DFTs
@@ -610,167 +616,167 @@ main (void) {
 #include <fftw3.h>
 	const int MAXN=1024;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
-	fftw_plan p; // plan
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double complex));
-		y = malloc(N*N*sizeof(double complex));
-		z = malloc(N*N*sizeof(double complex));
-		w = malloc(N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*sizeof(minfft_cmpl));
+		w = malloc(N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_2d(N,N);
 		minfft_dft(x,y,a);
-		p = fftw_plan_dft_2d(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_2d)(N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double complex));
-		y = malloc(N*N*sizeof(double complex));
-		z = malloc(N*N*sizeof(double complex));
-		w = malloc(N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*sizeof(minfft_cmpl));
+		w = malloc(N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_2d(N,N);
 		minfft_invdft(x,y,a);
-		p = fftw_plan_dft_2d(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_2d)(N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-2
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct2(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-2
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst2(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-3
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct3(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-3
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst3(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dct4(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z,*w;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
-		w = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
+		w = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dst4(x,y,a);
-		p = fftw_plan_r2r_2d(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_2d)(N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 		// compare results
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(y[n]-w[n]);
+			d = fabs(y[n]-w[n]);
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%5d**2 %g\n",N,dmax/vmax);
+		printf("%5d**2 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
 		free(z);
 		free(w);
 		minfft_free_aux(a);
-		fftw_destroy_plan(p);
+		FFTW(destroy_plan)(p);
 	}
 #endif
 
@@ -780,24 +786,24 @@ main (void) {
 #include "kiss_fftnd.h"
 	const int MAXN=1024;
 	int N,n,Ns[2];
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fftnd_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*N*sizeof(double complex));
-		y = malloc(N*N*sizeof(double complex));
+		x = malloc(N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*sizeof(minfft_cmpl));
 		z = malloc(N*N*sizeof(kiss_fft_cpx));
 		w = malloc(N*N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -810,18 +816,18 @@ main (void) {
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*N*sizeof(double complex));
-		y = malloc(N*N*sizeof(double complex));
+		x = malloc(N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*sizeof(minfft_cmpl));
 		z = malloc(N*N*sizeof(kiss_fft_cpx));
 		w = malloc(N*N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -836,12 +842,12 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N; ++n) {
-			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			d = fabs(y[n]-(w[n].r+I*w[n].i));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%5d**2 %g\n",N,dmax/vmax);
+		printf("%5d**2 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -853,26 +859,26 @@ main (void) {
 #endif
 
 // compare forward and inverse two-dimensional transforms
-// with the identity operator
+// with the identity transform
 #if 0
 #include <unistd.h>
 	const int MAXN=1024;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
-		double complex *x,*y,*z;
-		x = malloc(N*N*sizeof(double complex));
-		y = malloc(N*N*sizeof(double complex));
-		z = malloc(N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z;
+		x = malloc(N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_2d(N,N);
 		minfft_dft(x,y,a);
@@ -881,22 +887,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(x[n]-z[n]/(N*N));
+			d = fabs(x[n]-z[n]/(N*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-2 and DCT-3
-		double *x,*y,*z;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dct2(x,y,a);
@@ -905,22 +911,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-2 and DST-3
-		double *x,*y,*z;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_2d(N,N);
 		minfft_dst2(x,y,a);
@@ -929,22 +935,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dct4(x,y,a);
@@ -953,22 +959,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z;
-		x = malloc(N*N*sizeof(double));
-		y = malloc(N*N*sizeof(double));
-		z = malloc(N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*sizeof(minfft_real));
+		y = malloc(N*N*sizeof(minfft_real));
+		z = malloc(N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_2d(N,N);
 		minfft_dst4(x,y,a);
@@ -977,14 +983,14 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 		// print results
-		printf("%5d**2 %g\n",N,dmax/vmax);
+		printf("%5d**2 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -1006,13 +1012,13 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		double complex *x = malloc(N*N*sizeof(double complex));
-		double complex *y = malloc(N*N*sizeof(double complex));
+		minfft_cmpl *x = malloc(N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = malloc(N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare aux data
 		a = minfft_mkaux_dft_2d(N,N);
 		// do tests
@@ -1031,15 +1037,16 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = malloc(N*N*sizeof(double));
-		double *y = malloc(N*N*sizeof(double));
+		minfft_real *x = malloc(N*N*sizeof(minfft_real));
+		minfft_real *y = malloc(N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
-			x[n] =(double)rand()/RAND_MAX-0.5;
+			x[n] =(minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
 //		a = minfft_mkaux_t2t3_2d(N,N);
 //		a = minfft_mkaux_t4_2d(N,N);
@@ -1063,7 +1070,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
@@ -1077,7 +1085,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=1024;
 	const int R=10;
-	fftw_plan p;
+	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1085,23 +1093,23 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		fftw_complex *x = fftw_malloc(N*N*sizeof(fftw_complex));
-		fftw_complex *y = fftw_malloc(N*N*sizeof(fftw_complex));
+		minfft_cmpl *x = fftw_malloc(N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = fftw_malloc(N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = fftw_plan_dft_2d(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = fftw_plan_dft_2d(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1110,29 +1118,30 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = fftw_malloc(N*N*sizeof(double));
-		double *y = fftw_malloc(N*N*sizeof(double));
+		minfft_real *x = fftw_malloc(N*N*sizeof(minfft_real));
+		minfft_real *y = fftw_malloc(N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_2d(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1141,11 +1150,12 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
-		fftw_destroy_plan(p);
+		FFTW(destroy_plan)(p);
 	}
 #endif
 
@@ -1166,8 +1176,8 @@ main (void) {
 		kiss_fft_cpx *y = malloc(N*N*sizeof(kiss_fft_cpx));
 		// prepare test vector
 		for (n=0; n<N*N; ++n) {
-			x[n].r = (double)rand()/RAND_MAX-0.5;
-			x[n].i = (double)rand()/RAND_MAX-0.5;
+			x[n].r = (minfft_real)rand()/RAND_MAX-0.5;
+			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
 		}
 		// prepare config
 		Ns[0] = Ns[1] = N;
@@ -1189,7 +1199,7 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 		free(x);
 		free(y);
 		free(cfg);
@@ -1204,160 +1214,160 @@ main (void) {
 #include <fftw3.h>
 	const int MAXN=128;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
-	fftw_plan p; // plan
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double complex));
-		y = malloc(N*N*N*sizeof(double complex));
-		z = malloc(N*N*N*sizeof(double complex));
-		w = malloc(N*N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*N*sizeof(minfft_cmpl));
+		w = malloc(N*N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_dft(x,y,a);
-		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_3d)(N,N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double complex));
-		y = malloc(N*N*N*sizeof(double complex));
-		z = malloc(N*N*N*sizeof(double complex));
-		w = malloc(N*N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*N*sizeof(minfft_cmpl));
+		w = malloc(N*N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
 			z[n] = x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_invdft(x,y,a);
-		p = fftw_plan_dft_3d(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
-		fftw_execute(p);
+		p = FFTW(plan_dft_3d)(N,N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE); 
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-2
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct2(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-2
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst2(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-3
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct3(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-3
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst3(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dct4(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z,*w;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
-		w = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z,*w;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
+		w = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			z[n] = x[n] = (double)rand()/RAND_MAX-0.5;
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dst4(x,y,a);
-		p = fftw_plan_r2r_3d(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
-		fftw_execute(p);
+		p = FFTW(plan_r2r_3d)(N,N,N,z,w,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+		FFTW(execute)(p);
 #endif
 		// compare results
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(y[n]-w[n]);
+			d = fabs(y[n]-w[n]);
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%5d**3 %g\n",N,dmax/vmax);
+		printf("%5d**3 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -1373,24 +1383,24 @@ main (void) {
 #include "kiss_fftnd.h"
 	const int MAXN=128;
 	int N,n,Ns[3];
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	kiss_fftnd_cfg cfg; // Kiss FFT config
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*N*N*sizeof(double complex));
-		y = malloc(N*N*N*sizeof(double complex));
+		x = malloc(N*N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*N*sizeof(minfft_cmpl));
 		z = malloc(N*N*N*sizeof(kiss_fft_cpx));
 		w = malloc(N*N*N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -1403,18 +1413,18 @@ main (void) {
 #endif
 #if 0
 		// inverse complex DFT
-		double complex *x,*y;
+		minfft_cmpl *x,*y;
 		kiss_fft_cpx *z,*w;
-		x = malloc(N*N*N*sizeof(double complex));
-		y = malloc(N*N*N*sizeof(double complex));
+		x = malloc(N*N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*N*sizeof(minfft_cmpl));
 		z = malloc(N*N*N*sizeof(kiss_fft_cpx));
 		w = malloc(N*N*N*sizeof(kiss_fft_cpx));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n) {
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 			z[n].r = creal(x[n]);
 			z[n].i = cimag(x[n]);
 		}
@@ -1429,12 +1439,12 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(y[n]-(w[n].r+I*w[n].i));
+			d = fabs(y[n]-(w[n].r+I*w[n].i));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(y[n]);
+			v = fabs(y[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
-		printf("%5d**3 %g\n",N,dmax/vmax);
+		printf("%5d**3 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -1446,26 +1456,26 @@ main (void) {
 #endif
 
 // compare forward and inverse three-dimensional transforms
-// with the identity operator
+// with the identity transform
 #if 0
 #include <unistd.h>
 	const int MAXN=128;
 	int N,n;
-	double d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// forward and inverse complex DFT
-		double complex *x,*y,*z;
-		x = malloc(N*N*N*sizeof(double complex));
-		y = malloc(N*N*N*sizeof(double complex));
-		z = malloc(N*N*N*sizeof(double complex));
+		minfft_cmpl *x,*y,*z;
+		x = malloc(N*N*N*sizeof(minfft_cmpl));
+		y = malloc(N*N*N*sizeof(minfft_cmpl));
+		z = malloc(N*N*N*sizeof(minfft_cmpl));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// do transforms
 		a = minfft_mkaux_dft_3d(N,N,N);
 		minfft_dft(x,y,a);
@@ -1474,22 +1484,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(x[n]-z[n]/(N*N*N));
+			d = fabs(x[n]-z[n]/(N*N*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-2 and DCT-3
-		double *x,*y,*z;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dct2(x,y,a);
@@ -1498,22 +1508,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-2 and DST-3
-		double *x,*y,*z;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t2t3_3d(N,N,N);
 		minfft_dst2(x,y,a);
@@ -1522,22 +1532,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DCT-4
-		double *x,*y,*z;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dct4(x,y,a);
@@ -1546,22 +1556,22 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 #if 0
 		// DST-4
-		double *x,*y,*z;
-		x = malloc(N*N*N*sizeof(double));
-		y = malloc(N*N*N*sizeof(double));
-		z = malloc(N*N*N*sizeof(double));
+		minfft_real *x,*y,*z;
+		x = malloc(N*N*N*sizeof(minfft_real));
+		y = malloc(N*N*N*sizeof(minfft_real));
+		z = malloc(N*N*N*sizeof(minfft_real));
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// do transforms
 		a = minfft_mkaux_t4_3d(N,N,N);
 		minfft_dst4(x,y,a);
@@ -1570,14 +1580,14 @@ main (void) {
 		dmax = 0;
 		vmax = 0;
 		for (n=0; n<N*N*N; ++n) {
-			d = cabs(x[n]-z[n]/(2*N*2*N*2*N));
+			d = fabs(x[n]-z[n]/(2*N*2*N*2*N));
 			dmax = (d>dmax)?d:dmax;
-			v = cabs(x[n]);
+			v = fabs(x[n]);
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
 		// print results
-		printf("%5d**3 %g\n",N,dmax/vmax);
+		printf("%5d**3 %g\n",N,(double)(dmax/vmax));
 		// free resources
 		free(x);
 		free(y);
@@ -1599,13 +1609,13 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		double complex *x = malloc(N*N*N*sizeof(double complex));
-		double complex *y = malloc(N*N*N*sizeof(double complex));
+		minfft_cmpl *x = malloc(N*N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = malloc(N*N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare aux data
 		a = minfft_mkaux_dft_3d(N,N,N);
 		// do tests
@@ -1624,15 +1634,16 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = malloc(N*N*N*sizeof(double));
-		double *y = malloc(N*N*N*sizeof(double));
+		minfft_real *x = malloc(N*N*N*sizeof(minfft_real));
+		minfft_real *y = malloc(N*N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
-			x[n] =(double)rand()/RAND_MAX-0.5;
+			x[n] =(minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
 //		a = minfft_mkaux_t2t3_3d(N,N,N);
 //		a = minfft_mkaux_t4_3d(N,N,N);
@@ -1656,7 +1667,8 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
@@ -1670,7 +1682,7 @@ main (void) {
 	const int MINT=1;
 	const int MAXN=128;
 	const int R=10;
-	fftw_plan p;
+	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1678,23 +1690,23 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if 0
 		// complex transforms
-		fftw_complex *x = fftw_malloc(N*N*N*sizeof(fftw_complex));
-		fftw_complex *y = fftw_malloc(N*N*N*sizeof(fftw_complex));
+		minfft_cmpl *x = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
 			x[n] = \
-			(double)rand()/RAND_MAX-0.5+ \
-			I*((double)rand()/RAND_MAX-0.5);
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = fftw_plan_dft_3d(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+//		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1703,29 +1715,30 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,cabs(y[0]));
+		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if 0
 		// real transforms
-		double *x = fftw_malloc(N*N*N*sizeof(double));
-		double *y = fftw_malloc(N*N*N*sizeof(double));
+		minfft_real *x = fftw_malloc(N*N*N*sizeof(minfft_real));
+		minfft_real *y = fftw_malloc(N*N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
-			x[n] = (double)rand()/RAND_MAX-0.5;
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = fftw_plan_r2r_3d(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-				fftw_execute(p);
+				FFTW(execute)(p);
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1734,11 +1747,12 @@ main (void) {
 		}
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",N,R*T,avg,stdd,y[0]);
+		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
+			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 		free(x);
 		free(y);
-		fftw_destroy_plan(p);
+		FFTW(destroy_plan)(p);
 	}
 #endif
 
@@ -1759,8 +1773,8 @@ main (void) {
 		kiss_fft_cpx *y = malloc(N*N*N*sizeof(kiss_fft_cpx));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n) {
-			x[n].r = (double)rand()/RAND_MAX-0.5;
-			x[n].i = (double)rand()/RAND_MAX-0.5;
+			x[n].r = (minfft_real)rand()/RAND_MAX-0.5;
+			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
 		}
 		// prepare config
 		Ns[0] = Ns[1] = Ns[2] = N;
@@ -1782,7 +1796,7 @@ main (void) {
 		avg = s/R;
 		stdd = sqrt((q-s*s/R)/(R-1));
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,hypot(y[0].r,y[0].i));
+			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 		free(x);
 		free(y);
 		free(cfg);
