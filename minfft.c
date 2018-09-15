@@ -284,80 +284,115 @@ minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 
 // *** real transforms ***
 
-// one-dimensional real DFT
+// strided one-dimensional real DFT
 inline static void
-realdft_1d (minfft_real *x, minfft_real *y, const minfft_aux *a) {
-	minfft_cmpl *z,*w; // real vectors viewed as complex ones
+s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	int n; // counter
 	minfft_cmpl u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_cmpl *e=a->e; // exponent vector
-	z = (minfft_cmpl*)x;
-	w = (minfft_cmpl*)y;
+	minfft_cmpl *w=(minfft_cmpl*)x; // alias
+	minfft_cmpl *t=a->t; // temporary buffer
 	if (N==1) {
 		// trivial case
-		y[0] = x[0];
+		z[0] = x[0];
 		return;
 	}
 	if (N==2) {
 		// trivial case
 		minfft_real t0,t1; // temporary values
-		t0 = x[0]+x[1];
-	  	t1 = x[0]-x[1];
-		y[0] = t0;
-		y[1] = t1;
+		t0 = x[0];
+		t1 = x[1];
+		z[0] = t0+t1;
+		z[sz] = t0-t1;
 		return;
 	}
 	// reduce to complex DFT of length N/2
 	// do complex DFT
-	s_dft_1d(z,w,1,a->sub1);
-	// recover real DFT
-	w[0] = (y[0]+y[1])+I*(y[0]-y[1]);
+	s_dft_1d(w,t,1,a->sub1);
+	// recover results
+	u = t[0];
+	z[0] = creal(u)+cimag(u);
+	z[sz*N/2] = creal(u)-cimag(u);
 	for (n=1; n<N/4; ++n) {
-		u = (w[n]+conj(w[N/2-n]))/2;
-		v = (w[n]-conj(w[N/2-n]))*e[n]/(2*I);
-		w[n] = u+v;
-		w[N/2-n] = conj(u-v);
+		u = (t[n]+conj(t[N/2-n]))/2;
+		v = (t[n]-conj(t[N/2-n]))*e[n]/(2*I);
+		z[sz*n] = u+v;
+		z[sz*(N/2-n)] = conj(u-v);
 	}
-	w[N/4] = conj(w[N/4]);
+	z[sz*N/4] = conj(t[N/4]);
 }
 
-// one-dimensional inverse real DFT
+// real DFT of arbitrary dimension
+void
+minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a) {
+	if (a->sub2==NULL)
+		s_realdft_1d(x,z,1,a);
+	else {
+		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
+		int n; // counter
+		minfft_cmpl *t=a->t; // temporary buffer
+		for (n=0; n<N2; ++n)
+			s_realdft_1d(x+n*N1,t+n,N2,a->sub1);
+		for (n=0; n<N1/2+1; ++n)
+			s_dft(t+n*N2,z+n,N1/2+1,a->sub2);
+	}
+}
+
+// strided one-dimensional inverse real DFT
 inline static void
-invrealdft_1d (minfft_real *x, minfft_real *y, const minfft_aux *a) {
-	minfft_cmpl *z,*w; // real vectors viewed as complex ones
+invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	int n; // counter
 	minfft_cmpl u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_cmpl *e=a->e; // exponent vector
-	z = (minfft_cmpl*)x;
-	w = (minfft_cmpl*)y;
+	minfft_cmpl *w=(minfft_cmpl*)y; // alias
 	if (N==1) {
 		// trivial case
-		y[0] = x[0];
+		y[0] = creal(z[0]);
 		return;
 	}
 	if (N==2) {
 		// trivial case
 		minfft_real t0,t1; // temporary values
-		t0 = x[0]+x[1];
-	  	t1 = x[0]-x[1];
-		y[0] = t0;
-		y[1] = t1;
+		t0 = creal(z[0]);
+		t1 = creal(z[1]);
+		y[0] = t0+t1;
+		y[1] = t0-t1;
 		return;
 	}
 	// reduce to inverse complex DFT of length N/2
 	// prepare complex DFT inputs
-	w[0] = (x[0]+x[1])+I*(x[0]-x[1]);
+	z[0] = (z[0]+z[N/2])+I*(z[0]-z[N/2]);
 	for (n=1; n<N/4; ++n) {
 		u = z[n]+conj(z[N/2-n]);
 		v = I*(z[n]-conj(z[N/2-n]))*conj(e[n]);
-		w[n] = u+v;
-		w[N/2-n] = conj(u-v);
+		z[n] = u+v;
+		z[N/2-n] = conj(u-v);
 	}
-	w[N/4] = 2*conj(z[N/4]);
+	z[N/4] = 2*conj(z[N/4]);
 	// do inverse complex DFT
-	s_invdft_1d(w,w,1,a->sub1);
+	s_invdft_1d(z,w,1,a->sub1);
+}
+
+// inverse real DFT of arbitrary dimension
+void
+minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
+	if (a->sub2==NULL)
+		invrealdft_1d(z,y,a);
+	else {
+		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
+		int n; // counter
+		minfft_cmpl *t=a->t; // temporary buffer
+		int k;
+		for (n=0; n<N2; ++n)
+			for (k=0; k<N1/2+1; ++k)
+				t[n+N2*k] = z[(N1/2+1)*n+k];
+		for (n=0; n<N1/2+1; ++n)
+			s_invdft(t+n*N2,z+n,N1/2+1,a->sub2);
+		for (n=0; n<N2; ++n)
+			invrealdft_1d(z+n*(N1/2+1),y+n*N1,a->sub1);
+	}
 }
 
 // *** real symmetric transforms ***
@@ -366,10 +401,11 @@ invrealdft_1d (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 inline static void
 s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; // counter
-	minfft_real c,s,u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_real *t=a->t; // temporary buffer
+	minfft_cmpl *z=(minfft_cmpl*)t; // its alias
 	minfft_cmpl *e=a->e; // exponent vector
+	minfft_cmpl u; // temporary value
 	if (N==1) {
 		// trivial case
 		y[0] = 2*x[0];
@@ -382,19 +418,15 @@ s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 		t[N/2+n] = x[N-1-2*n];
 	}
         // do real DFT in-place
-	realdft_1d(t,t,a->sub1);
+	s_realdft_1d(t,z,1,a->sub1);
 	// recover results
+	y[0] = 2*creal(z[0]);
 	for (n=1; n<N/2; ++n) {
-		u = t[2*n];
-		v = t[2*n+1];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		y[sy*n] = 2*(u*c-v*s);
-		y[sy*(N-n)] = 2*(-v*c-u*s);
+		u = z[n]*e[n];
+		y[sy*n] = 2*creal(u);
+		y[sy*(N-n)] = -2*cimag(u);
 	}
-	// treat boundary cases
-	y[sy*N/2] = sqrt2*t[1];
-	y[0] = 2*t[0];
+	y[sy*N/2] = sqrt2*creal(z[N/2]);
 }
 
 // strided DCT-2 of arbitrary dimension
@@ -413,10 +445,11 @@ minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 inline static void
 s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; // counter
-	minfft_real c,s,u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_real *t=a->t; // temporary buffer
+	minfft_cmpl *z=(minfft_cmpl*)t; // its alias
 	minfft_cmpl *e=a->e; // exponent vector
+	minfft_cmpl u; // temporary value
 	if (N==1) {
 		// trivial case
 		y[0] = 2*x[0];
@@ -429,19 +462,15 @@ s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 		t[N/2+n] = -x[N-1-2*n];
 	}
         // do real DFT in-place
-	realdft_1d(t,t,a->sub1);
+	s_realdft_1d(t,z,1,a->sub1);
 	// recover results
+	y[sy*(N-1)] = 2*creal(z[0]);
 	for (n=1; n<N/2; ++n) {
-		u = t[2*n];
-		v = t[2*n+1];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		y[sy*(n-1)] = 2*(-v*c-u*s);
-		y[sy*(N-n-1)] = 2*(u*c-v*s);
+		u = z[n]*e[n];
+		y[sy*(n-1)] = -2*cimag(u);
+		y[sy*(N-n-1)] = 2*creal(u);
 	}
-	// treat boundary cases
-	y[sy*(N/2-1)] = sqrt2*t[1];
-	y[sy*(N-1)] = 2*t[0];
+	y[sy*(N/2-1)] = sqrt2*creal(z[N/2]);
 }
 
 // strided DST-2 of arbitrary dimension
@@ -460,9 +489,9 @@ minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 inline static void
 s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; // counter
-	minfft_real c,s,u,v; // temporary values
 	int N=a->N; // transform length
-	minfft_real *t=a->t; // temporary buffer
+	minfft_cmpl *z=a->t; // temporary buffer
+	minfft_real *t=(minfft_real*)z; // its alias
 	minfft_cmpl *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
@@ -471,18 +500,12 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
-	for (n=1; n<N/2; ++n) {
-		u = x[n];
-		v = x[N-n];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		t[2*n] = u*c-v*s;
-		t[2*n+1] = -v*c-u*s;
-	}
-	t[0] = x[0];
-	t[1] = sqrt2*x[N/2];
+	z[0] = x[0];
+	for (n=1; n<N/2; ++n)
+		z[n] = conj((x[n]+I*x[N-n])*e[n]);
+	z[N/2] = sqrt2*x[N/2];
 	// do inverse real DFT in-place
-	invrealdft_1d(t,t,a->sub1);
+	invrealdft_1d(z,t,a->sub1);
 	// recover results
 	for (n=0; n<N/2; ++n) {
 		y[sy*2*n] = t[n];
@@ -506,9 +529,9 @@ minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 inline static void
 s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; // counter
-	minfft_real c,s,u,v; // temporary values
 	int N=a->N; // transform length
-	minfft_real *t=a->t; // temporary buffer
+	minfft_cmpl *z=a->t; // temporary buffer
+	minfft_real *t=(minfft_real*)z; // its alias
 	minfft_cmpl *e=a->e; // exponent vector
 	if (N==1) {
 		// trivial case
@@ -517,18 +540,12 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
-	for (n=1; n<N/2; ++n) {
-		u = x[n-1];
-		v = x[N-n-1];
-		c = creal(e[n]);
-		s = cimag(e[n]);
-		t[2*n] = v*c-u*s;
-		t[2*n+1] = -u*c-v*s;
-	}
-	t[0] = x[N-1];
-	t[1] = sqrt2*x[N/2-1];
+	z[0] = x[N-1];
+	for (n=1; n<N/2; ++n)
+		z[n] = conj((x[N-n-1]+I*x[n-1])*e[n]);
+	z[N/2] = sqrt2*x[N/2-1];
 	// do inverse real DFT in-place
-	invrealdft_1d(t,t,a->sub1);
+	invrealdft_1d(z,t,a->sub1);
 	// recover results
 	for (n=0; n<N/2; ++n) {
 		y[sy*2*n] = t[n];
@@ -693,26 +710,61 @@ minfft_mkaux_dft_3d (int N1, int N2, int N3) {
 }
 
 // make aux data for one-dimensional forward or inverse real DFT
-static minfft_aux*
-mkaux_realdft_1d (int N) {
+minfft_aux*
+minfft_mkaux_realdft_1d (int N) {
 	minfft_aux *a;
 	int n;
 	minfft_cmpl *e;
 	a = malloc(sizeof(minfft_aux));
 	a->N = N;
-	a->t = NULL;
 	if (N>=4) {
+		a->t = malloc((N/2)*sizeof(minfft_cmpl));
 		a->e = malloc((N/4)*sizeof(minfft_cmpl));
 		e = a->e;
 		for (n=0; n<N/4; ++n)
 			*e++ = exp(-2*pi*I*n/N);
 		a->sub1 = minfft_mkaux_dft_1d(N/2);
 	} else {
+		a->t = NULL;
 		a->e = NULL;
 		a->sub1 = NULL;
 	}
 	a->sub2 = NULL;
 	return a;
+}
+
+// make aux data for any-dimensional real DFT
+minfft_aux*
+minfft_mkaux_realdft (int d, int *Ns) {
+	minfft_aux *a;
+	int p; // product of transform lengths
+	int i; // array index
+	if (d==1)
+		return minfft_mkaux_realdft_1d(Ns[0]);
+	else {
+		p = 1;
+		for (i=1; i<d; ++i)
+			p *= Ns[i];
+		a = malloc(sizeof(minfft_aux));
+		a->N = Ns[0]*p;
+		a->t = malloc((Ns[0]/2+1)*p*sizeof(minfft_cmpl));
+		a->e = NULL;
+		a->sub1 = minfft_mkaux_realdft_1d(Ns[0]);
+		a->sub2 = minfft_mkaux_dft(d-1,Ns+1);
+		return a;
+	}
+}
+
+// convenience routines for two- and three-dimensional real DFT
+minfft_aux*
+minfft_mkaux_realdft_2d (int N1, int N2) {
+	int Ns[2]={N1,N2};
+	return minfft_mkaux_realdft(2,Ns);
+}
+minfft_aux*
+minfft_mkaux_realdft_3d (int N1, int N2, int N3) {
+	int Ns[3]={N1,N2,N3};
+	return minfft_mkaux_realdft(3,Ns);
 }
 
 // make aux data for one-dimensional Type-2 or Type-3 transforms
@@ -724,7 +776,7 @@ minfft_mkaux_t2t3_1d (int N) {
 	a = malloc(sizeof(minfft_aux));
 	a->N = N;
 	if (N>=2) {
-		a->t = malloc(N*sizeof(minfft_real));
+		a->t = malloc((N+2)*sizeof(minfft_real)); // for in-place real DFT
 		a->e = malloc((N/2)*sizeof(minfft_cmpl));
 		e = a->e;
 		for (n=0; n<N/2; ++n)
@@ -733,7 +785,7 @@ minfft_mkaux_t2t3_1d (int N) {
 		a->t = NULL;
 		a->e = NULL;
 	}
-	a->sub1 = mkaux_realdft_1d(N);
+	a->sub1 = minfft_mkaux_realdft_1d(N);
 	a->sub2 = NULL;
 	return a;
 }
