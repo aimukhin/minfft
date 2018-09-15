@@ -841,7 +841,7 @@ main (void) {
 		// compare results
 		dmax = 0;
 		vmax = 0;
-		for (n=0; n<N; ++n) {
+		for (n=0; n<N*N; ++n) {
 			d = fabs(y[n]-(w[n].r+I*w[n].i));
 			dmax = (d>dmax)?d:dmax;
 			v = fabs(y[n]);
