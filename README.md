@@ -226,4 +226,4 @@ program used to conduct them, are available in the `tests` subdirectory.
 The source code conforms to the C99 standard.
 
 ## License
-The library is in the public domain.
+MIT.

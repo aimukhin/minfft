@@ -1,6 +1,6 @@
-// A minimalistic FFT library.
-// Written by Alexander Mukhin.
-// Public domain.
+// A minimalistic FFT library
+// Copyright (c) 2018 Alexander Mukhin
+// MIT License
 
 #include <complex.h>
 
