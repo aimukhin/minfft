@@ -641,8 +641,8 @@ make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
 		a->N = p;
 		a->t = malloc(p*datasz);
 		a->e = NULL;
-		a->sub1 = make_aux(d-1,Ns,datasz,aux_1d);
-		a->sub2 = (*aux_1d)(Ns[d-1]);
+		a->sub1 = make_aux(d-1,Ns+1,datasz,aux_1d);
+		a->sub2 = (*aux_1d)(Ns[0]);
 		return a;
 	}
 }
