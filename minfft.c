@@ -802,13 +802,11 @@ minfft_mkaux_t4_3d (int N1, int N2, int N3) {
 // free aux chain
 void
 minfft_free_aux (minfft_aux *a) {
-	if (a->t)
-		free(a->t);
-	if (a->e)
-		free(a->e);
-	if (a->sub1)
-		minfft_free_aux(a->sub1);
-	if (a->sub2)
-		minfft_free_aux(a->sub2);
+	if (a==NULL)
+		return;
+	free(a->t);
+	free(a->e);
+	minfft_free_aux(a->sub1);
+	minfft_free_aux(a->sub2);
 	free(a);
 }
