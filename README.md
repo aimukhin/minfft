@@ -73,6 +73,8 @@ or `long double` instead.
 Below is a list of transform functions and their auxiliary data
 makers. For convenience, we provide makers for one-, two- and
 three-dimensional transforms, along with a generic any-dimensional one.
+The order of dimensions follows the C way — the last index changes most
+quickly.
 
 Also we give a formal definition of each transform for the
 one-dimensional case.
@@ -226,4 +228,4 @@ program used to conduct them, are available in the `tests` subdirectory.
 The source code conforms to the C99 standard.
 
 ## License
-The library is in the public domain.
+MIT.

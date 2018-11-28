@@ -1,6 +1,6 @@
-// A minimalistic FFT library.
-// Written by Alexander Mukhin.
-// Public domain.
+// A minimalistic FFT library
+// Copyright (c) 2018 Alexander Mukhin
+// MIT License
 
 #include "minfft.h"
 #include <stdlib.h>
@@ -658,8 +658,8 @@ make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
 		a->N = p;
 		a->t = malloc(p*datasz);
 		a->e = NULL;
-		a->sub1 = make_aux(d-1,Ns,datasz,aux_1d);
-		a->sub2 = (*aux_1d)(Ns[d-1]);
+		a->sub1 = make_aux(d-1,Ns+1,datasz,aux_1d);
+		a->sub2 = (*aux_1d)(Ns[0]);
 		return a;
 	}
 }
@@ -854,13 +854,11 @@ minfft_mkaux_t4_3d (int N1, int N2, int N3) {
 // free aux chain
 void
 minfft_free_aux (minfft_aux *a) {
-	if (a->t)
-		free(a->t);
-	if (a->e)
-		free(a->e);
-	if (a->sub1)
-		minfft_free_aux(a->sub1);
-	if (a->sub2)
-		minfft_free_aux(a->sub2);
+	if (a==NULL)
+		return;
+	free(a->t);
+	free(a->e);
+	minfft_free_aux(a->sub1);
+	minfft_free_aux(a->sub2);
 	free(a);
 }
