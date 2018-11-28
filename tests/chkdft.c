@@ -955,7 +955,7 @@ main (void) {
 	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-		Ncmp = N;
+		Ncmp = N*N;
 #if 0
 		// complex DFT
 		minfft_cmpl *x,*y,*z,*w;
@@ -1002,7 +1002,7 @@ main (void) {
 		z = malloc(N*N*sizeof(minfft_real));
 		y = malloc(N*(N/2+1)*sizeof(minfft_cmpl));
 		w = malloc(N*(N/2+1)*sizeof(minfft_cmpl));
-		Ncmp = N/2+1;
+		Ncmp = N*(N/2+1);
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N; ++n)
@@ -1884,7 +1884,7 @@ main (void) {
 	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-		Ncmp = N;
+		Ncmp = N*N*N;
 #if 0
 		// complex DFT
 		minfft_cmpl *x,*y,*z,*w;
@@ -1931,6 +1931,7 @@ main (void) {
 		z = malloc(N*N*N*sizeof(minfft_real));
 		y = malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
 		w = malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
+		Ncmp = N*N*(N/2+1);
 		// init inputs
 		srand(getpid());
 		for (n=0; n<N*N*N; ++n)
