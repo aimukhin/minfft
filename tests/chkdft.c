@@ -1,3 +1,13 @@
+/*
+Tests: CMP_FFTW CMP_KISS ACC PERF PERF_FFTW PERF_KISS
+Dimensionality: D1 D2 D3
+Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
+*/
+
+#define FFTW(OP) fftw_##OP
+//#define FFTW(OP) fftwf_##OP
+//#define FFTW(OP) fftwl_##OP
+
 #include <stdio.h>
 #include <sys/time.h>
 #include <stdlib.h>
@@ -6,17 +16,13 @@
 
 #include "../minfft.h"
 
-#define FFTW(OP) fftw_##OP
-//#define FFTW(OP) fftwf_##OP
-//#define FFTW(OP) fftwl_##OP
-
 int
 main (void) {
 
 // one-dimensional DFTs
 
 // compare results of one-dimensional transforms with FFTW
-#if 0
+#if CMP_FFTW && D1
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=65536*16;
@@ -26,7 +32,7 @@ main (void) {
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 		Ncmp = N;
-#if 0
+#if DFT
 		// complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_cmpl));
@@ -45,7 +51,7 @@ main (void) {
 		p = FFTW(plan_dft_1d)(N,z,w,FFTW_FORWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVDFT
 		// inverse complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_cmpl));
@@ -64,7 +70,7 @@ main (void) {
 		p = FFTW(plan_dft_1d)(N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y,*w;
@@ -83,7 +89,7 @@ main (void) {
 		p = FFTW(plan_dft_r2c_1d)(N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x,*z;
 		minfft_real *y,*w;
@@ -105,7 +111,7 @@ main (void) {
 		p = FFTW(plan_dft_c2r_1d)(N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT2
 		// DCT-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -122,7 +128,7 @@ main (void) {
 		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST2
 		// DST-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -139,7 +145,7 @@ main (void) {
 		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_RODFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT3
 		// DCT-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -156,7 +162,7 @@ main (void) {
 		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST3
 		// DST-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -173,7 +179,7 @@ main (void) {
 		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_RODFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -190,7 +196,7 @@ main (void) {
 		p = FFTW(plan_r2r_1d)(N,z,w,FFTW_REDFT11,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(N*sizeof(minfft_real));
@@ -228,14 +234,14 @@ main (void) {
 #endif
 
 // compare results of one-dimensional transforms with Kiss FFT
-#if 0
+#if CMP_KISS && D1
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT
 #include "kiss_fft.h"
 		// complex DFT
 		kiss_fft_cfg cfg; // Kiss FFT config
@@ -269,7 +275,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVDFT
 #include "kiss_fft.h"
 		// inverse complex DFT
 		kiss_fft_cfg cfg; // Kiss FFT config
@@ -303,7 +309,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftr.h"
 		// real DFT
 		if (N==1)
@@ -336,7 +342,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftr.h"
 		// inverse real DFT
 		if (N==1)
@@ -392,14 +398,14 @@ main (void) {
 
 // compare forward and inverse one-dimensional transforms
 // with the identity transform
-#if 0
+#if ACC && D1
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// forward and inverse complex DFT
 		minfft_cmpl *x,*y,*z;
 		x = malloc(N*sizeof(minfft_cmpl));
@@ -425,7 +431,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT || INVREALDFT
 		// forward and inverse real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y;
@@ -450,7 +456,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT2 || DCT3
 		// DCT-2 and DCT-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*sizeof(minfft_real));
@@ -474,7 +480,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST2 || DST3
 		// DST-2 and DST-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*sizeof(minfft_real));
@@ -498,7 +504,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*sizeof(minfft_real));
@@ -522,7 +528,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*sizeof(minfft_real));
@@ -557,8 +563,8 @@ main (void) {
 #endif
 
 // performance test of one-dimensional transforms
-#if 0
-	const int MINT=1;
+#if PERF && D1
+	const int MINT=10;
 	const int MAXN=65536*16;
 	const int R=10;
 	minfft_aux *a;
@@ -567,7 +573,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = malloc(N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = malloc(N*sizeof(minfft_cmpl));
@@ -584,8 +590,11 @@ main (void) {
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dft(x,y,a);
-//				minfft_invdft(x,y,a);
+#if DFT
+				minfft_dft(x,y,a);
+#elif INVDFT
+				minfft_invdft(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -597,7 +606,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = malloc(N*sizeof(minfft_real));
 		minfft_cmpl *y = malloc(N*sizeof(minfft_cmpl));
@@ -624,7 +633,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = malloc((N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = malloc(N*sizeof(minfft_real));
@@ -653,7 +662,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = malloc(N*sizeof(minfft_real));
 		minfft_real *y = malloc(N*sizeof(minfft_real));
@@ -661,20 +670,30 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_mkaux_t2t3_1d(N);
-//		a = minfft_mkaux_t4_1d(N);
+#if DCT2 || DST2 || DCT3 || DST3
+		a = minfft_mkaux_t2t3_1d(N);
+#elif DCT4 || DST4
+		a = minfft_mkaux_t4_1d(N);
+#endif
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dct2(x,y,a);
-//				minfft_dst2(x,y,a);
-//				minfft_dct3(x,y,a);
-//				minfft_dst3(x,y,a);
-//				minfft_dct4(x,y,a);
-//				minfft_dst4(x,y,a);
+#if DCT2
+				minfft_dct2(x,y,a);
+#elif DST2
+				minfft_dst2(x,y,a);
+#elif DCT3
+				minfft_dct3(x,y,a);
+#elif DST3
+				minfft_dst3(x,y,a);
+#elif DCT4
+				minfft_dct4(x,y,a);
+#elif DST4
+				minfft_dst4(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -693,9 +712,9 @@ main (void) {
 #endif
 
 // performance test of one-dimensional FFTW
-#if 0
+#if PERF_FFTW && D1
 #include <fftw3.h>
-	const int MINT=1;
+	const int MINT=10;
 	const int MAXN=65536*16;
 	const int R=10;
 	FFTW(plan) p;
@@ -704,7 +723,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = fftw_malloc(N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = fftw_malloc(N*sizeof(minfft_cmpl));
@@ -714,8 +733,11 @@ main (void) {
 			(minfft_real)rand()/RAND_MAX-0.5+ \
 			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = FFTW(plan_dft_1d)(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = FFTW(plan_dft_1d)(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#if DFT
+		p = FFTW(plan_dft_1d)(N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+#elif INVDFT
+		p = FFTW(plan_dft_1d)(N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
@@ -734,7 +756,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = fftw_malloc(N*sizeof(minfft_real));
 		minfft_cmpl *y = fftw_malloc((N/2+1)*sizeof(minfft_cmpl));
@@ -761,7 +783,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = fftw_malloc((N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = fftw_malloc(N*sizeof(minfft_real));
@@ -790,7 +812,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = fftw_malloc(N*sizeof(minfft_real));
 		minfft_real *y = fftw_malloc(N*sizeof(minfft_real));
@@ -798,12 +820,19 @@ main (void) {
 		for (n=0; n<N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
+#if DCT2
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT10,FFTW_ESTIMATE);
+#elif DST2
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT10,FFTW_ESTIMATE);
+#elif DCT3
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT01,FFTW_ESTIMATE);
+#elif DST3
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT01,FFTW_ESTIMATE);
+#elif DCT4
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_REDFT11,FFTW_ESTIMATE);
+#elif DST4
+		p = FFTW(plan_r2r_1d)(N,x,y,FFTW_RODFT11,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
@@ -829,8 +858,8 @@ main (void) {
 #endif
 
 // performance test of one-dimensional Kiss FFT
-#if 0
-	const int MINT=1;
+#if PERF_KISS && D1
+	const int MINT=10;
 	const int MAXN=65536*16;
 	const int R=10;
 	int N,n;
@@ -838,7 +867,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 #include "kiss_fft.h"
 		// complex transforms
 		kiss_fft_cfg cfg;
@@ -850,8 +879,11 @@ main (void) {
 			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
 		}
 		// prepare config
-//		cfg = kiss_fft_alloc(N,0,NULL,NULL);
-//		cfg = kiss_fft_alloc(N,1,NULL,NULL);
+#if DFT
+		cfg = kiss_fft_alloc(N,0,NULL,NULL);
+#elif INVDFT
+		cfg = kiss_fft_alloc(N,1,NULL,NULL);
+#endif
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
@@ -870,7 +902,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftr.h"
 		// real DFT
 		if (N==1)
@@ -901,7 +933,7 @@ main (void) {
 		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftr.h"
 		// inverse real DFT
 		if (N==1)
@@ -946,7 +978,7 @@ main (void) {
 // two-dimensional DFTs
 
 // compare results of two-dimensional transforms with FFTW
-#if 0
+#if CMP_FFTW && D2
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=1024;
@@ -956,7 +988,7 @@ main (void) {
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 		Ncmp = 2*N*N;
-#if 0
+#if DFT
 		// complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_cmpl));
@@ -975,7 +1007,7 @@ main (void) {
 		p = FFTW(plan_dft_2d)(2*N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVDFT
 		// inverse complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_cmpl));
@@ -994,7 +1026,7 @@ main (void) {
 		p = FFTW(plan_dft_2d)(2*N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y,*w;
@@ -1013,7 +1045,7 @@ main (void) {
 		p = FFTW(plan_dft_r2c_2d)(2*N,N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x,*z;
 		minfft_real *y,*w;
@@ -1034,7 +1066,7 @@ main (void) {
 		p = FFTW(plan_dft_c2r_2d)(2*N,N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT2
 		// DCT-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1051,7 +1083,7 @@ main (void) {
 		p = FFTW(plan_r2r_2d)(2*N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST2
 		// DST-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1068,7 +1100,7 @@ main (void) {
 		p = FFTW(plan_r2r_2d)(2*N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT3
 		// DCT-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1085,7 +1117,7 @@ main (void) {
 		p = FFTW(plan_r2r_2d)(2*N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST3
 		// DST-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1102,7 +1134,7 @@ main (void) {
 		p = FFTW(plan_r2r_2d)(2*N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1119,7 +1151,7 @@ main (void) {
 		p = FFTW(plan_r2r_2d)(2*N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(2*N*N*sizeof(minfft_real));
@@ -1160,14 +1192,14 @@ main (void) {
 #endif
 
 // compare results of two-dimensional transforms with Kiss FFT
-#if 0
+#if CMP_KISS && D2
 #include <unistd.h>
 	const int MAXN=1024;
 	int N,n,Ns[2];
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT
 #include "kiss_fftnd.h"
 		// complex DFT
 		kiss_fftnd_cfg cfg; // Kiss FFT config
@@ -1202,7 +1234,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVDFT
 #include "kiss_fftnd.h"
 		// inverse complex DFT
 		kiss_fftnd_cfg cfg; // Kiss FFT config
@@ -1237,7 +1269,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftndr.h"
 		// real DFT
 		if (N==1)
@@ -1271,7 +1303,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftndr.h"
 		// inverse real DFT
 		if (N==1)
@@ -1326,14 +1358,14 @@ main (void) {
 
 // compare forward and inverse two-dimensional transforms
 // with the identity transform
-#if 0
+#if ACC && D2
 #include <unistd.h>
 	const int MAXN=1024;
 	int N,n;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// forward and inverse complex DFT
 		minfft_cmpl *x,*y,*z;
 		x = malloc(N*N*sizeof(minfft_cmpl));
@@ -1359,7 +1391,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT || INVREALDFT
 		// forward and inverse real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y;
@@ -1384,7 +1416,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT2 || DCT3
 		// DCT-2 and DCT-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*sizeof(minfft_real));
@@ -1408,7 +1440,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST2 || DST3
 		// DST-2 and DST-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*sizeof(minfft_real));
@@ -1432,7 +1464,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*sizeof(minfft_real));
@@ -1456,7 +1488,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*sizeof(minfft_real));
@@ -1493,8 +1525,8 @@ main (void) {
 #endif
 
 // performance test of two-dimensional transforms
-#if 0
-	const int MINT=1;
+#if PERF && D2
+	const int MINT=10;
 	const int MAXN=1024;
 	const int R=10;
 	minfft_aux *a;
@@ -1503,7 +1535,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = malloc(N*N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = malloc(N*N*sizeof(minfft_cmpl));
@@ -1520,8 +1552,11 @@ main (void) {
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dft(x,y,a);
-//				minfft_invdft(x,y,a);
+#if DFT
+				minfft_dft(x,y,a);
+#elif INVDFT
+				minfft_invdft(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1533,7 +1568,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = malloc(N*N*sizeof(minfft_real));
 		minfft_cmpl *y = malloc(N*(N/2+1)*sizeof(minfft_cmpl));
@@ -1560,7 +1595,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = malloc(N*(N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = malloc(N*N*sizeof(minfft_real));
@@ -1589,7 +1624,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = malloc(N*N*sizeof(minfft_real));
 		minfft_real *y = malloc(N*N*sizeof(minfft_real));
@@ -1597,20 +1632,30 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] =(minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_mkaux_t2t3_2d(N,N);
-//		a = minfft_mkaux_t4_2d(N,N);
+#if DCT2 || DST2 || DCT3 || DST3
+		a = minfft_mkaux_t2t3_2d(N,N);
+#elif DCT4 || DST4
+		a = minfft_mkaux_t4_2d(N,N);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dct2(x,y,a);
-//				minfft_dst2(x,y,a);
-//				minfft_dct3(x,y,a);
-//				minfft_dst3(x,y,a);
-//				minfft_dct4(x,y,a);
-//				minfft_dst4(x,y,a);
+#if DCT2
+				minfft_dct2(x,y,a);
+#elif DST2
+				minfft_dst2(x,y,a);
+#elif DCT3
+				minfft_dct3(x,y,a);
+#elif DST3
+				minfft_dst3(x,y,a);
+#elif DCT4
+				minfft_dct4(x,y,a);
+#elif DST4
+				minfft_dst4(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -1629,9 +1674,9 @@ main (void) {
 #endif
 
 // performance test of two-dimensional FFTW
-#if 0
+#if PERF_FFTW && D2
 #include <fftw3.h>
-	const int MINT=1;
+	const int MINT=10;
 	const int MAXN=1024;
 	const int R=10;
 	FFTW(plan) p;
@@ -1640,7 +1685,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = fftw_malloc(N*N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = fftw_malloc(N*N*sizeof(minfft_cmpl));
@@ -1650,8 +1695,11 @@ main (void) {
 			(minfft_real)rand()/RAND_MAX-0.5+ \
 			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#if DFT
+		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+#elif INVDFT
+		p = FFTW(plan_dft_2d)(N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
@@ -1670,7 +1718,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = fftw_malloc(N*N*sizeof(minfft_real));
 		minfft_cmpl *y = fftw_malloc(N*(N/2+1)*sizeof(minfft_cmpl));
@@ -1697,7 +1745,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = fftw_malloc(N*(N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = fftw_malloc(N*N*sizeof(minfft_real));
@@ -1726,7 +1774,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = fftw_malloc(N*N*sizeof(minfft_real));
 		minfft_real *y = fftw_malloc(N*N*sizeof(minfft_real));
@@ -1734,12 +1782,19 @@ main (void) {
 		for (n=0; n<N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+#if DCT2
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+#elif DST2
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+#elif DCT3
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+#elif DST3
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+#elif DCT4
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+#elif DST4
+		p = FFTW(plan_r2r_2d)(N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
@@ -1765,8 +1820,8 @@ main (void) {
 #endif
 
 // performance test of two-dimensional Kiss FFT
-#if 0
-	const int MINT=1;
+#if PERF_KISS && D2
+	const int MINT=10;
 	const int MAXN=1024;
 	const int R=10;
 	int N,n,Ns[2];
@@ -1774,7 +1829,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 #include "kiss_fftnd.h"
 		// complex transforms
 		kiss_fftnd_cfg cfg;
@@ -1787,8 +1842,11 @@ main (void) {
 		}
 		// prepare config
 		Ns[0] = Ns[1] = N;
-//		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
-//		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
+#if DFT
+		cfg = kiss_fftnd_alloc(Ns,2,0,NULL,NULL);
+#elif INVDFT
+		cfg = kiss_fftnd_alloc(Ns,2,1,NULL,NULL);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
@@ -1807,7 +1865,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftndr.h"
 		// real DFT
 		if (N==1)
@@ -1839,7 +1897,7 @@ main (void) {
 		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftndr.h"
 		// inverse real DFT
 		if (N==1)
@@ -1882,7 +1940,7 @@ main (void) {
 // three-dimensional DFTs
 
 // compare results of three-dimensional transforms with FFTW
-#if 0
+#if CMP_FFTW && D3
 #include <unistd.h>
 #include <fftw3.h>
 	const int MAXN=64;
@@ -1892,7 +1950,7 @@ main (void) {
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
 		Ncmp = 4*N*2*N*N;
-#if 0
+#if DFT
 		// complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_cmpl));
@@ -1911,7 +1969,7 @@ main (void) {
 		p = FFTW(plan_dft_3d)(4*N,2*N,N,z,w,FFTW_FORWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVDFT
 		// inverse complex DFT
 		minfft_cmpl *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_cmpl));
@@ -1930,7 +1988,7 @@ main (void) {
 		p = FFTW(plan_dft_3d)(4*N,2*N,N,z,w,FFTW_BACKWARD,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y,*w;
@@ -1949,7 +2007,7 @@ main (void) {
 		p = FFTW(plan_dft_r2c_3d)(4*N,2*N,N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x,*z;
 		minfft_real *y,*w;
@@ -1970,7 +2028,7 @@ main (void) {
 		p = FFTW(plan_dft_c2r_3d)(4*N,2*N,N,z,w,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT2
 		// DCT-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -1987,7 +2045,7 @@ main (void) {
 		p = FFTW(plan_r2r_3d)(4*N,2*N,N,z,w,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST2
 		// DST-2
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -2004,7 +2062,7 @@ main (void) {
 		p = FFTW(plan_r2r_3d)(4*N,2*N,N,z,w,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT3
 		// DCT-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -2021,7 +2079,7 @@ main (void) {
 		p = FFTW(plan_r2r_3d)(4*N,2*N,N,z,w,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST3
 		// DST-3
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -2038,7 +2096,7 @@ main (void) {
 		p = FFTW(plan_r2r_3d)(4*N,2*N,N,z,w,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -2055,7 +2113,7 @@ main (void) {
 		p = FFTW(plan_r2r_3d)(4*N,2*N,N,z,w,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
 		FFTW(execute)(p);
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z,*w;
 		x = malloc(4*N*2*N*N*sizeof(minfft_real));
@@ -2095,14 +2153,14 @@ main (void) {
 #endif
 
 // compare results of three-dimensional transforms with Kiss FFT
-#if 0
+#if CMP_KISS && D3
 #include <unistd.h>
 	const int MAXN=64;
 	int N,n,Ns[3];
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT
 #include "kiss_fftnd.h"
 		// complex DFT
 		kiss_fftnd_cfg cfg; // Kiss FFT config
@@ -2137,7 +2195,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVDFT
 #include "kiss_fftnd.h"
 		// inverse complex DFT
 		kiss_fftnd_cfg cfg; // Kiss FFT config
@@ -2172,7 +2230,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftndr.h"
 		// real DFT
 		if (N==1)
@@ -2206,7 +2264,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftndr.h"
 		// inverse real DFT
 		if (N==1)
@@ -2261,14 +2319,14 @@ main (void) {
 
 // compare forward and inverse three-dimensional transforms
 // with the identity transform
-#if 0
+#if ACC && D3
 #include <unistd.h>
 	const int MAXN=128;
 	int N,n;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// forward and inverse complex DFT
 		minfft_cmpl *x,*y,*z;
 		x = malloc(N*N*N*sizeof(minfft_cmpl));
@@ -2294,7 +2352,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if REALDFT || INVREALDFT
 		// forward and inverse real DFT
 		minfft_real *x,*z;
 		minfft_cmpl *y;
@@ -2319,7 +2377,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT2 || DCT3
 		// DCT-2 and DCT-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*N*sizeof(minfft_real));
@@ -2343,7 +2401,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST2 || DST3
 		// DST-2 and DST-3
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*N*sizeof(minfft_real));
@@ -2367,7 +2425,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DCT4
 		// DCT-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*N*sizeof(minfft_real));
@@ -2391,7 +2449,7 @@ main (void) {
 			vmax = (v>vmax)?v:vmax;
 		}
 #endif
-#if 0
+#if DST4
 		// DST-4
 		minfft_real *x,*y,*z;
 		x = malloc(N*N*N*sizeof(minfft_real));
@@ -2428,8 +2486,8 @@ main (void) {
 #endif
 
 // performance test of three-dimensional transforms
-#if 0
-	const int MINT=1;
+#if PERF && D3
+	const int MINT=10;
 	const int MAXN=128;
 	const int R=10;
 	minfft_aux *a;
@@ -2438,7 +2496,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = malloc(N*N*N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = malloc(N*N*N*sizeof(minfft_cmpl));
@@ -2455,8 +2513,11 @@ main (void) {
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dft(x,y,a);
-//				minfft_invdft(x,y,a);
+#if DFT
+				minfft_dft(x,y,a);
+#elif INVDFT
+				minfft_invdft(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -2468,7 +2529,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = malloc(N*N*N*sizeof(minfft_real));
 		minfft_cmpl *y = malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
@@ -2495,7 +2556,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = malloc(N*N*N*sizeof(minfft_real));
@@ -2524,7 +2585,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = malloc(N*N*N*sizeof(minfft_real));
 		minfft_real *y = malloc(N*N*N*sizeof(minfft_real));
@@ -2532,20 +2593,30 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] =(minfft_real)rand()/RAND_MAX-0.5;
 		// prepare aux data
-//		a = minfft_mkaux_t2t3_3d(N,N,N);
-//		a = minfft_mkaux_t4_3d(N,N,N);
+#if DCT2 || DST2 || DCT3 || DST3
+		a = minfft_mkaux_t2t3_3d(N,N,N);
+#elif DCT4 || DST4
+		a = minfft_mkaux_t4_3d(N,N,N);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
 		for (r=0; r<R; ++r) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
-//				minfft_dct2(x,y,a);
-//				minfft_dst2(x,y,a);
-//				minfft_dct3(x,y,a);
-//				minfft_dst3(x,y,a);
-//				minfft_dct4(x,y,a);
-//				minfft_dst4(x,y,a);
+#if DCT2
+				minfft_dct2(x,y,a);
+#elif DST2
+				minfft_dst2(x,y,a);
+#elif DCT3
+				minfft_dct3(x,y,a);
+#elif DST3
+				minfft_dst3(x,y,a);
+#elif DCT4
+				minfft_dct4(x,y,a);
+#elif DST4
+				minfft_dst4(x,y,a);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
@@ -2564,9 +2635,9 @@ main (void) {
 #endif
 
 // performance test of three-dimensional FFTW
-#if 0
+#if PERF_FFTW && D3
 #include <fftw3.h>
-	const int MINT=1;
+	const int MINT=10;
 	const int MAXN=128;
 	const int R=10;
 	FFTW(plan) p;
@@ -2575,7 +2646,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 		// complex transforms
 		minfft_cmpl *x = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
 		minfft_cmpl *y = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
@@ -2585,8 +2656,11 @@ main (void) {
 			(minfft_real)rand()/RAND_MAX-0.5+ \
 			I*((minfft_real)rand()/RAND_MAX-0.5);
 		// prepare plan
-//		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
-//		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#if DFT
+		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_FORWARD,FFTW_ESTIMATE);
+#elif INVDFT
+		p = FFTW(plan_dft_3d)(N,N,N,x,y,FFTW_BACKWARD,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
@@ -2605,7 +2679,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if REALDFT
 		// real DFT
 		minfft_real *x = fftw_malloc(N*N*N*sizeof(minfft_real));
 		minfft_cmpl *y = fftw_malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
@@ -2632,7 +2706,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if INVREALDFT
 		// inverse real DFT
 		minfft_cmpl *x = fftw_malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
 		minfft_real *y = fftw_malloc(N*N*N*sizeof(minfft_real));
@@ -2661,7 +2735,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
-#if 0
+#if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
 		minfft_real *x = fftw_malloc(N*N*N*sizeof(minfft_real));
 		minfft_real *y = fftw_malloc(N*N*N*sizeof(minfft_real));
@@ -2669,12 +2743,19 @@ main (void) {
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
 		// prepare plan
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
-//		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+#if DCT2
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE);
+#elif DST2
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE);
+#elif DCT3
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE);
+#elif DST3
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE);
+#elif DCT4
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE);
+#elif DST4
+		p = FFTW(plan_r2r_3d)(N,N,N,x,y,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
@@ -2700,8 +2781,8 @@ main (void) {
 #endif
 
 // performance test of three-dimensional Kiss FFT
-#if 0
-	const int MINT=1;
+#if PERF_KISS && D3
+	const int MINT=10;
 	const int MAXN=128;
 	const int R=10;
 	int N,n,Ns[3];
@@ -2709,7 +2790,7 @@ main (void) {
 	double d,v,s,q,avg,stdd;
 	struct timeval t1,t2;
 	for (N=1; N<=MAXN; N*=2) {
-#if 0
+#if DFT || INVDFT
 #include "kiss_fftnd.h"
 		// complex transforms
 		kiss_fftnd_cfg cfg;
@@ -2722,8 +2803,11 @@ main (void) {
 		}
 		// prepare config
 		Ns[0] = Ns[1] = Ns[2] = N;
-//		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
-//		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
+#if DFT
+		cfg = kiss_fftnd_alloc(Ns,3,0,NULL,NULL);
+#elif INVDFT
+		cfg = kiss_fftnd_alloc(Ns,3,1,NULL,NULL);
+#endif
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
@@ -2742,7 +2826,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if REALDFT
 #include "kiss_fftndr.h"
 		// real DFT
 		if (N==1)
@@ -2774,7 +2858,7 @@ main (void) {
 		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
 			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
-#if 0
+#if INVREALDFT
 #include "kiss_fftndr.h"
 		// inverse real DFT
 		if (N==1)
