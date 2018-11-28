@@ -33,8 +33,10 @@ make_complex_transform (
 		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
 		int n; // counter
 		minfft_cmpl *t=a->t; // temporary buffer
+		// strided transform of contiguous hyperplanes
 		for (n=0; n<N2; ++n)
 			make_complex_transform(x+n*N1,t+n,N2,a->sub1,s_1d);
+		// strided transform of contiguous rows
 		for (n=0; n<N1; ++n)
 			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
 	}
@@ -61,8 +63,10 @@ make_real_transform (
 		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
 		int n; // counter
 		minfft_real *t=a->t; // temporary buffer
+		// strided transform of contiguous hyperplanes
 		for (n=0; n<N2; ++n)
 			make_real_transform(x+n*N1,t+n,N2,a->sub1,s_1d);
+		// strided transform of contiguous rows
 		for (n=0; n<N1; ++n)
 			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
 	}
@@ -332,14 +336,16 @@ minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a) {
 		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
 		int n; // counter
 		minfft_cmpl *t=a->t; // temporary buffer
+		// strided real DFT of contiguous rows
 		for (n=0; n<N2; ++n)
 			s_realdft_1d(x+n*N1,t+n,N2,a->sub1);
+		// strided complex DFT of contiguous hyperplanes
 		for (n=0; n<N1/2+1; ++n)
 			s_dft(t+n*N2,z+n,N1/2+1,a->sub2);
 	}
 }
 
-// strided one-dimensional inverse real DFT
+// one-dimensional inverse real DFT
 inline static void
 invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	int n; // counter
@@ -385,11 +391,14 @@ minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 		int n; // counter
 		minfft_cmpl *t=a->t; // temporary buffer
 		int k;
+		// transpose
 		for (n=0; n<N2; ++n)
 			for (k=0; k<N1/2+1; ++k)
 				t[n+N2*k] = z[(N1/2+1)*n+k];
+		// strided complex DFT of contiguous hyperplanes
 		for (n=0; n<N1/2+1; ++n)
 			s_invdft(t+n*N2,z+n,N1/2+1,a->sub2);
+		// inverse real DFT of contiguous rows
 		for (n=0; n<N2; ++n)
 			invrealdft_1d(z+n*(N1/2+1),y+n*N1,a->sub1);
 	}
@@ -743,14 +752,14 @@ minfft_mkaux_realdft (int d, int *Ns) {
 		return minfft_mkaux_realdft_1d(Ns[0]);
 	else {
 		p = 1;
-		for (i=1; i<d; ++i)
+		for (i=0; i<d-1; ++i)
 			p *= Ns[i];
 		a = malloc(sizeof(minfft_aux));
-		a->N = Ns[0]*p;
-		a->t = malloc((Ns[0]/2+1)*p*sizeof(minfft_cmpl));
+		a->N = Ns[d-1]*p;
+		a->t = malloc((Ns[d-1]/2+1)*p*sizeof(minfft_cmpl));
 		a->e = NULL;
-		a->sub1 = minfft_mkaux_realdft_1d(Ns[0]);
-		a->sub2 = minfft_mkaux_dft(d-1,Ns+1);
+		a->sub1 = minfft_mkaux_realdft_1d(Ns[d-1]);
+		a->sub2 = minfft_mkaux_dft(d-1,Ns);
 		return a;
 	}
 }
