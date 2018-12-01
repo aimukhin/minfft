@@ -4,10 +4,11 @@ A minimalistic Fast Fourier Transform library.
 It achieves high performance by simple means.
 
 ## Overview
-The library provides routines for computing:
+The library computes:
 
 * Forward and inverse complex DFT,
-* Real symmetric transforms (DCT and DST) of the types 2, 3, 4
+* Forward and inverse DFT of real data,
+* Cosine and sine transforms of the types 2, 3, 4
 
 of any dimensionality and power-of-two lengths.
 
@@ -17,6 +18,8 @@ of any dimensionality and power-of-two lengths.
 - [Transforms](#transforms)
   - [Complex DFT](#complex-dft)
   - [Inverse complex DFT](#inverse-complex-dft)
+  - [Real DFT](#real-dft)
+  - [Inverse real DFT](#inverse-real-dft)
   - [DCT-2](#dct-2)
   - [DST-2](#dst-2)
   - [DCT-3](#dct-3)
@@ -66,8 +69,8 @@ By default, the library operates with double precision:
 	typedef double minfft_real;
 	typedef double complex minfft_cmpl;
 ```
-By changing these definitions, you can adapt the library to use `float`
-or `long double` instead.
+By changing these definitions in the header file, you can adapt the
+library to use `float` or `long double` instead.
 
 ## Transforms
 Below is a list of transform functions and their auxiliary data
@@ -100,6 +103,37 @@ minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
 minfft_aux* minfft_mkaux_dft_3d (int N1, int N2, int N3);
 minfft_aux* minfft_mkaux_dft (int d, int *Ns);
 void minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
+```
+
+### Real DFT
+This transform returns mostly non-redundant part of the complex DFT of
+real data. For real array of dimensions ![](docs/realdft-in.svg) it
+produces a complex array of dimensions ![](docs/realdft-out.svg).
+
+Note that output takes a little more space than input. For in-place
+operation, make sure the data buffer can contain both.
+
+```C
+minfft_aux* minfft_mkaux_realdft_1d (int N);
+minfft_aux* minfft_mkaux_realdft_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_realdft_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_realdft (int d, int *Ns);
+void minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a);
+```
+
+### Inverse real DFT
+This is the inversion of the real DFT. It takes a complex array of
+dimensions ![](docs/realdft-out.svg), and returns a real array of
+dimensions ![](docs/realdft-in.svg). It is better fed with the output of
+the real DFT routine, especially in multi-dimensional case, since it
+expects input with some residual redundancies.
+
+```C
+minfft_aux* minfft_mkaux_realdft_1d (int N);
+minfft_aux* minfft_mkaux_realdft_2d (int N1, int N2);
+minfft_aux* minfft_mkaux_realdft_3d (int N1, int N2, int N3);
+minfft_aux* minfft_mkaux_realdft (int d, int *Ns);
+void minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-2
@@ -176,7 +210,8 @@ one-dimensional transforms are given below:
 Transform                                | Auxiliary data size
 -----------------------------------------|---------------------
 Complex DFT of length `N`                | `2N` complex numbers
-Type-2 or Type-3 transform of length `N` | `4.5N` real numbers
+Real DFT of length `N`                   | `3.5N` real numbers
+Type-2 or Type-3 transform of length `N` | `5.5N` real numbers
 Type-4 transform of length `N`           | `6N` real numbers
 
 Multi-dimensional transforms use a temporary buffer of the same size as
