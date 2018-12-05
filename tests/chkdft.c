@@ -4,9 +4,8 @@ Dimensionality: D1 D2 D3
 Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 */
 
-// repeat counts for performance measurements
-#define MINT 10
-#define R 10
+// target standard deviation for performance measurements
+#define MAXSIGMA 0.01
 
 #define FFTW(OP) fftw_##OP
 //#define FFTW(OP) fftwf_##OP
@@ -472,6 +471,7 @@ main (void) {
 // performance test of one-dimensional transforms
 #if PERF && D1
 	const int MAXN=65536*16;
+	const int MINT=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -492,7 +492,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DFT
@@ -500,16 +501,6 @@ main (void) {
 #elif INVDFT
 				minfft_invdft(x,y,a);
 #endif
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -523,20 +514,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_realdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -552,20 +534,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_invrealdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -583,7 +556,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DCT2
@@ -599,17 +573,24 @@ main (void) {
 #elif DST4
 				minfft_dst4(x,y,a);
 #endif
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%8d %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		minfft_free_aux(a);
@@ -620,6 +601,7 @@ main (void) {
 #if PERF_FFTW && D1
 #include <fftw3.h>
 	const int MAXN=65536*16;
+	const int MINT=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -644,20 +626,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -671,20 +644,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -700,20 +664,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -739,21 +694,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%8d %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		FFTW(destroy_plan)(p);
@@ -763,6 +726,7 @@ main (void) {
 // performance test of one-dimensional Kiss FFT
 #if PERF_KISS && D1
 	const int MAXN=65536*16;
+	const int MINT=10;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -788,20 +752,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fft(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if REALDFT
 #include "kiss_fftr.h"
@@ -819,20 +774,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftr(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if INVREALDFT
 #include "kiss_fftr.h"
@@ -855,21 +801,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftri(cfg,x,y);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%8d %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%8d %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(*(kiss_fft_scalar*)y));
+		// free resources
 		free(x);
 		free(y);
 		free(cfg);
@@ -1331,6 +1285,7 @@ main (void) {
 // performance test of two-dimensional transforms
 #if PERF && D2
 	const int MAXN=1024;
+	const int MINT=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -1351,7 +1306,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DFT
@@ -1359,16 +1315,6 @@ main (void) {
 #elif INVDFT
 				minfft_invdft(x,y,a);
 #endif
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -1382,20 +1328,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_realdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -1411,20 +1348,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_invrealdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -1442,7 +1370,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DCT2
@@ -1458,17 +1387,24 @@ main (void) {
 #elif DST4
 				minfft_dst4(x,y,a);
 #endif
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**2 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		minfft_free_aux(a);
@@ -1479,6 +1415,7 @@ main (void) {
 #if PERF_FFTW && D2
 #include <fftw3.h>
 	const int MAXN=1024;
+	const int MINT=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -1503,20 +1440,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -1530,20 +1458,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -1559,20 +1478,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -1598,21 +1508,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**2 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		FFTW(destroy_plan)(p);
@@ -1622,6 +1540,7 @@ main (void) {
 // performance test of two-dimensional Kiss FFT
 #if PERF_KISS && D2
 	const int MAXN=1024;
+	const int MINT=10;
 	int N,n,Ns[2];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1648,20 +1567,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftnd(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if REALDFT
 #include "kiss_fftndr.h"
@@ -1680,20 +1590,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftndr(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if INVREALDFT
 #include "kiss_fftndr.h"
@@ -1714,21 +1615,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*2*log2(MAXN+1)/(N*N*2*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftndri(cfg,x,y);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**2 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**2 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(*(kiss_fft_scalar*)y));
+		// free resources
 		free(x);
 		free(y);
 		free(cfg);
@@ -2189,6 +2098,7 @@ main (void) {
 // performance test of three-dimensional transforms
 #if PERF && D3
 	const int MAXN=128;
+	const int MINT=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -2209,7 +2119,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DFT
@@ -2217,16 +2128,6 @@ main (void) {
 #elif INVDFT
 				minfft_invdft(x,y,a);
 #endif
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -2240,20 +2141,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_realdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -2269,20 +2161,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				minfft_invrealdft(x,y,a);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -2300,7 +2183,8 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 #if DCT2
@@ -2316,17 +2200,24 @@ main (void) {
 #elif DST4
 				minfft_dst4(x,y,a);
 #endif
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**3 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		minfft_free_aux(a);
@@ -2337,6 +2228,7 @@ main (void) {
 #if PERF_FFTW && D3
 #include <fftw3.h>
 	const int MAXN=128;
+	const int MINT=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -2361,20 +2253,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if REALDFT
 		// real DFT
@@ -2388,20 +2271,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if INVREALDFT
 		// inverse real DFT
@@ -2417,20 +2291,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
@@ -2456,21 +2321,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				FFTW(execute)(p);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**3 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(y[0]));
+		// free resources
 		free(x);
 		free(y);
 		FFTW(destroy_plan)(p);
@@ -2480,6 +2353,7 @@ main (void) {
 // performance test of three-dimensional Kiss FFT
 #if PERF_KISS && D3
 	const int MAXN=128;
+	const int MINT=10;
 	int N,n,Ns[3];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -2506,20 +2380,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftnd(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if REALDFT
 #include "kiss_fftndr.h"
@@ -2538,20 +2403,11 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftndr(cfg,x,y);
-			gettimeofday(&t2,NULL);
-			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
-			v = log2(d/T);
-			s += v;
-			q += v*v;
-		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)hypot(y[0].r,y[0].i));
 #endif
 #if INVREALDFT
 #include "kiss_fftndr.h"
@@ -2572,21 +2428,29 @@ main (void) {
 		// do tests
 		T = MINT*MAXN*MAXN*MAXN*3*log2(MAXN+1)/(N*N*N*3*log2(N+1));
 		s = q = 0.0;
-		for (r=0; r<R; ++r) {
+		r = 1;
+		while (1) {
 			gettimeofday(&t1,NULL);
 			for (t=0; t<T; ++t)
 				kiss_fftndri(cfg,x,y);
+#endif
 			gettimeofday(&t2,NULL);
 			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
 			v = log2(d/T);
 			s += v;
 			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
 		}
-		avg = s/R;
-		stdd = sqrt((q-s*s/R)/(R-1));
-		printf("%5d**3 %10d %10.3f %10.3f\t\t%g\n",
-			N,R*T,avg,stdd,(double)fabs(y[0]));
-#endif
+		// print results
+		printf("%5d**3 %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(*(kiss_fft_scalar*)y));
+		// free resources
 		free(x);
 		free(y);
 		free(cfg);
