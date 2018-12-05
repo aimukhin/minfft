@@ -111,7 +111,7 @@ real data. For real array of dimensions ![](docs/realdft-in.svg) it
 produces a complex array of dimensions ![](docs/realdft-out.svg).
 
 Note that output takes a little more space than input. For in-place
-operation, make sure the data buffer can contain both.
+operation, make sure the data buffer is big enough to contain output.
 
 ```C
 minfft_aux* minfft_mkaux_realdft_1d (int N);
@@ -204,8 +204,11 @@ void minfft_free_aux (minfft_aux *a);
 ```
 
 ## Memory requirements
-The amounts of memory allocated for the auxiliary data of the
-one-dimensional transforms are given below:
+Our library does not try to save memory, and allocates temporary buffers
+where it benefits performance.
+
+The amounts of memory, allocated for the auxiliary data of the
+one-dimensional transforms, are given below:
 
 Transform                                | Auxiliary data size
 -----------------------------------------|---------------------
