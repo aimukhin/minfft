@@ -1,8 +1,12 @@
 /*
-Tests: CMP_FFTW CMP_KISS ACC PERF PERF_FFTW PERF_KISS
+Tests: CMP_FFTW CMP_KISS INV PERF PERF_FFTW PERF_KISS
 Dimensionality: D1 D2 D3
 Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 */
+
+// repeat counts for performance measurements
+#define MINT 10
+#define R 10
 
 #define FFTW(OP) fftw_##OP
 //#define FFTW(OP) fftwf_##OP
@@ -301,7 +305,7 @@ main (void) {
 
 // compare forward and inverse one-dimensional transforms
 // with the identity transform
-#if ACC && D1
+#if INV && D1
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
@@ -467,9 +471,7 @@ main (void) {
 
 // performance test of one-dimensional transforms
 #if PERF && D1
-	const int MINT=10;
 	const int MAXN=65536*16;
-	const int R=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -617,9 +619,7 @@ main (void) {
 // performance test of one-dimensional FFTW
 #if PERF_FFTW && D1
 #include <fftw3.h>
-	const int MINT=10;
 	const int MAXN=65536*16;
-	const int R=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -762,9 +762,7 @@ main (void) {
 
 // performance test of one-dimensional Kiss FFT
 #if PERF_KISS && D1
-	const int MINT=10;
 	const int MAXN=65536*16;
-	const int R=10;
 	int N,n;
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -1164,7 +1162,7 @@ main (void) {
 
 // compare forward and inverse two-dimensional transforms
 // with the identity transform
-#if ACC && D2
+#if INV && D2
 #include <unistd.h>
 	const int MAXN=1024;
 	int N,n;
@@ -1332,9 +1330,7 @@ main (void) {
 
 // performance test of two-dimensional transforms
 #if PERF && D2
-	const int MINT=10;
 	const int MAXN=1024;
-	const int R=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -1482,9 +1478,7 @@ main (void) {
 // performance test of two-dimensional FFTW
 #if PERF_FFTW && D2
 #include <fftw3.h>
-	const int MINT=10;
 	const int MAXN=1024;
-	const int R=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -1627,9 +1621,7 @@ main (void) {
 
 // performance test of two-dimensional Kiss FFT
 #if PERF_KISS && D2
-	const int MINT=10;
 	const int MAXN=1024;
-	const int R=10;
 	int N,n,Ns[2];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
@@ -2028,7 +2020,7 @@ main (void) {
 
 // compare forward and inverse three-dimensional transforms
 // with the identity transform
-#if ACC && D3
+#if INV && D3
 #include <unistd.h>
 	const int MAXN=128;
 	int N,n;
@@ -2196,9 +2188,7 @@ main (void) {
 
 // performance test of three-dimensional transforms
 #if PERF && D3
-	const int MINT=10;
 	const int MAXN=128;
-	const int R=10;
 	minfft_aux *a;
 	int N,n;
 	int r,T,t;
@@ -2346,9 +2336,7 @@ main (void) {
 // performance test of three-dimensional FFTW
 #if PERF_FFTW && D3
 #include <fftw3.h>
-	const int MINT=10;
 	const int MAXN=128;
-	const int R=10;
 	FFTW(plan) p;
 	int N,n;
 	int r,T,t;
@@ -2491,9 +2479,7 @@ main (void) {
 
 // performance test of three-dimensional Kiss FFT
 #if PERF_KISS && D3
-	const int MINT=10;
 	const int MAXN=128;
-	const int R=10;
 	int N,n,Ns[3];
 	int r,T,t;
 	double d,v,s,q,avg,stdd;
