@@ -4,7 +4,8 @@ A minimalistic Fast Fourier Transform library.
 It achieves high performance by simple means.
 
 ## Overview
-The library computes:
+
+The library routines compute:
 
 * Forward and inverse complex DFT,
 * Forward and inverse DFT of real data,
@@ -107,8 +108,15 @@ void minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 
 ### Real DFT
 This transform returns mostly non-redundant part of the complex DFT of
-real data. For real array of dimensions ![](docs/realdft-in.svg) it
-produces a complex array of dimensions ![](docs/realdft-out.svg).
+real data.
+
+For a real array of dimensions
+
+![](docs/realdft-in.svg)
+
+it produces a complex array of dimensions
+
+![](docs/realdft-out.svg)
 
 Note that output takes a little more space than input. For in-place
 operation, make sure the data buffer is big enough to contain output.
@@ -122,11 +130,19 @@ void minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a);
 ```
 
 ### Inverse real DFT
-This is the inversion of the real DFT. It takes a complex array of
-dimensions ![](docs/realdft-out.svg), and returns a real array of
-dimensions ![](docs/realdft-in.svg). It is better fed with the output of
-the real DFT routine, especially in multi-dimensional case, since it
-expects input with some residual redundancies.
+This is the inversion of the real DFT.
+
+It takes a complex array of dimensions 
+
+![](docs/realdft-out.svg)
+
+and returns a real array of dimensions
+
+![](docs/realdft-in.svg)
+
+It is better fed with the output of the real DFT routine, especially in
+multi-dimensional case, since it expects input with some residual
+redundancies.
 
 ```C
 minfft_aux* minfft_mkaux_realdft_1d (int N);
@@ -246,7 +262,7 @@ in microseconds per call.
 
 ## Test environment
 The libraries being compared are built with the GNU C compiler version
-8.1.1 for the x86_64 platform. The only optimization option set is
+8.2.1 for the x86_64 platform. The only optimization option set is
 `-Ofast`.
 
 The version of FFTW used is 3.3.8. To make a fair comparison, we disable
@@ -260,7 +276,7 @@ The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
 The results of many performance and accuracy tests, along with the
-program used to conduct them, are available in the `tests` subdirectory.
+programs used to conduct them, are available in the `tests` subdirectory.
 
 ## Conformance
 The source code conforms to the C99 standard.
