@@ -33,6 +33,7 @@ of any dimensionality and power-of-two lengths.
 - [Performance](#performance)
 - [Test environment](#test-environment)
 - [Conformance](#conformance)
+- [SIMD branches](#simd-branches)
 - [License](#license)
 
 ## Interface
@@ -280,6 +281,14 @@ programs used to conduct them, are available in the `tests` subdirectory.
 
 ## Conformance
 The source code conforms to the C99 standard.
+
+## SIMD branches
+We also provide machine-dependent branches, optimized manually for SIMD
+architectures. These are:
+
+- [neon-single](../../tree/neon-single)
+- [sse3-double](../../tree/sse3-double)
+- [sse3-single](../../tree/sse3-single)
 
 ## License
 MIT.
