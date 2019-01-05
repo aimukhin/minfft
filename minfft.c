@@ -327,6 +327,7 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	int N=a->N; // transform length
 	minfft_cmpl *e=a->e; // exponent vector
 	minfft_cmpl *w=(minfft_cmpl*)y; // alias
+	minfft_cmpl *t=a->t; // temporary buffer
 	if (N==1) {
 		// trivial case
 		y[0] = creal(z[0]);
@@ -343,16 +344,16 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	}
 	// reduce to inverse complex DFT of length N/2
 	// prepare complex DFT inputs
-	z[0] = (z[0]+z[N/2])+I*(z[0]-z[N/2]);
+	t[0] = (z[0]+z[N/2])+I*(z[0]-z[N/2]);
 	for (n=1; n<N/4; ++n) {
 		u = z[n]+conj(z[N/2-n]);
 		v = I*(z[n]-conj(z[N/2-n]))*conj(e[n]);
-		z[n] = u+v;
-		z[N/2-n] = conj(u-v);
+		t[n] = u+v;
+		t[N/2-n] = conj(u-v);
 	}
-	z[N/4] = 2*conj(z[N/4]);
+	t[N/4] = 2*conj(z[N/4]);
 	// do inverse complex DFT
-	s_invdft_1d(z,w,1,a->sub1);
+	s_invdft_1d(t,w,1,a->sub1);
 }
 
 // inverse real DFT of arbitrary dimension
