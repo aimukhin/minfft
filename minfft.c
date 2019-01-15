@@ -639,13 +639,24 @@ make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
 		for (i=0; i<d; ++i)
 			p *= Ns[i];
 		a = malloc(sizeof(minfft_aux));
+		if (a==NULL)
+			goto err;
 		a->N = p;
 		a->t = malloc(p*datasz);
+		if (a->t==NULL)
+			goto err;
 		a->e = NULL;
 		a->sub1 = make_aux(d-1,Ns+1,datasz,aux_1d);
+		if (a->sub1==NULL)
+			goto err;
 		a->sub2 = (*aux_1d)(Ns[0]);
+		if (a->sub2==NULL)
+			goto err;
 		return a;
 	}
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // make aux data for one-dimensional forward or inverse complex DFT
@@ -655,10 +666,16 @@ minfft_mkaux_dft_1d (int N) {
 	int n;
 	minfft_cmpl *e;
 	a = malloc(sizeof(minfft_aux));
+	if (a==NULL)
+		goto err;
 	a->N = N;
 	if (N>=16) {
 		a->t = malloc(N*sizeof(minfft_cmpl));
+		if (a->t==NULL)
+			goto err;
 		a->e = malloc(N*sizeof(minfft_cmpl));
+		if (a->e==NULL)
+			goto err;
 		e = a->e;
 		while (N>=16) {
 			for (n=0; n<N/4; ++n) {
@@ -673,6 +690,9 @@ minfft_mkaux_dft_1d (int N) {
 	}
 	a->sub1 = a->sub2 = NULL;
 	return a;
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // make aux data for any-dimensional forward or inverse complex DFT
@@ -700,10 +720,16 @@ minfft_mkaux_realdft_1d (int N) {
 	int n;
 	minfft_cmpl *e;
 	a = malloc(sizeof(minfft_aux));
+	if (a==NULL)
+		goto err;
 	a->N = N;
 	if (N>=4) {
 		a->t = malloc((N/2)*sizeof(minfft_cmpl));
+		if (a->t==NULL)
+			goto err;
 		a->e = malloc((N/4)*sizeof(minfft_cmpl));
+		if (a->e==NULL)
+			goto err;
 		e = a->e;
 		for (n=0; n<N/4; ++n)
 			*e++ = exp(-2*pi*I*n/N);
@@ -715,6 +741,9 @@ minfft_mkaux_realdft_1d (int N) {
 	}
 	a->sub2 = NULL;
 	return a;
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // make aux data for any-dimensional real DFT
@@ -730,13 +759,24 @@ minfft_mkaux_realdft (int d, int *Ns) {
 		for (i=0; i<d-1; ++i)
 			p *= Ns[i];
 		a = malloc(sizeof(minfft_aux));
+		if (a==NULL)
+			goto err;
 		a->N = Ns[d-1]*p;
 		a->t = malloc((Ns[d-1]/2+1)*p*sizeof(minfft_cmpl));
+		if (a->t==NULL)
+			goto err;
 		a->e = NULL;
 		a->sub1 = minfft_mkaux_realdft_1d(Ns[d-1]);
+		if (a->sub1==NULL)
+			goto err;
 		a->sub2 = minfft_mkaux_dft(d-1,Ns);
+		if (a->sub2==NULL)
+			goto err;
 		return a;
 	}
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // convenience routines for two- and three-dimensional real DFT
@@ -758,10 +798,16 @@ minfft_mkaux_t2t3_1d (int N) {
 	int n;
 	minfft_cmpl *e;
 	a = malloc(sizeof(minfft_aux));
+	if (a==NULL)
+		goto err;
 	a->N = N;
 	if (N>=2) {
 		a->t = malloc((N+2)*sizeof(minfft_real)); // for in-place real DFT
+		if (a->t==NULL)
+			goto err;
 		a->e = malloc((N/2)*sizeof(minfft_cmpl));
+		if (a->e==NULL)
+			goto err;
 		e = a->e;
 		for (n=0; n<N/2; ++n)
 			*e++ = exp(-2*pi*I*n/(4*N));
@@ -770,8 +816,13 @@ minfft_mkaux_t2t3_1d (int N) {
 		a->e = NULL;
 	}
 	a->sub1 = minfft_mkaux_realdft_1d(N);
+	if (a->sub1==NULL)
+		goto err;
 	a->sub2 = NULL;
 	return a;
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // make aux data for any-dimensional Type-2 or Type-3 transforms
@@ -799,10 +850,16 @@ minfft_mkaux_t4_1d (int N) {
 	int n;
 	minfft_cmpl *e;
 	a = malloc(sizeof(minfft_aux));
+	if (a==NULL)
+		goto err;
 	a->N = N;
 	if (N>=2) {
 		a->t = malloc((N/2)*sizeof(minfft_cmpl));
+		if (a->t==NULL)
+			goto err;
 		a->e = malloc((N/2+N)*sizeof(minfft_cmpl));
+		if (a->e==NULL)
+			goto err;
 		e = a->e;
 		for (n=0; n<N/2; ++n)
 			*e++ = exp(-2*pi*I*n/(2*N));
@@ -813,8 +870,13 @@ minfft_mkaux_t4_1d (int N) {
 		a->e = NULL;
 	}
 	a->sub1 = minfft_mkaux_dft_1d(N/2);
+	if (a->sub1==NULL)
+		goto err;
 	a->sub2 = NULL;
 	return a;
+err:	// memory allocation error
+	minfft_free_aux(a);
+	return NULL;
 }
 
 // make aux data for an any-dimensional Type-4 transform
