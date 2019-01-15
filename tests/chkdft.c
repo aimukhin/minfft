@@ -610,8 +610,8 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if DFT || INVDFT
 		// complex transforms
-		minfft_cmpl *x = fftw_malloc(N*sizeof(minfft_cmpl));
-		minfft_cmpl *y = fftw_malloc(N*sizeof(minfft_cmpl));
+		minfft_cmpl *x = FFTW(malloc)(N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = FFTW(malloc)(N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N; ++n)
 			x[n] = \
@@ -634,8 +634,8 @@ main (void) {
 #endif
 #if REALDFT
 		// real DFT
-		minfft_real *x = fftw_malloc(N*sizeof(minfft_real));
-		minfft_cmpl *y = fftw_malloc((N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *x = FFTW(malloc)(N*sizeof(minfft_real));
+		minfft_cmpl *y = FFTW(malloc)((N/2+1)*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
@@ -652,8 +652,8 @@ main (void) {
 #endif
 #if INVREALDFT
 		// inverse real DFT
-		minfft_cmpl *x = fftw_malloc((N/2+1)*sizeof(minfft_cmpl));
-		minfft_real *y = fftw_malloc(N*sizeof(minfft_real));
+		minfft_cmpl *x = FFTW(malloc)((N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *y = FFTW(malloc)(N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N/2+1; ++n)
 			x[n] = \
@@ -672,8 +672,8 @@ main (void) {
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
-		minfft_real *x = fftw_malloc(N*sizeof(minfft_real));
-		minfft_real *y = fftw_malloc(N*sizeof(minfft_real));
+		minfft_real *x = FFTW(malloc)(N*sizeof(minfft_real));
+		minfft_real *y = FFTW(malloc)(N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
@@ -1424,8 +1424,8 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if DFT || INVDFT
 		// complex transforms
-		minfft_cmpl *x = fftw_malloc(N*N*sizeof(minfft_cmpl));
-		minfft_cmpl *y = fftw_malloc(N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *x = FFTW(malloc)(N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = FFTW(malloc)(N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
 			x[n] = \
@@ -1448,8 +1448,8 @@ main (void) {
 #endif
 #if REALDFT
 		// real DFT
-		minfft_real *x = fftw_malloc(N*N*sizeof(minfft_real));
-		minfft_cmpl *y = fftw_malloc(N*(N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *x = FFTW(malloc)(N*N*sizeof(minfft_real));
+		minfft_cmpl *y = FFTW(malloc)(N*(N/2+1)*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
@@ -1466,8 +1466,8 @@ main (void) {
 #endif
 #if INVREALDFT
 		// inverse real DFT
-		minfft_cmpl *x = fftw_malloc(N*(N/2+1)*sizeof(minfft_cmpl));
-		minfft_real *y = fftw_malloc(N*N*sizeof(minfft_real));
+		minfft_cmpl *x = FFTW(malloc)(N*(N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *y = FFTW(malloc)(N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*(N/2+1); ++n)
 			x[n] = \
@@ -1486,8 +1486,8 @@ main (void) {
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
-		minfft_real *x = fftw_malloc(N*N*sizeof(minfft_real));
-		minfft_real *y = fftw_malloc(N*N*sizeof(minfft_real));
+		minfft_real *x = FFTW(malloc)(N*N*sizeof(minfft_real));
+		minfft_real *y = FFTW(malloc)(N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
@@ -2237,8 +2237,8 @@ main (void) {
 	for (N=1; N<=MAXN; N*=2) {
 #if DFT || INVDFT
 		// complex transforms
-		minfft_cmpl *x = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
-		minfft_cmpl *y = fftw_malloc(N*N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *x = FFTW(malloc)(N*N*N*sizeof(minfft_cmpl));
+		minfft_cmpl *y = FFTW(malloc)(N*N*N*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
 			x[n] = \
@@ -2261,8 +2261,8 @@ main (void) {
 #endif
 #if REALDFT
 		// real DFT
-		minfft_real *x = fftw_malloc(N*N*N*sizeof(minfft_real));
-		minfft_cmpl *y = fftw_malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *x = FFTW(malloc)(N*N*N*sizeof(minfft_real));
+		minfft_cmpl *y = FFTW(malloc)(N*N*(N/2+1)*sizeof(minfft_cmpl));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
@@ -2279,8 +2279,8 @@ main (void) {
 #endif
 #if INVREALDFT
 		// inverse real DFT
-		minfft_cmpl *x = fftw_malloc(N*N*(N/2+1)*sizeof(minfft_cmpl));
-		minfft_real *y = fftw_malloc(N*N*N*sizeof(minfft_real));
+		minfft_cmpl *x = FFTW(malloc)(N*N*(N/2+1)*sizeof(minfft_cmpl));
+		minfft_real *y = FFTW(malloc)(N*N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N*(N/2+1); ++n)
 			x[n] = \
@@ -2299,8 +2299,8 @@ main (void) {
 #endif
 #if DCT2 || DST2 || DCT3 || DST3 || DCT4 || DST4
 		// real symmetric transforms
-		minfft_real *x = fftw_malloc(N*N*N*sizeof(minfft_real));
-		minfft_real *y = fftw_malloc(N*N*N*sizeof(minfft_real));
+		minfft_real *x = FFTW(malloc)(N*N*N*sizeof(minfft_real));
+		minfft_real *y = FFTW(malloc)(N*N*N*sizeof(minfft_real));
 		// prepare test vector
 		for (n=0; n<N*N*N; ++n)
 			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
