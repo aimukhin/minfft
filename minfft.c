@@ -877,13 +877,14 @@ minfft_mkaux_t4_1d (int N) {
 			*e++ = exp(-2*pi*I*n/(2*N));
 		for (n=0; n<N; ++n)
 			*e++ = exp(-2*pi*I*(2*n+1)/(8*N));
+		a->sub1 = minfft_mkaux_dft_1d(N/2);
+		if (a->sub1==NULL)
+			goto err;
 	} else {
 		a->t = NULL;
 		a->e = NULL;
+		a->sub1 = NULL;
 	}
-	a->sub1 = minfft_mkaux_dft_1d(N/2);
-	if (a->sub1==NULL)
-		goto err;
 	a->sub2 = NULL;
 	return a;
 err:	// memory allocation error
