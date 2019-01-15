@@ -79,7 +79,7 @@ Below is a list of transform functions and their auxiliary data
 makers. For convenience, we provide makers for one-, two- and
 three-dimensional transforms, along with a generic any-dimensional one.
 The order of dimensions follows the C way — the last index changes most
-quickly.
+quickly. Auxiliary data makers return NULL if an error occured.
 
 Also we give a formal definition of each transform for the
 one-dimensional case.
