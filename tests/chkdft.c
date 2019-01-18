@@ -7,9 +7,13 @@ Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 // target standard deviation for performance measurements
 #define MAXSIGMA 0.01
 
-#define FFTW(OP) fftw_##OP
-//#define FFTW(OP) fftwf_##OP
-//#define FFTW(OP) fftwl_##OP
+// macros for calling variants of FFTW
+#ifndef FFTW_PFX
+#define FFTW_PFX fftw
+#endif
+#define FFTW(OP) FFTW2(FFTW_PFX,OP)
+#define FFTW2(FFTW_PFX,OP) FFTW22(FFTW_PFX,OP)
+#define FFTW22(FFTW_PFX,OP) FFTW_PFX##_##OP
 
 #include <stdio.h>
 #include <sys/time.h>
