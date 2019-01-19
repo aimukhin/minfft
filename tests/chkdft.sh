@@ -2,7 +2,7 @@
 
 # Compiler flags
 cflags="-std=c99 -pedantic -Wall -lm -L.. -lminfft"
-cflags_fftw=$(echo -I ~/build/fftw/lib/ -L ~/build/fftw/lib/ -lfftw3)
+cflags_fftw=$(echo -I ~/build/fftw-mi/include/ -L ~/build/fftw-mi/lib/ -lfftw3)
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
 
 # Compile tests, run them and save results
