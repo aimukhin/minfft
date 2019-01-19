@@ -255,29 +255,34 @@ repeated application of its one-dimensional routine along each
 dimension.
 
 ## Performance
-Below is a plot of the execution times of our one-dimensional complex
-DFT routine, compared with FFTW and Kiss FFT. The results are measured
-in microseconds per call.
+Below is a plot of the speed and accuracy of our library, compared with
+FFTW and Kiss FFT.
 
-![](docs/perf-dft-1d.svg)
+![](docs/speed.svg)
+
+![](docs/accuracy.svg)
 
 ## Test environment
+We use `benchFFT` tool version 3.1 to benchmark our library and its
+competitors.
+
 The libraries being compared are built with the GNU C compiler version
 8.2.1 for the x86_64 platform. The only optimization option set is
 `-Ofast`.
 
 The version of FFTW used is 3.3.8. To make a fair comparison, we disable
 all its SIMD optimizations, and therefore compare performance of the
-machine-independent code. FFTW plans are created with the option
-FFTW_ESTIMATE.
+machine-independent code. FFTW plans are created with the default option
+FFTW_MEASURE.
 
 The version of Kiss FFT used is 1.3.0.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
-The results of many performance and accuracy tests, along with the
-programs used to conduct them, are available in the `tests` subdirectory.
+The results of the performance and accuracy tests, along with the
+programs used to conduct them, are available in the `tests`
+subdirectory.
 
 ## Conformance
 The source code conforms to the C99 standard.
