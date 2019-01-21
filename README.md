@@ -142,7 +142,7 @@ and returns a real array of dimensions
 ![](docs/realdft-in.svg)
 
 It is better fed with the output of the real DFT routine, especially in
-multi-dimensional case, since it expects input with some residual
+the multi-dimensional case, since it expects input with some residual
 redundancies.
 
 ```C
