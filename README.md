@@ -9,7 +9,7 @@ The library routines compute:
 
 * Forward and inverse complex DFT,
 * Forward and inverse DFT of real data,
-* Cosine and sine transforms of the types 2, 3, 4
+* Cosine and sine transforms of types 2, 3, 4
 
 of any dimensionality and power-of-two lengths.
 
@@ -111,8 +111,8 @@ makers, and transform routines.
 
 For convenience, we provide aux data makers for one-, two- and
 three-dimensional transforms, along with a generic any-dimensional one.
-The dimensions are passed to makers in the C way — that is, the last
-index changes most quickly. Therefore, when calling from Fortran, array
+The dimensions are passed to aux maker routines in the C order (most
+rapidly varying index is the last). So, when calling from Fortran, array
 dimensions must be passed in the reverse order:
 
 ```Fortran
