@@ -1,5 +1,5 @@
 # minfft
-A minimalistic Fast Fourier Transform library.
+A minimalist Fast Fourier Transform library.
 
 It achieves high performance by simple means.
 
@@ -12,6 +12,8 @@ The library routines compute:
 * Cosine and sine transforms of the types 2, 3, 4
 
 of any dimensionality and power-of-two lengths.
+
+The library provides C and Fortran interfaces.
 
 ## Contents
 - [Interface](#interface)
@@ -39,12 +41,12 @@ of any dimensionality and power-of-two lengths.
 ## Interface
 All transform routines take three arguments:
 
-* a pointer to the input data `x`,
-* a pointer to the output data `y`,
-* a pointer to the auxiliary data `a`.
+* a pointer to input data `x`,
+* a pointer to output data `y`,
+* a pointer to auxiliary data `a`.
 
 The transform routines are capable of both in-place and out-of-place
-operation. In the latter case the input data would be left intact.
+operation. In the latter case the input is left intact.
 
 Auxiliary data contain chains of precomputed constants and temporary
 memory buffers, required by a transform routine to do its job. Once
@@ -52,12 +54,14 @@ prepared, the auxiliary data can be reused as many times as needed.
 Also, the same auxiliary data fit for both forward and inverse
 transforms of the same kind.
 
-Here is an example to give you an idea how the library functions are
-used:
+These examples in C and Fortran show how the library functions are used:
+
 ```C
-	double complex x[N],y[N];
+	#include "minfft.h"
+	minfft_cmpl x[N],y[N]; // input and output buffers
+	minfft_aux *a; // aux data
 	// prepare aux data
-	minfft_aux *a = minfft_mkaux_dft_1d(N);
+	a=minfft_mkaux_dft_1d(N);
 	// do transforms
 	minfft_dft(x,y,a);
 	minfft_invdft(y,x,a);
@@ -65,24 +69,58 @@ used:
 	minfft_free_aux(a);
 ```
 
+```Fortran
+	use minfft
+	complex(minfft_cmpl),dimension(n) :: x,y ! input and output buffers
+	type(minfft_aux) :: a ! aux data
+	! prepare aux data
+	a=minfft_mkaux_dft_1d(n)
+	! do transforms
+	call minfft_dft(x,y,a)
+	call minfft_invdft(y,x,a)
+	! free aux data
+	call minfft_free_aux(a)
+```
+
 ## Data types
+The library defines its own types for real and complex numbers, and for
+auxiliary data:
+
+C             | Fortran
+--------------|-----------------------
+`minfft_real` | `real(minfft_real)`
+`minfft_cmpl` | `complex(minfft_cmpl)`
+`minfft_aux`  | `type(minfft_aux)`
+
 By default, the library operates with double precision:
+
 ```C
 	typedef double minfft_real;
 	typedef double complex minfft_cmpl;
 ```
-By changing these definitions in the header file, you can adapt the
-library to use `float` or `long double` instead.
+
+To adapt the library to use `float` or `long double`, just change these
+definitions in the header file, and recompile the library.
+
+Type mappings in the Fortran interface also need to be changed
+accordingly.
 
 ## Transforms
-Below is a list of transform functions and their auxiliary data
-makers. For convenience, we provide makers for one-, two- and
-three-dimensional transforms, along with a generic any-dimensional one.
-The order of dimensions follows the C way — the last index changes most
-quickly. Auxiliary data makers return NULL if an error occured.
+Below is a list of transforms with their definitions, auxiliary data
+makers, and transform routines.
 
-Also we give a formal definition of each transform for the
-one-dimensional case.
+For convenience, we provide aux data makers for one-, two- and
+three-dimensional transforms, along with a generic any-dimensional one.
+The dimensions are passed to makers in the C way — that is, the last
+index changes most quickly. Therefore, when calling from Fortran, array
+dimensions must be passed in the reverse order:
+
+```Fortran
+	complex(minfft_cmpl),dimension(n1,n2,n3) :: z
+	a=minfft_mkaux_dft_3d(n3,n2,n1)
+```
+
+Auxiliary data makers return NULL if an error occured.
 
 Our definitions of transforms, and input and output data format of the
 transform routines, are fully compatible with FFTW.
@@ -216,6 +254,7 @@ void minfft_dst4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ## Freeing auxiliary data
 If not needed anymore, the memory consumed by the auxiliary data can
 be freed by the `minfft_free_aux()` routine:
+
 ```C
 void minfft_free_aux (minfft_aux *a);
 ```
@@ -285,7 +324,7 @@ programs used to conduct them, are available in the `tests`
 subdirectory.
 
 ## Conformance
-The source code conforms to the C99 standard.
+The source code conforms to the C99 and Fortran 2003 standards.
 
 ## SIMD branches
 We also provide machine-dependent branches, optimized manually for SIMD
