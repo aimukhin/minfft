@@ -1,3 +1,5 @@
+.POSIX:
+
 CC = gcc
 CFLAGS = -std=c99 -pedantic -Wall -Wextra -Ofast
 AS = as
