@@ -1,7 +1,9 @@
 #!/bin/sh
 
+# Path to minfft library
+minfft=../../..
 # Compiler flags
-cflags="-std=c99 -pedantic -Wall -lm -L.. -lminfft"
+cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -L$minfft -I$minfft"
 cflags_fftw=$(echo -I ~/build/fftw-sse3/include/ -L ~/build/fftw-sse3/lib/ -DFFTW_PFX=fftwf -lfftw3f)
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
 
@@ -10,7 +12,7 @@ do_tests() {
 	t=$1
 	for d in $2; do
 		for x in $3; do
-			cc -D$t -D$d -D$x chkdft.c $cflags $4
+			cc -D$t -D$d -D$x $minfft/tests/chkdft.c $cflags $4
 			echo "# $t $d $x"
 			./a.out
 		done
