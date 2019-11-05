@@ -15,11 +15,9 @@ Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 #define FFTW2(FFTW_PFX,OP) FFTW22(FFTW_PFX,OP)
 #define FFTW22(FFTW_PFX,OP) FFTW_PFX##_##OP
 
-/*
 #if CMP_NE10 || PERF_NE10
 #include "NE10.h"
 #endif
-*/
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -314,7 +312,6 @@ main (void) {
 
 // compare results of one-dimensional transforms with Ne10
 #if CMP_NE10 && D1
-#include "NE10.h"
 #include <unistd.h>
 	const int MAXN=65536*16;
 	int N,n;
@@ -1009,7 +1006,6 @@ main (void) {
 
 // performance test of one-dimensional Ne10
 #if PERF_NE10 && D1
-#include "NE10.h"
 	const int MAXN=65536*16;
 	const int MINT=10;
 	int N,n;
