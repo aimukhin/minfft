@@ -93,18 +93,8 @@ C             | Fortran
 `minfft_cmpl` | `complex(minfft_cmpl)`
 `minfft_aux`  | `type(minfft_aux)`
 
-By default, the library operates with double precision:
-
-```C
-	typedef double minfft_real;
-	typedef double complex minfft_cmpl;
-```
-
-To adapt the library to use `float` or `long double`, just change these
-definitions in the header file, and recompile the library.
-
-Type mappings in the Fortran interface also need to be changed
-accordingly.
+By default, the library operates with double precision, but can easily
+be adapted for single or extended precision.
 
 ## Transforms
 Below is a list of transforms with their definitions, auxiliary data
