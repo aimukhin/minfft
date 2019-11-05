@@ -17,6 +17,12 @@ single:
 	$(CC) $(CFLAGS) -c minfft.c -o minfft.o
 	ar rcs libminfft.a minfft.o
 
+longdouble:
+	sed "s/REAL/long double/" minfft.h.template > minfft.h
+	sed "s/REAL/C_LONG_DOUBLE/" minfft.f03.template > minfft.f03
+	$(CC) $(CFLAGS) -c minfft.c -o minfft.o
+	ar rcs libminfft.a minfft.o
+
 sse3-double:
 	sed "s/REAL/double/" minfft.h.template > minfft.h
 	sed "s/REAL/C_DOUBLE/" minfft.f03.template > minfft.f03
