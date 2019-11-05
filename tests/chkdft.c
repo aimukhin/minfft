@@ -1,5 +1,5 @@
 /*
-Tests: CMP_FFTW CMP_KISS INV PERF PERF_FFTW PERF_KISS
+Tests: CMP_FFTW CMP_KISS CMP_NE10 INV PERF PERF_FFTW PERF_KISS PERF_NE10
 Dimensionality: D1 D2 D3
 Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 */
@@ -14,6 +14,12 @@ Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 #define FFTW(OP) FFTW2(FFTW_PFX,OP)
 #define FFTW2(FFTW_PFX,OP) FFTW22(FFTW_PFX,OP)
 #define FFTW22(FFTW_PFX,OP) FFTW_PFX##_##OP
+
+/*
+#if CMP_NE10 || PERF_NE10
+#include "NE10.h"
+#endif
+*/
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -303,6 +309,173 @@ main (void) {
 		free(w);
 		minfft_free_aux(a);
 		free(cfg);
+	}
+#endif
+
+// compare results of one-dimensional transforms with Ne10
+#if CMP_NE10 && D1
+#include "NE10.h"
+#include <unistd.h>
+	const int MAXN=65536*16;
+	int N,n;
+	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	minfft_aux *a; // aux data
+	ne10_init();
+	for (N=1; N<=MAXN; N*=2) {
+#if DFT
+		// complex DFT
+		ne10_fft_cfg_float32_t cfg; // Ne10 config
+		minfft_cmpl *x,*y;
+		ne10_fft_cpx_float32_t *z,*w;
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		w = malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n) {
+			x[n] = \
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = minfft_mkaux_dft_1d(N);
+		minfft_dft(x,y,a);
+		cfg = ne10_fft_alloc_c2c_float32(N);
+		ne10_fft_c2c_1d_float32(w,z,cfg,0);
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = fabs(y[n]-(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = fabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		// free resources
+		ne10_fft_destroy_c2c_float32(cfg);
+#endif
+#if INVDFT
+		// inverse complex DFT
+		ne10_fft_cfg_float32_t cfg; // Ne10 config
+		minfft_cmpl *x,*y;
+		ne10_fft_cpx_float32_t *z,*w;
+		x = malloc(N*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		w = malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n) {
+			x[n] = \
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		// do transforms
+		a = minfft_mkaux_dft_1d(N);
+		minfft_invdft(x,y,a);
+		cfg = ne10_fft_alloc_c2c_float32(N);
+		ne10_fft_c2c_1d_float32(w,z,cfg,1);
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = fabs(y[n]-N*(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = fabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		// free resources
+		ne10_fft_destroy_c2c_float32(cfg);
+#endif
+#if REALDFT
+		if (N==1)
+			continue;
+		ne10_fft_r2c_cfg_float32_t cfg; // Ne10 config
+		minfft_real *x;
+		minfft_cmpl *y;
+		ne10_float32_t *z;
+		ne10_fft_cpx_float32_t *w;
+		x = malloc(N*sizeof(minfft_real));
+		y = malloc((N/2+1)*sizeof(minfft_cmpl));
+		z = malloc(N*sizeof(ne10_float32_t));
+		w = malloc((N/2+1)*sizeof(ne10_fft_cpx_float32_t));
+		// init inputs
+		srand(getpid());
+		for (n=0; n<N; ++n)
+			z[n] = x[n] = (minfft_real)rand()/RAND_MAX-0.5;
+		// do transforms
+		a = minfft_mkaux_realdft_1d(N);
+		minfft_realdft(x,y,a);
+		cfg = ne10_fft_alloc_r2c_float32(N);
+		ne10_fft_r2c_1d_float32(w,z,cfg);
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N/2+1; ++n) {
+			d = fabs(y[n]-(w[n].r+I*w[n].i));
+			dmax = (d>dmax)?d:dmax;
+			v = fabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		// free resources
+		ne10_fft_destroy_r2c_float32(cfg);
+#endif
+#if INVREALDFT
+		// inverse real DFT
+		if (N==1)
+			continue;
+		ne10_fft_r2c_cfg_float32_t cfg; // Ne10 config
+		minfft_cmpl *x;
+		minfft_real *y;
+		ne10_fft_cpx_float32_t *z;
+		ne10_float32_t *w;
+		x = malloc((N/2+1)*sizeof(minfft_cmpl));
+		y = malloc(N*sizeof(minfft_real));
+		z = malloc((N/2+1)*sizeof(ne10_fft_cpx_float32_t));
+		w = malloc(N*sizeof(ne10_float32_t));
+		// init inputs
+		srand(getpid());
+		z[0].r = x[0] = (minfft_real)rand()/RAND_MAX-0.5;
+		z[0].i = 0;
+		for (n=1; n<N/2; ++n) {
+			x[n] = \
+			(minfft_real)rand()/RAND_MAX-0.5+ \
+			I*((minfft_real)rand()/RAND_MAX-0.5);
+			z[n].r = creal(x[n]);
+			z[n].i = cimag(x[n]);
+		}
+		z[N/2].r = x[N/2] = (minfft_real)rand()/RAND_MAX-0.5;
+		z[N/2].i = 0;
+		// do transforms
+		a = minfft_mkaux_realdft_1d(N);
+		minfft_invrealdft(x,y,a);
+		cfg = ne10_fft_alloc_r2c_float32(N);
+		ne10_fft_c2r_1d_float32(w,z,cfg);
+		// compare results
+		dmax = 0;
+		vmax = 0;
+		for (n=0; n<N; ++n) {
+			d = fabs(y[n]-N*w[n]);
+			dmax = (d>dmax)?d:dmax;
+			v = fabs(y[n]);
+			vmax = (v>vmax)?v:vmax;
+		}
+		// free resources
+		ne10_fft_destroy_r2c_float32(cfg);
+#endif
+		// print results
+		printf("%12d\t%g\n",N,(double)(dmax/vmax));
+		// free resources
+		free(x);
+		free(y);
+		free(z);
+		free(w);
+		minfft_free_aux(a);
 	}
 #endif
 
@@ -831,6 +1004,116 @@ main (void) {
 		free(x);
 		free(y);
 		free(cfg);
+	}
+#endif
+
+// performance test of one-dimensional Ne10
+#if PERF_NE10 && D1
+#include "NE10.h"
+	const int MAXN=65536*16;
+	const int MINT=10;
+	int N,n;
+	int r,T,t;
+	double d,v,s,q,avg,stdd;
+	struct timeval t1,t2;
+	ne10_init();
+	for (N=1; N<=MAXN; N*=2) {
+#if DFT || INVDFT
+		// complex transforms
+		ne10_fft_cfg_float32_t cfg;
+		ne10_fft_cpx_float32_t *x=malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		ne10_fft_cpx_float32_t *y=malloc(N*sizeof(ne10_fft_cpx_float32_t));
+		// prepare test vector
+		for (n=0; n<N; ++n) {
+			x[n].r = (minfft_real)rand()/RAND_MAX-0.5;
+			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
+		}
+		// prepare config
+		cfg = ne10_fft_alloc_c2c_float32(N);
+		// do tests
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
+		s = q = 0.0;
+		r = 1;
+		while (1) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+#if DFT
+				ne10_fft_c2c_1d_float32(y,x,cfg,0);
+#elif INVDFT
+				ne10_fft_c2c_1d_float32(y,x,cfg,1);
+#endif
+#endif
+#if REALDFT
+		// real DFT
+		if (N==1)
+			continue;
+		ne10_fft_r2c_cfg_float32_t cfg;
+		ne10_float32_t *x = malloc(N*sizeof(ne10_float32_t));
+		ne10_fft_cpx_float32_t *y = malloc((N/2+1)*sizeof(ne10_fft_cpx_float32_t));
+		// prepare test vector
+		for (n=0; n<N; ++n)
+			x[n] = (minfft_real)rand()/RAND_MAX-0.5;
+		// prepare config
+		cfg = ne10_fft_alloc_r2c_float32(N);
+		// do tests
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
+		s = q = 0.0;
+		r = 1;
+		while (1) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+				ne10_fft_r2c_1d_float32(y,x,cfg);
+#endif
+#if INVREALDFT
+		// inverse real DFT
+		if (N==1)
+			continue;
+		ne10_fft_r2c_cfg_float32_t cfg;
+		ne10_fft_cpx_float32_t *x = malloc((N/2+1)*sizeof(ne10_fft_cpx_float32_t));
+		ne10_float32_t *y = malloc(N*sizeof(ne10_float32_t));
+		// prepare test vector
+		x[0].r = (minfft_real)rand()/RAND_MAX-0.5;
+		x[0].i = 0;
+		for (n=1; n<N/2; ++n) {
+			x[n].r = (minfft_real)rand()/RAND_MAX-0.5;
+			x[n].i = (minfft_real)rand()/RAND_MAX-0.5;
+		}
+		x[N/2].r = (minfft_real)rand()/RAND_MAX-0.5;
+		// prepare config
+		cfg = ne10_fft_alloc_r2c_float32(N);
+		// do tests
+		T = MINT*MAXN*log2(MAXN+1)/(N*log2(N+1));
+		s = q = 0.0;
+		r = 1;
+		while (1) {
+			gettimeofday(&t1,NULL);
+			for (t=0; t<T; ++t)
+				ne10_fft_c2r_1d_float32(y,x,cfg);
+#endif
+			gettimeofday(&t2,NULL);
+			d = (t2.tv_sec-t1.tv_sec)*1000000+(t2.tv_usec-t1.tv_usec);
+			v = log2(d/T);
+			s += v;
+			q += v*v;
+			if (r>1) {
+				avg = s/r;
+				stdd = sqrt((q-s*avg)/(r-1));
+				if (stdd<MAXSIGMA)
+					break;
+			}
+			++r;
+		}
+		// print results
+		printf("%8d %10d %3d %10.3f %10.3f\t\t%g\n",
+			N,T,r,avg,stdd,(double)fabs(*(ne10_float32_t*)y));
+		// free resources
+		free(x);
+		free(y);
+#if DFT || INVDFT
+		ne10_fft_destroy_c2c_float32(cfg);
+#elif REALDFT || INVREALDFT
+		ne10_fft_destroy_r2c_float32(cfg);
+#endif
 	}
 #endif
 
