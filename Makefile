@@ -50,4 +50,4 @@ neon-single:
 	ar rcs libminfft.a minfft.o rs_dft_1d.o rs_invdft_1d.o mkaux_dft_1d.o
 
 clean:
-	rm -f *.o *.a
+	rm -f minfft.h minfft.f03 *.o *.a
