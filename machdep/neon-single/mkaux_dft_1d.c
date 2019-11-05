@@ -11,9 +11,8 @@ extern const minfft_real pi;
 
 // make aux data for one-dimensional forward or inverse complex DFT
 
-//
-//
-//
+// a modified routine with two iterations unrolled and values rearranged
+// to facilitate parallel processing in assembly-language code
 
 minfft_aux*
 minfft_mkaux_dft_1d (int N) {
