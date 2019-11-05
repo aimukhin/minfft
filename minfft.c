@@ -63,6 +63,7 @@ mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1
 // *** complex transforms ***
 
 // recursive strided one-dimensional DFT
+#ifndef MACHDEP
 inline static void
 rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
@@ -142,6 +143,10 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	rs_dft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
 	rs_dft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
 }
+#else
+// assembly-language routine
+void rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e);
+#endif
 
 // strided one-dimensional DFT
 inline static void
@@ -162,6 +167,7 @@ minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 }
 
 // recursive strided one-dimensional inverse DFT
+#ifndef MACHDEP
 inline static void
 rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
@@ -241,6 +247,10 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	rs_invdft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
 	rs_invdft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
 }
+#else
+// assembly-language routine
+void rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e);
+#endif
 
 // strided one-dimensional inverse DFT
 inline static void
