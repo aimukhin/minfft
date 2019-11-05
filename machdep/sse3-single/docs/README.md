@@ -19,9 +19,9 @@ Below is a plot of the speed and accuracy of our assembly-language
 complex DFT routine, compared with the FFTW library, built with
 machine-specific optimizations.
 
-![](docs/speed.svg)
+![](speed.svg)
 
-![](docs/accuracy.svg)
+![](accuracy.svg)
 
 ## Test environment
 The test program and machine, and the versions of compiler and FFTW are

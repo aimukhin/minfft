@@ -19,9 +19,9 @@ Below is a plot of the speed and accuracy of our assembly-language
 complex DFT routine, compared with the FFTW library, built with
 machine-specific optimizations, and with the Ne10 library.
 
-![](docs/speed.svg)
+![](speed.svg)
 
-![](docs/accuracy.svg)
+![](accuracy.svg)
 
 ## Test environment
 We use `benchFFT` tool version 3.1 for performance measurements. The
