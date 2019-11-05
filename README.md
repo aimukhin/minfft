@@ -331,6 +331,7 @@ systems.  The makefile contains the following targets:
 
 - `double` (default)
 - `single`
+- `longdouble`
 - `neon-single`
 - `sse3-double`
 - `sse3-single`
