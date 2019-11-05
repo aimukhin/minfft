@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Compiler flags
-cflags="-std=c99 -pedantic -Wall -lm -L.. -lminfft"
+cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -I.. -L.."
 cflags_fftw=$(echo -I ~/build/fftw-mi/include/ -L ~/build/fftw-mi/lib/ -lfftw3)
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
 
