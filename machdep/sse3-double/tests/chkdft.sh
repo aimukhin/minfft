@@ -10,7 +10,7 @@ do_tests() {
 	t=$1
 	for d in $2; do
 		for x in $3; do
-			cc -D$t -D$d -D$x chkdft.c $cflags $4
+			cc -D$t -D$d -D$x ../../../tests/chkdft.c $cflags $4
 			echo "# $t $d $x"
 			./a.out
 		done
