@@ -35,7 +35,7 @@ The library provides C and Fortran interfaces.
 - [Performance](#performance)
 - [Test environment](#test-environment)
 - [Conformance](#conformance)
-- [SIMD branches](#simd-branches)
+- [SIMD code](#simd-code)
 - [Build](#build)
 - [License](#license)
 
@@ -327,13 +327,13 @@ subdirectory.
 ## Conformance
 The source code conforms to the C99 and Fortran 2003 standards.
 
-## SIMD branches
-We also provide machine-dependent branches, optimized manually for SIMD
-architectures. These are:
+## SIMD code
+For some SIMD architectures we provide optimized versions, written
+manually in assembly language:
 
-- [neon-single](../../tree/neon-single)
-- [sse3-double](../../tree/sse3-double)
-- [sse3-single](../../tree/sse3-single)
+- [neon-single](machdep/neon-single/docs/README.md)
+- [sse3-double](machdep/sse3-double/docs/README.md)
+- [sse3-single](machdep/sse3-single/docs/README.md)
 
 ## Build
 We provide `Makefile` to facilitate building the library on POSIX
