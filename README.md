@@ -36,6 +36,7 @@ The library provides C and Fortran interfaces.
 - [Test environment](#test-environment)
 - [Conformance](#conformance)
 - [SIMD branches](#simd-branches)
+- [Build](#build)
 - [License](#license)
 
 ## Interface
@@ -333,6 +334,16 @@ architectures. These are:
 - [neon-single](../../tree/neon-single)
 - [sse3-double](../../tree/sse3-double)
 - [sse3-single](../../tree/sse3-single)
+
+## Build
+We provide `Makefile` to facilitate building the library on POSIX
+systems.  The makefile contains the following targets:
+
+- `double` (default)
+- `single`
+- `neon-single`
+- `sse3-double`
+- `sse3-single`
 
 ## License
 MIT.
