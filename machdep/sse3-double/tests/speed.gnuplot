@@ -4,14 +4,13 @@ set ylabel "Mflops"
 set xtics 1
 set ytics 200
 set grid
-set key bottom right
 log2(x)=log(x)/log(2)
 set out "speed.svg"
 set term svg
 plot [] [0:] \
 	"minfft-sse3.speed" using (log2($3)):4 \
-		with lines title "minfft (sse3-double branch)" lc "blue", \
+		with lines title "minfft sse3-double" lc "blue", \
 	"fftw3-sse3.speed" using (log2($3)):4 \
-		with lines title "FFTW (sse2/sse3 optimizations)" lc "green"
+		with lines title "FFTW sse2/sse3" lc "green"
 unset out
 unset term
