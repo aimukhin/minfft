@@ -80,3 +80,17 @@ if [ $t = PERF_NE10 -o $t = ALL ]; then
 	xforms="DFT INVDFT REALDFT INVREALDFT"
 	do_tests PERF_NE10 "$dims" "$xforms" "$cflags_ne10"
 fi
+
+# Test of Fortran interface (by comparison with FFTW)
+if [ $t = CMP_FFTW_FORTRAN -o $t = ALL ]; then
+	dims="D1 D2 D3"
+	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
+	fflags="-L.. -lminfft -lfftw3"
+	for d in $dims; do
+		for x in $xforms; do
+			gfortran -D$d -D$x chkdft.F95 $fflags
+			echo "# $d $x"
+			./a.out
+		done
+	done
+fi
