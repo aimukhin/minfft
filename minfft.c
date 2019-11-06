@@ -71,6 +71,8 @@ inline static void
 rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
 	minfft_cmpl t0,t1,t2,t3; // temporary values
+	minfft_real *xr,*xi,*tr,*ti,*er,*ei; // arrays of real and imaginary parts
+	minfft_real t0r,t0i,t1r,t1i,t2r,t2i,t3r,t3i; // temporary values
 	// split-radix DIF
 	if (N==1) {
 		// trivial terminal case
@@ -130,16 +132,37 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 		return;
 	}
 	// recursion
+	// prepare pointers
+	xr=(minfft_real*)x;
+	xi=((minfft_real*)x)+1;
+	tr=(minfft_real*)t;
+	ti=((minfft_real*)t)+1;
+	er=(minfft_real*)e;
+	ei=((minfft_real*)e)+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
-		t0 = x[n]+x[n+N/2];
-		t1 = x[n+N/4]+x[n+3*N/4];
-		t2 = x[n]-x[n+N/2];
-		t3 = I*(x[n+N/4]-x[n+3*N/4]);
-		t[n] = t0;
-		t[n+N/4] = t1;
-		t[n+N/2] = (t2-t3)*e[2*n];
-		t[n+3*N/4] = (t2+t3)*e[2*n+1];
+		// use real arithmetics in this most time-consuming loop
+		// since compilers often poorly optimize complex arithmetics
+		t0r = xr[2*n]+xr[2*n+N];
+		t0i = xi[2*n]+xi[2*n+N];
+		t1r = xr[2*n+N/2]+xr[2*n+3*N/2];
+		t1i = xi[2*n+N/2]+xi[2*n+3*N/2];
+		t2r = xr[2*n]-xr[2*n+N];
+		t2i = xi[2*n]-xi[2*n+N];
+		t3r = -xi[2*n+N/2]+xi[2*n+3*N/2];
+		t3i = xr[2*n+N/2]-xr[2*n+3*N/2];
+		tr[2*n] = t0r;
+		ti[2*n] = t0i;
+		tr[2*n+N/2] = t1r;
+		ti[2*n+N/2] = t1i;
+		t0r=t2r-t3r;
+		t0i=t2i-t3i;
+		t1r=t2r+t3r;
+		t1i=t2i+t3i;
+		tr[2*n+N] = t0r*er[4*n]-t0i*ei[4*n];
+		ti[2*n+N] = t0r*ei[4*n]+t0i*er[4*n];
+		tr[2*n+3*N/2] = t1r*er[4*n+2]-t1i*ei[4*n+2];
+		ti[2*n+3*N/2] = t1r*ei[4*n+2]+t1i*er[4*n+2];
 	}
 	// call sub-transforms
 	rs_dft_1d(N/2,t,t,y,2*sy,e+N/2);
