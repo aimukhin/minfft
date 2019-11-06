@@ -7,7 +7,7 @@
 >
 
 <title>Gnuplot</title>
-<desc>Produced by GNUPLOT 5.2 patchlevel 5 </desc>
+<desc>Produced by GNUPLOT 5.2 patchlevel 7 </desc>
 
 <g id="gnuplot_canvas">
 
@@ -59,7 +59,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M96.8,360.6 L283.8,360.6 M566.7,360.6 L575.0,360.6  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M96.8,360.6 L416.6,360.6 M566.7,360.6 L575.0,360.6  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -267,7 +267,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M298.1,404.4 L298.1,395.4 M298.1,341.4 L298.1,54.1  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M298.1,404.4 L298.1,54.1  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -280,7 +280,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M323.3,404.4 L323.3,395.4 M323.3,341.4 L323.3,54.1  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M323.3,404.4 L323.3,54.1  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -293,7 +293,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M348.5,404.4 L348.5,395.4 M348.5,341.4 L348.5,54.1  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M348.5,404.4 L348.5,54.1  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -306,7 +306,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M373.7,404.4 L373.7,395.4 M373.7,341.4 L373.7,54.1  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M373.7,404.4 L373.7,54.1  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -319,7 +319,7 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M398.8,404.4 L398.8,395.4 M398.8,341.4 L398.8,54.1  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M398.8,404.4 L398.8,54.1  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -423,7 +423,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M96.8,54.1 L96.8,404.4 L575.0,404.4 L575.0,54.1 L96.8,54.1 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(16.3,229.3) rotate(270)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
+	<g transform="translate(25.3,229.3) rotate(270)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="middle">
 		<text><tspan font-family="Arial" >Relative L</tspan><tspan font-family="Arial"  font-size="9.6" dy="3.60px">2</tspan><tspan font-family="Arial"  font-size="12.0" dy="-3.60px"> error</tspan></text>
 	</g>
 </g>
@@ -437,27 +437,29 @@
 		<text><tspan font-family="Arial" >Accuracy of one-dimensional single precision out-of-place forward complex DFT of size N</tspan></text>
 	</g>
 </g>
-	<g id="gnuplot_plot_1" ><title>minfft (neon-single branch)</title>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+	<g id="gnuplot_plot_1" ><title>minfft neon</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.9,354.3)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >minfft (neon-single branch)</tspan></text>
+		<text><tspan font-family="Arial" >minfft neon</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0,   0, 255)'  d='M516.2,350.4 L558.4,350.4 M96.8,372.8 L122.0,372.0 L147.1,369.6 L172.3,350.8 L197.5,323.0 L222.6,301.9
-		L247.8,293.2 L273.0,297.6 L298.1,275.7 L323.3,275.7 L348.5,266.9 L373.7,257.3 L398.8,251.1 L424.0,244.1
-		L449.2,238.0 L474.3,231.0 L499.5,224.9 L524.7,217.9 L549.8,211.7 L575.0,205.6  '/></g>
+	<path stroke='rgb(  0,   0, 255)'  d='M516.2,350.4 L558.4,350.4 M96.8,372.8 L122.0,372.0 L147.1,369.6 L172.3,350.8 L197.5,325.8 L222.6,301.9
+		L247.8,281.8 L273.0,266.0 L298.1,253.8 L323.3,234.5 L348.5,225.7 L373.7,212.6 L398.8,199.5 L424.0,182.8
+		L449.2,171.5 L474.3,156.6 L499.5,142.6 L524.7,128.5 L549.8,115.4 L575.0,101.4  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>FFTW (neon optimizations)</title>
+	<g id="gnuplot_plot_2" ><title>FFTW neon</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.9,372.3)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >FFTW (neon optimizations)</tspan></text>
+		<text><tspan font-family="Arial" >FFTW neon</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 255,   0)'  d='M516.2,368.4 L558.4,368.4 M96.8,372.8 L122.0,368.1 L147.1,342.0 L172.3,332.7 L197.5,333.7 L222.6,330.5
-		L247.8,322.3 L273.0,310.7 L298.1,311.6 L323.3,307.2 L348.5,299.3 L373.7,295.8 L398.8,290.6 L424.0,280.0
-		L449.2,273.9 L474.3,270.4 L499.5,262.5 L524.7,261.7 L549.8,261.7 L575.0,257.3  '/></g>
+	<path stroke='rgb(  0, 255,   0)'  d='M516.2,368.4 L558.4,368.4 M96.8,372.8 L122.0,372.0 L147.1,367.6 L172.3,339.0 L197.5,328.7 L222.6,329.4
+		L247.8,331.0 L273.0,314.2 L298.1,309.8 L323.3,301.9 L348.5,298.4 L373.7,294.9 L398.8,290.6 L424.0,280.0
+		L449.2,272.2 L474.3,268.7 L499.5,262.5 L524.7,260.8 L549.8,263.4 L575.0,256.4  '/></g>
 	</g>
 	<g id="gnuplot_plot_3" ><title>NE10</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -467,8 +469,8 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(255,   0,   0)'  d='M516.2,386.4 L558.4,386.4 M96.8,372.8 L122.0,368.1 L147.1,369.6 L172.3,350.1 L197.5,317.0 L222.6,312.4
-		L247.8,286.2 L273.0,277.4 L298.1,254.6 L323.3,241.5 L348.5,225.7 L373.7,217.0 L398.8,196.8 L424.0,183.7
-		L449.2,165.3 L474.3,154.8 L499.5,135.5 L524.7,125.9 L549.8,105.8 L575.0,96.1  '/></g>
+		L247.8,286.2 L273.0,278.3 L298.1,254.6 L323.3,240.6 L348.5,225.7 L373.7,217.0 L398.8,196.8 L424.0,183.7
+		L449.2,165.3 L474.3,154.8 L499.5,135.5 L524.7,125.0 L549.8,105.8 L575.0,95.3  '/></g>
 	</g>
 <g fill="none" color="white" stroke="rgb(255,   0,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
