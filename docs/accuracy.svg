@@ -420,9 +420,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0,   0, 255)'  d='M516.2,350.4 L558.4,350.4 M96.8,404.4 L122.0,404.4 L147.1,369.8 L172.3,356.6 L197.5,321.5 L222.6,294.6
-		L247.8,288.8 L273.0,258.4 L298.1,246.2 L323.3,226.3 L348.5,214.7 L373.7,205.3 L398.8,188.4 L424.0,173.2
-		L449.2,160.9 L474.3,146.3 L499.5,132.3 L524.7,118.3 L549.8,105.5 L575.0,92.0  '/></g>
+	<path stroke='rgb(  0,   0, 255)'  d='M516.2,350.4 L558.4,350.4 M96.8,404.4 L122.0,404.4 L147.1,369.8 L172.3,356.6 L197.5,321.5 L222.6,291.1
+		L247.8,294.1 L273.0,252.0 L298.1,245.6 L323.3,225.7 L348.5,216.4 L373.7,203.6 L398.8,186.6 L424.0,173.8
+		L449.2,160.4 L474.3,145.8 L499.5,132.3 L524.7,118.9 L549.8,105.5 L575.0,92.0  '/></g>
 	</g>
 	<g id="gnuplot_plot_2" ><title>FFTW mi</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -431,9 +431,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 255,   0)'  d='M516.2,368.4 L558.4,368.4 M96.8,404.4 L122.0,404.4 L147.1,336.7 L172.3,339.0 L197.5,340.2 L222.6,313.3
-		L247.8,316.8 L273.0,305.7 L298.1,297.6 L323.3,292.3 L348.5,285.3 L373.7,277.1 L398.8,270.1 L424.0,259.0
-		L449.2,258.4 L474.3,247.3 L499.5,232.2 L524.7,232.8 L549.8,225.2 L575.0,214.7  '/></g>
+	<path stroke='rgb(  0, 255,   0)'  d='M516.2,368.4 L558.4,368.4 M96.8,404.4 L122.0,404.4 L147.1,336.7 L172.3,338.4 L197.5,332.6 L222.6,334.9
+		L247.8,327.9 L273.0,309.2 L298.1,302.2 L323.3,297.6 L348.5,287.6 L373.7,281.8 L398.8,271.3 L424.0,264.9
+		L449.2,250.9 L474.3,254.9 L499.5,241.5 L524.7,240.3 L549.8,231.6 L575.0,219.9  '/></g>
 	</g>
 	<g id="gnuplot_plot_3" ><title>Kiss FFT</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
