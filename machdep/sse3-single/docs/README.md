@@ -26,7 +26,8 @@ machine-specific optimizations.
 ## Test environment
 The test program and machine, and the versions of compiler and FFTW are
 the same as for the machine-independent code.  FFTW is configured with
-`./configure --enable-sse2 --enable-single`.
+`./configure --enable-sse2 --enable-single`.  Our library is built with
+the `sse3-single` Makefile target.
 
 ## Conformance
 The assembly-language code uses AT&T syntax and follows the SystemV
