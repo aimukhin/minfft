@@ -4,7 +4,6 @@ set ylabel "Mflops"
 set xtics 1
 set ytics 200
 set grid
-set key bottom right
 log2(x)=log(x)/log(2)
 set out "speed.svg"
 set term svg
