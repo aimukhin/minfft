@@ -2,10 +2,12 @@
 
 # Compiler flags
 cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -I.. -L.."
-cflags_fftw=$(echo -I ~/build/fftw-mi/include/ -L ~/build/fftw-mi/lib/ -lfftw3)
+cflags_fftw="-lfftw3"
+#cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f"
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
+cflags_ne10=$(echo -std=gnu17 -I ~/build/Ne10/inc/ -L ~/build/Ne10/modules/ -lNE10)
 
-# Compile tests, run them and save results
+# Compile and run tests
 do_tests() {
 	t=$1
 	for d in $2; do
@@ -63,4 +65,18 @@ if [ $t = PERF_KISS -o $t = ALL ]; then
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT"
 	do_tests PERF_KISS "$dims" "$xforms" "$cflags_kiss"
+fi
+
+# Comparisons with Ne10
+## Accuracy
+if [ $t = CMP_NE10 -o $t = ALL ]; then
+	dims="D1"
+	xforms="DFT INVDFT REALDFT INVREALDFT"
+	do_tests CMP_NE10 "$dims" "$xforms" "$cflags_ne10"
+fi
+## Performance
+if [ $t = PERF_NE10 -o $t = ALL ]; then
+	dims="D1"
+	xforms="DFT INVDFT REALDFT INVREALDFT"
+	do_tests PERF_NE10 "$dims" "$xforms" "$cflags_ne10"
 fi
