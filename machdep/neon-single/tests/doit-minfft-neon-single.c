@@ -7,7 +7,7 @@ BENCH_DOC("author", "Alexander Mukhin")
 BENCH_DOC("year", "2018")
 BENCH_DOC("language", "C")
 BENCH_DOC("email", "alexander.i.mukhin@gmail.com")
-BENCH_DOC("url", "https://github.com/aimukhin/minfft/tree/neon-single")
+BENCH_DOC("url", "https://github.com/aimukhin/minfft/")
 END_BENCH_DOC
 
 #include "minfft.h"
