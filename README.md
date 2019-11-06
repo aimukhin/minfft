@@ -47,10 +47,10 @@ All transform routines take three arguments:
 * a pointer to auxiliary data `a`.
 
 The transform routines are capable of both in-place and out-of-place
-operation. In the latter case the input is left intact.
+operation.  In the latter case the input is left intact.
 
 Auxiliary data contain chains of precomputed constants and temporary
-memory buffers, required by a transform routine to do its job. Once
+memory buffers, required by a transform routine to do its job.  Once
 prepared, the auxiliary data can be reused as many times as needed.
 Also, the same auxiliary data fit for both forward and inverse
 transforms of the same kind.
@@ -103,8 +103,8 @@ makers, and transform routines.
 For convenience, we provide aux data makers for one-, two- and
 three-dimensional transforms, along with a generic any-dimensional one.
 The dimensions are passed to aux maker routines in the C order (most
-rapidly varying index is the last). So, when calling from Fortran, array
-dimensions must be passed in the reverse order:
+rapidly varying index is the last).  So, when calling from Fortran,
+array dimensions must be passed in the reverse order:
 
 ```Fortran
 	complex(minfft_cmpl),dimension(n1,n2,n3) :: z
@@ -148,7 +148,7 @@ it produces a complex array of dimensions
 
 ![](docs/realdft-out.svg)
 
-Note that output takes a little more space than input. For in-place
+Note that output takes a little more space than input.  For in-place
 operation, make sure the data buffer is big enough to contain output.
 
 ```C
@@ -265,12 +265,12 @@ Type-2 or Type-3 transform of length `N` | `5.5N` real numbers
 Type-4 transform of length `N`           | `6N` real numbers
 
 Multi-dimensional transforms use a temporary buffer of the same size as
-the input data. This value is the dominant term in their auxiliary data
+the input data.  This value is the dominant term in their auxiliary data
 size.
 
 ## Implementation details
 The complex DFT is computed by a split-radix (2/4), decimation in
-frequency, explicitly recursive fast Fourier transform. This method
+frequency, explicitly recursive fast Fourier transform.  This method
 achieves a remarkable balance between performance and simplicity, and it
 behaves particularly cache-friendly, since it refers mostly to adjacent
 memory locations.
@@ -280,7 +280,7 @@ transform.
 
 For each transform, we first implement its one-dimensional,
 out-of-place, input-preserving, sequential input, strided output
-routine. This allows us to compute a multi-dimensional transform by
+routine.  This allows us to compute a multi-dimensional transform by
 repeated application of its one-dimensional routine along each
 dimension.
 
@@ -299,14 +299,14 @@ competitors.
 The libraries being compared are built with the GNU C compiler version
 9.1.0 for the x86_64 platform.
 
-The version of FFTW used is 3.3.8. To make a fair comparison, we disable
-all its SIMD optimizations, and therefore compare performance of the
-machine-independent code. FFTW plans are created with the default option
-FFTW_MEASURE. FFTW is built with its default optimization options (`-O3
--fomit-frame-pointer -mtune=native -malign-double -fstrict-aliasing
--fno-schedule-insns`).
+The version of FFTW used is 3.3.8.  To make a fair comparison, we
+disable all its SIMD optimizations, and therefore compare performance of
+the machine-independent code.  FFTW plans are created with the default
+option FFTW_MEASURE.  FFTW is built with its default optimization
+options (`-O3 -fomit-frame-pointer -mtune=native -malign-double
+-fstrict-aliasing -fno-schedule-insns`).
 
-The version of Kiss FFT used is 1.3.0. It is built with the only
+The version of Kiss FFT used is 1.3.0.  It is built with the only
 optimization option `-Ofast`.
 
 Our library is also built with `-Ofast` only.
