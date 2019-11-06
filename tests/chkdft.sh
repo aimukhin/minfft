@@ -82,7 +82,11 @@ if [ $t = PERF_NE10 -o $t = ALL ]; then
 fi
 
 # Test of Fortran interface (by comparison with FFTW)
-if [ $t = CMP_FFTW_FORTRAN -o $t = ALL ]; then
+if [ $t = FORTRAN -o $t = ALL ]; then
+	# Compile interface modules
+	gfortran -fsyntax-only ../minfft.f03
+	gfortran -fsyntax-only fftw3.f03
+	# Run tests
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
 	fflags="-L.. -lminfft -lfftw3"
