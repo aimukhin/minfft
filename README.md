@@ -297,15 +297,19 @@ We use `benchFFT` tool version 3.1 to benchmark our library and its
 competitors.
 
 The libraries being compared are built with the GNU C compiler version
-8.2.1 for the x86_64 platform. The only optimization option set is
-`-Ofast`.
+9.1.0 for the x86_64 platform.
 
 The version of FFTW used is 3.3.8. To make a fair comparison, we disable
 all its SIMD optimizations, and therefore compare performance of the
 machine-independent code. FFTW plans are created with the default option
-FFTW_MEASURE.
+FFTW_MEASURE. FFTW is built with its default optimization options (`-O3
+-fomit-frame-pointer -mtune=native -malign-double -fstrict-aliasing
+-fno-schedule-insns`).
 
-The version of Kiss FFT used is 1.3.0.
+The version of Kiss FFT used is 1.3.0. It is built with the only
+optimization option `-Ofast`.
+
+Our library is also built with `-Ofast` only.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
