@@ -315,7 +315,7 @@ The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
 The results of the performance and accuracy tests, along with the
-programs used to conduct them, are available in the `tests`
+programs used to conduct them, are available in the `bench`
 subdirectory.
 
 ## Conformance
