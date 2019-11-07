@@ -26,7 +26,7 @@ if [ $# -ne 1 ]; then
 fi
 t=$1
 
-if [ $t == clean ]; then
+if [ $t = clean ]; then
 	rm -f a.out *.mod chkdft.f95
 fi
 
