@@ -14,6 +14,9 @@ do_tests() {
 	for d in $2; do
 		for x in $3; do
 			cc -D$t -D$d -D$x chkdft.c $cflags $4
+			if [ $? -ne 0 ]; then
+				exit
+			fi
 			echo "# $t $d $x"
 			./a.out
 		done
@@ -104,8 +107,12 @@ if [ $t = FORTRAN ]; then
 #	fflags="-lfftw3l"
 	for d in $dims; do
 		for x in $xforms; do
-			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95
+			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95 \
+			&& \
 			gfortran chkdft.f95 -L.. -lminfft $fflags
+			if [ $? -ne 0 ]; then
+				exit
+			fi
 			echo "# $d $x"
 			./a.out
 		done
