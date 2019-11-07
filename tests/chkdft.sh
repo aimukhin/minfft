@@ -2,8 +2,9 @@
 
 # Compiler flags
 cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -I.. -L.."
-cflags_fftw="-lfftw3"
-#cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f"
+cflags_fftw="-lfftw3" # double
+#cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f" # single
+#cflags_fftw="-DFFTW_PFX=fftwl -lfftw3l" # long double
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
 cflags_ne10=$(echo -std=gnu17 -I ~/build/Ne10/inc/ -L ~/build/Ne10/modules/ -lNE10)
 
@@ -89,10 +90,18 @@ if [ $t = FORTRAN -o $t = ALL ]; then
 	# Run tests
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	fflags="-L.. -lminfft -lfftw3"
+# double precision
+	fflags="-lfftw3"
+# single precision
+#	cppflags="-DFFTW_PFX=fftwf"
+#	fflags="-lfftw3f"
+# extended precision
+#	cppflags="-DFFTW_PFX=fftwl"
+#	fflags="-lfftw3l"
 	for d in $dims; do
 		for x in $xforms; do
-			gfortran -D$d -D$x chkdft.F95 $fflags
+			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95
+			gfortran chkdft.f95 -L.. -lminfft $fflags
 			echo "# $d $x"
 			./a.out
 		done
