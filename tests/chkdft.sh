@@ -21,10 +21,14 @@ do_tests() {
 }
 
 if [ $# -ne 1 ]; then
-	echo "Usage: $0 test"
+	echo "Usage: $0 test|clean"
 	exit 1
 fi
 t=$1
+
+if [ $t == clean ]; then
+	rm -f a.out *.mod chkdft.f95
+fi
 
 # Tests of the library itself
 ## Inversion
