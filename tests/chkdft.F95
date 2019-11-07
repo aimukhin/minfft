@@ -1,4 +1,13 @@
 ! Compare minfft with FFTW
+
+! macros for calling variants of FFTW
+#ifndef FFTW_PFX
+#define FFTW_PFX fftw
+#endif
+#define FFTW(OP) FFTW2(FFTW_PFX,OP)
+#define FFTW2(FFTW_PFX,OP) FFTW22(FFTW_PFX,OP)
+#define FFTW22(FFTW_PFX,OP) FFTW_PFX##_##OP
+
 program main
     use minfft
     use fftw3
@@ -62,61 +71,61 @@ program main
 #if DFT
         a=minfft_mkaux_dft_1d(n)
         call minfft_dft(mi,mo,a)
-        p=fftw_plan_dft_1d(n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_1d)(n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if INVDFT
         a=minfft_mkaux_dft_1d(n)
         call minfft_invdft(mi,mo,a)
-        p=fftw_plan_dft_1d(n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_1d)(n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if REALDFT
         a=minfft_mkaux_realdft_1d(n)
         call minfft_realdft(mi,mo,a)
-        p=fftw_plan_dft_r2c_1d(n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_r2c(p,fi,fo)
+        p=FFTW(plan_dft_r2c_1d)(n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_r2c)(p,fi,fo)
 #endif
 #if INVREALDFT
         call minfft_invrealdft(mi,mo,a)
-        p=fftw_plan_dft_c2r_1d(n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_c2r(p,fi,fo)
+        p=FFTW(plan_dft_c2r_1d)(n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_c2r)(p,fi,fo)
 #endif
 #if DCT2
         a=minfft_mkaux_t2t3_1d(n)
         call minfft_dct2(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_REDFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_REDFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST2
         a=minfft_mkaux_t2t3_1d(n)
         call minfft_dst2(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_RODFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_RODFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT3
         a=minfft_mkaux_t2t3_1d(n)
         call minfft_dct3(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_REDFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_REDFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST3
         a=minfft_mkaux_t2t3_1d(n)
         call minfft_dst3(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_RODFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_RODFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT4
         a=minfft_mkaux_t4_1d(n)
         call minfft_dct4(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_REDFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_REDFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST4
         a=minfft_mkaux_t4_1d(n)
         call minfft_dst4(mi,mo,a)
-        p=fftw_plan_r2r_1d(n,fi,fo,FFTW_RODFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_1d)(n,fi,fo,FFTW_RODFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
         dmax=maxval(abs(mo-fo))
@@ -124,7 +133,7 @@ program main
         print *,n,dmax/vmax
         ! free plans
         call minfft_free_aux(a)
-        call fftw_destroy_plan(p)
+        call FFTW(destroy_plan)(p)
         ! free arrays
         deallocate(mi,mo,fi,fo)
         ! next transform size
@@ -192,61 +201,61 @@ program main
 #if DFT
         a=minfft_mkaux_dft_2d(2*n,n)
         call minfft_dft(mi,mo,a)
-        p=fftw_plan_dft_2d(2*n,n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_2d)(2*n,n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if INVDFT
         a=minfft_mkaux_dft_2d(2*n,n)
         call minfft_invdft(mi,mo,a)
-        p=fftw_plan_dft_2d(2*n,n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_2d)(2*n,n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if REALDFT
         a=minfft_mkaux_realdft_2d(2*n,n)
         call minfft_realdft(mi,mo,a)
-        p=fftw_plan_dft_r2c_2d(2*n,n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_r2c(p,fi,fo)
+        p=FFTW(plan_dft_r2c_2d)(2*n,n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_r2c)(p,fi,fo)
 #endif
 #if INVREALDFT
         call minfft_invrealdft(mi,mo,a)
-        p=fftw_plan_dft_c2r_2d(2*n,n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_c2r(p,fi,fo)
+        p=FFTW(plan_dft_c2r_2d)(2*n,n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_c2r)(p,fi,fo)
 #endif
 #if DCT2
         a=minfft_mkaux_t2t3_2d(2*n,n)
         call minfft_dct2(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST2
         a=minfft_mkaux_t2t3_2d(2*n,n)
         call minfft_dst2(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT3
         a=minfft_mkaux_t2t3_2d(2*n,n)
         call minfft_dct3(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST3
         a=minfft_mkaux_t2t3_2d(2*n,n)
         call minfft_dst3(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT4
         a=minfft_mkaux_t4_2d(2*n,n)
         call minfft_dct4(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST4
         a=minfft_mkaux_t4_2d(2*n,n)
         call minfft_dst4(mi,mo,a)
-        p=fftw_plan_r2r_2d(2*n,n,fi,fo,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_2d)(2*n,n,fi,fo,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
         dmax=maxval(abs(mo-fo))
@@ -254,7 +263,7 @@ program main
         print *,2*n,n,dmax/vmax
         ! free plans
         call minfft_free_aux(a)
-        call fftw_destroy_plan(p)
+        call FFTW(destroy_plan)(p)
         ! free arrays
         deallocate(mi,mo,fi,fo)
         ! next transform size
@@ -324,61 +333,61 @@ program main
 #if DFT
         a=minfft_mkaux_dft_3d(4*n,2*n,n)
         call minfft_dft(mi,mo,a)
-        p=fftw_plan_dft_3d(4*n,2*n,n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_3d)(4*n,2*n,n,fi,fo,FFTW_FORWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if INVDFT
         a=minfft_mkaux_dft_3d(4*n,2*n,n)
         call minfft_invdft(mi,mo,a)
-        p=fftw_plan_dft_3d(4*n,2*n,n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
-        call fftw_execute_dft(p,fi,fo)
+        p=FFTW(plan_dft_3d)(4*n,2*n,n,fi,fo,FFTW_BACKWARD,FFTW_ESTIMATE)
+        call FFTW(execute_dft)(p,fi,fo)
 #endif
 #if REALDFT
         a=minfft_mkaux_realdft_3d(4*n,2*n,n)
         call minfft_realdft(mi,mo,a)
-        p=fftw_plan_dft_r2c_3d(4*n,2*n,n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_r2c(p,fi,fo)
+        p=FFTW(plan_dft_r2c_3d)(4*n,2*n,n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_r2c)(p,fi,fo)
 #endif
 #if INVREALDFT
         call minfft_invrealdft(mi,mo,a)
-        p=fftw_plan_dft_c2r_3d(4*n,2*n,n,fi,fo,FFTW_ESTIMATE)
-        call fftw_execute_dft_c2r(p,fi,fo)
+        p=FFTW(plan_dft_c2r_3d)(4*n,2*n,n,fi,fo,FFTW_ESTIMATE)
+        call FFTW(execute_dft_c2r)(p,fi,fo)
 #endif
 #if DCT2
         a=minfft_mkaux_t2t3_3d(4*n,2*n,n)
         call minfft_dct2(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_REDFT10,FFTW_REDFT10,FFTW_REDFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST2
         a=minfft_mkaux_t2t3_3d(4*n,2*n,n)
         call minfft_dst2(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_RODFT10,FFTW_RODFT10,FFTW_RODFT10,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT3
         a=minfft_mkaux_t2t3_3d(4*n,2*n,n)
         call minfft_dct3(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_REDFT01,FFTW_REDFT01,FFTW_REDFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST3
         a=minfft_mkaux_t2t3_3d(4*n,2*n,n)
         call minfft_dst3(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_RODFT01,FFTW_RODFT01,FFTW_RODFT01,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DCT4
         a=minfft_mkaux_t4_3d(4*n,2*n,n)
         call minfft_dct4(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_REDFT11,FFTW_REDFT11,FFTW_REDFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
 #if DST4
         a=minfft_mkaux_t4_3d(4*n,2*n,n)
         call minfft_dst4(mi,mo,a)
-        p=fftw_plan_r2r_3d(4*n,2*n,n,fi,fo,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE)
-        call fftw_execute_r2r(p,fi,fo)
+        p=FFTW(plan_r2r_3d)(4*n,2*n,n,fi,fo,FFTW_RODFT11,FFTW_RODFT11,FFTW_RODFT11,FFTW_ESTIMATE)
+        call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
         dmax=maxval(abs(mo-fo))
@@ -386,7 +395,7 @@ program main
         print *,4*n,2*n,n,dmax/vmax
         ! free plans
         call minfft_free_aux(a)
-        call fftw_destroy_plan(p)
+        call FFTW(destroy_plan)(p)
         ! free arrays
         deallocate(mi,mo,fi,fo)
         ! next transform size
