@@ -1,11 +1,22 @@
 #!/bin/sh
 
 # Compiler flags
+# common
 cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -I.. -L.."
-cflags_fftw="-lfftw3" # double
-#cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f" # single
-#cflags_fftw="-DFFTW_PFX=fftwl -lfftw3l" # long double
+# for FFTW
+if [ -z $FFTW ]; then
+	# double (default)
+	cflags_fftw="-lfftw3"
+elif [ $FFTW = f ]; then
+	# single
+	cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f"
+elif [ $FFTW = l ]; then
+	# extended
+	cflags_fftw="-DFFTW_PFX=fftwl -lfftw3l"
+fi
+# for KissFFT
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
+# for Ne10
 cflags_ne10=$(echo -std=gnu17 -I ~/build/Ne10/inc/ -L ~/build/Ne10/modules/ -lNE10)
 
 # Compile and run tests
@@ -97,14 +108,18 @@ if [ $t = FORTRAN ]; then
 	# Run tests
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-# double precision
-	fflags="-lfftw3"
-# single precision
-#	cppflags="-DFFTW_PFX=fftwf"
-#	fflags="-lfftw3f"
-# extended precision
-#	cppflags="-DFFTW_PFX=fftwl"
-#	fflags="-lfftw3l"
+	if [ -z $FFTW ]; then
+		# double (default)
+		fflags="-lfftw3"
+	elif [ $FFTW = f ]; then
+		# single
+		cppflags="-DFFTW_PFX=fftwf"
+		fflags="-lfftw3f"
+	elif [ $FFTW = l ]; then
+		# extended
+		cppflags="-DFFTW_PFX=fftwl"
+		fflags="-lfftw3l"
+	fi
 	for d in $dims; do
 		for x in $xforms; do
 			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95 \
