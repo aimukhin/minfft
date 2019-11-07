@@ -134,11 +134,11 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	// recursion
 	// prepare pointers
 	xr=(minfft_real*)x;
-	xi=((minfft_real*)x)+1;
+	xi=xr+1;
 	tr=(minfft_real*)t;
-	ti=((minfft_real*)t)+1;
+	ti=tr+1;
 	er=(minfft_real*)e;
-	ei=((minfft_real*)e)+1;
+	ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
 		// we use real arithmetics in this most time-consuming loop
@@ -261,11 +261,11 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	// recursion
 	// prepare pointers
 	xr=(minfft_real*)x;
-	xi=((minfft_real*)x)+1;
+	xi=xr+1;
 	tr=(minfft_real*)t;
-	ti=((minfft_real*)t)+1;
+	ti=tr+1;
 	er=(minfft_real*)e;
-	ei=((minfft_real*)e)+1;
+	ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
 		// we use real arithmetics in this most time-consuming loop
