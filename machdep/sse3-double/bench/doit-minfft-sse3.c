@@ -4,7 +4,7 @@
 BEGIN_BENCH_DOC
 BENCH_DOC("name", "minfft-sse3")
 BENCH_DOC("author", "Alexander Mukhin")
-BENCH_DOC("year", "2018")
+BENCH_DOC("year", "2019")
 BENCH_DOC("language", "C")
 BENCH_DOC("email", "alexander.i.mukhin@gmail.com")
 BENCH_DOC("url", "https://github.com/aimukhin/minfft/")

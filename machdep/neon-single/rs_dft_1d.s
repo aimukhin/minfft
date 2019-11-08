@@ -3,7 +3,7 @@
 @ ABI: ARM Architecture Procedure Call Standard (AAPCS)
 @
 @ Part of the minfft library
-@ Copyright (c) 2018 Alexander Mukhin
+@ Copyright (c) 2019 Alexander Mukhin
 @ MIT License
 
 @ void

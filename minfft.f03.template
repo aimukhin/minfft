@@ -1,3 +1,7 @@
+! A minimalistic FFT library
+! Copyright (c) 2019 Alexander Mukhin
+! MIT License
+
 module minfft
     use,intrinsic :: iso_c_binding, only: minfft_real=>TYPE, &
                                           minfft_cmpl=>TYPE_COMPLEX, &
