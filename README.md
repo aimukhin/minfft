@@ -34,9 +34,9 @@ The library provides C and Fortran interfaces.
 - [Implementation details](#implementation-details)
 - [Performance](#performance)
 - [Test environment](#test-environment)
-- [Conformance](#conformance)
 - [SIMD code](#simd-code)
 - [Build](#build)
+- [Conformance](#conformance)
 - [License](#license)
 
 ## Interface
@@ -319,9 +319,6 @@ The results of the performance and accuracy tests, along with the
 programs used to conduct them, are available in the `bench`
 subdirectory.
 
-## Conformance
-The source code conforms to the C99 and Fortran 2003 standards.
-
 ## SIMD code
 For some SIMD architectures we provide optimized versions, written
 manually in assembly language:
@@ -340,6 +337,9 @@ systems.  The makefile contains the following targets:
 - `neon-single`
 - `sse3-double`
 - `sse3-single`
+
+## Conformance
+The source code conforms to the C99 and Fortran 2003 standards.
 
 ## License
 MIT.
