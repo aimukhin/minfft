@@ -4,8 +4,8 @@
 
 #include <complex.h>
 
-typedef REAL minfft_real;
-typedef REAL complex minfft_cmpl;
+typedef TYPE minfft_real;
+typedef TYPE complex minfft_cmpl;
 
 struct minfft_aux {
 	int N; // number of elements to transform

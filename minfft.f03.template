@@ -1,6 +1,6 @@
 module minfft
-    use,intrinsic :: iso_c_binding, only: minfft_real=>REAL, &
-                                          minfft_cmpl=>REAL_COMPLEX, &
+    use,intrinsic :: iso_c_binding, only: minfft_real=>TYPE, &
+                                          minfft_cmpl=>TYPE_COMPLEX, &
                                           minfft_aux=>C_PTR, &
                                           C_INT,C_NULL_PTR
     implicit none
