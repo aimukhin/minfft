@@ -1,12 +1,12 @@
 ! Compare minfft with FFTW
 
 ! macros for calling variants of FFTW
-#ifndef FFTW_PFX
-#define FFTW_PFX fftw
+#ifndef FFTW_SFX
+#define FFTW_SFX
 #endif
-#define FFTW(OP) FFTW2(FFTW_PFX,OP)
-#define FFTW2(FFTW_PFX,OP) FFTW22(FFTW_PFX,OP)
-#define FFTW22(FFTW_PFX,OP) FFTW_PFX##_##OP
+#define FFTW(F) FFTW2(F,FFTW_SFX)
+#define FFTW2(F,S) FFTW22(F,S)
+#define FFTW22(F,S) fftw##S##_##F
 
 program main
     use minfft
