@@ -4,16 +4,11 @@
 
 # init
 if [ $# -ne 1 -a $# -ne 2 ]; then
-	echo "Usage: $0 test|clean [fftw-suffix]"
+	echo "Usage: $0 test [fftw-suffix]"
 	exit 1
 fi
 t=$1
 FFTW_SFX=$2
-
-# clean
-if [ $t = clean ]; then
-	rm -f a.out *.mod cmp_fftw.f95
-fi
 
 # set compiler flags
 # common
@@ -38,6 +33,7 @@ do_tests() {
 			./a.out
 		done
 	done
+	rm ./a.out
 }
 
 # tests of the library itself
@@ -118,4 +114,5 @@ if [ $t = FORTRAN ]; then
 			./a.out
 		done
 	done
+	rm ./a.out cmp_fftw.f95 minfft.mod fftw3.mod
 fi
