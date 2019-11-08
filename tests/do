@@ -19,16 +19,7 @@ fi
 # common
 cflags="-std=c99 -pedantic -Wall -Wextra -lm -lminfft -I.. -L.."
 # for FFTW
-if [ -z $FFTW_SFX ]; then
-	# double (default)
-	cflags_fftw="-lfftw3"
-elif [ $FFTW_SFX = f ]; then
-	# single
-	cflags_fftw="-DFFTW_PFX=fftwf -lfftw3f"
-elif [ $FFTW_SFX = l ]; then
-	# extended
-	cflags_fftw="-DFFTW_PFX=fftwl -lfftw3l"
-fi
+cflags_fftw="-DFFTW_SFX=$FFTW_SFX -lfftw3$FFTW_SFX"
 # for KissFFT
 cflags_kiss=$(echo -I ~/build/kiss_fft/ ~/build/kiss_fft/kiss_fft*.o)
 # for Ne10
@@ -113,18 +104,7 @@ if [ $t = FORTRAN ]; then
 	# Run tests
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	if [ -z $FFTW_SFX ]; then
-		# double (default)
-		fflags="-lfftw3"
-	elif [ $FFTW_SFX = f ]; then
-		# single
-		cppflags="-DFFTW_PFX=fftwf"
-		fflags="-lfftw3f"
-	elif [ $FFTW_SFX = l ]; then
-		# extended
-		cppflags="-DFFTW_PFX=fftwl"
-		fflags="-lfftw3l"
-	fi
+	fflags="-DFFTW_SFX=$FFTW_SFX -lfftw3$FFTW_SFX"
 	for d in $dims; do
 		for x in $xforms; do
 			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95 \
