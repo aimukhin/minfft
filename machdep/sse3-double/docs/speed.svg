@@ -524,20 +524,20 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,331.5 L106.2,179.6 L132.3,125.3 L158.3,132.9 L184.4,127.3 L210.4,135.3
-		L236.5,142.3 L262.5,149.0 L288.5,166.8 L314.6,178.5 L340.6,189.9 L366.7,192.1 L392.7,189.8 L418.7,208.1
-		L444.8,255.1 L470.8,294.7 L496.9,300.5 L522.9,301.8 L549.0,301.2 L575.0,302.1  '/></g>
+	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,331.5 L106.2,179.6 L132.3,125.3 L158.3,132.9 L184.4,130.1 L210.4,135.2
+		L236.5,142.9 L262.5,148.9 L288.5,166.6 L314.6,178.8 L340.6,190.3 L366.7,192.3 L392.7,189.6 L418.7,208.4
+		L444.8,254.8 L470.8,292.6 L496.9,302.2 L522.9,301.4 L549.0,301.9 L575.0,306.6  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>FFTW sse2/sse3</title>
+	<g id="gnuplot_plot_2" ><title>FFTW sse2</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.9,94.0)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >FFTW sse2/sse3</tspan></text>
+		<text><tspan font-family="Arial" >FFTW sse2</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 255,   0)'  d='M516.2,90.1 L558.4,90.1 M80.2,353.5 L106.2,224.5 L132.3,139.1 L158.3,63.1 L184.4,58.5 L210.4,81.4
-		L236.5,103.4 L262.5,112.8 L288.5,123.5 L314.6,139.8 L340.6,158.1 L366.7,168.3 L392.7,177.7 L418.7,190.6
-		L444.8,230.3 L470.8,241.3 L496.9,243.2 L522.9,254.3 L549.0,279.4 L575.0,281.9  '/></g>
+	<path stroke='rgb(  0, 255,   0)'  d='M516.2,90.1 L558.4,90.1 M80.2,353.5 L106.2,224.5 L132.3,139.0 L158.3,63.1 L184.4,58.5 L210.4,76.0
+		L236.5,103.3 L262.5,112.2 L288.5,124.7 L314.6,139.7 L340.6,158.2 L366.7,169.9 L392.7,177.0 L418.7,186.9
+		L444.8,213.9 L470.8,242.4 L496.9,244.2 L522.9,252.9 L549.0,282.6 L575.0,284.8  '/></g>
 	</g>
 <g fill="none" color="white" stroke="rgb(  0, 255,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>

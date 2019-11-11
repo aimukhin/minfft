@@ -424,16 +424,16 @@
 		L247.8,289.4 L273.0,255.5 L298.1,245.6 L323.3,226.3 L348.5,216.4 L373.7,204.7 L398.8,188.4 L424.0,175.0
 		L449.2,162.7 L474.3,147.5 L499.5,134.7 L524.7,120.1 L549.8,107.8 L575.0,93.8  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>FFTW sse2/sse3</title>
+	<g id="gnuplot_plot_2" ><title>FFTW sse2</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.9,390.3)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >FFTW sse2/sse3</tspan></text>
+		<text><tspan font-family="Arial" >FFTW sse2</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(  0, 255,   0)'  d='M516.2,386.4 L558.4,386.4 M96.8,404.4 L122.0,404.4 L147.1,336.7 L172.3,353.1 L197.5,337.3 L222.6,316.8
 		L247.8,309.2 L273.0,300.5 L298.1,295.8 L323.3,292.9 L348.5,284.7 L373.7,278.3 L398.8,271.9 L424.0,261.9
-		L449.2,249.7 L474.3,245.6 L499.5,240.9 L524.7,236.8 L549.8,227.5 L575.0,221.7  '/></g>
+		L449.2,249.7 L474.3,246.8 L499.5,236.3 L524.7,236.8 L549.8,227.5 L575.0,221.7  '/></g>
 	</g>
 <g fill="none" color="white" stroke="rgb(  0, 255,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
