@@ -9,7 +9,7 @@ set out "speed.svg"
 set term svg
 plot [] [0:] \
 	"minfft-neon.speed" using (log2($3)):4 \
-		with lines title "minfft neon" lc "blue", \
+		with lines title "minfft neon-single" lc "blue", \
 	"fftw3-neon.speed" using (log2($3)):4 \
 		with lines title "FFTW neon" lc "green", \
 	"ne10.speed" using (log2($3)):4 \
