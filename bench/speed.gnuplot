@@ -8,9 +8,9 @@ log2(x)=log(x)/log(2)
 set out "speed.svg"
 set term svg
 plot [] [0:] \
-	"minfft-mi.speed" using (log2($3)):4 \
+	"minfft.speed" using (log2($3)):4 \
 		with lines title "minfft mi" lc "blue", \
-	"fftw3-mi.speed" using (log2($3)):4 \
+	"fftw.speed" using (log2($3)):4 \
 		with lines title "FFTW mi" lc "green", \
 	"kissfft.speed" using (log2($3)):4 \
 		with lines title "Kiss FFT" lc "red"

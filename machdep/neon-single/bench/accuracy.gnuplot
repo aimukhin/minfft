@@ -9,9 +9,9 @@ log2(x)=log(x)/log(2)
 set out "accuracy.svg"
 set term svg
 plot [] [0:] \
-	"minfft-neon.accuracy" using (log2($3)):5 \
+	"minfft.accuracy" using (log2($3)):5 \
 		with lines title "minfft neon-single" lc "blue", \
-	"fftw3-neon.accuracy" using (log2($3)):5 \
+	"fftw.accuracy" using (log2($3)):5 \
 		with lines title "FFTW neon" lc "green", \
 	"ne10.accuracy" using (log2($3)):5 \
 		with lines title "NE10" lc "red"
