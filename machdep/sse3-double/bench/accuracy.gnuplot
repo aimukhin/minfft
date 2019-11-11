@@ -11,6 +11,6 @@ plot [] [0:] \
 	"minfft-sse3.accuracy" using (log2($3)):5 \
 		with lines title "minfft sse3-double" lc "blue", \
 	"fftw3-sse3.accuracy" using (log2($3)):5 \
-		with lines title "FFTW sse2/sse3" lc "green"
+		with lines title "FFTW sse2" lc "green"
 unset out
 unset term
