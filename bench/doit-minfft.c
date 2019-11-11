@@ -2,7 +2,7 @@
 #include <math.h>
 
 BEGIN_BENCH_DOC
-BENCH_DOC("name", "minfft-mi")
+BENCH_DOC("name", "minfft")
 BENCH_DOC("author", "Alexander Mukhin")
 BENCH_DOC("year", "2019")
 BENCH_DOC("language", "C")
