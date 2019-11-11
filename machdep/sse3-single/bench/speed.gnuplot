@@ -11,6 +11,6 @@ plot [] [0:] \
 	"minfft-sse3.speed" using (log2($3)):4 \
 		with lines title "minfft sse3-single" lc "blue", \
 	"fftw3-sse3.speed" using (log2($3)):4 \
-		with lines title "FFTW sse2/sse3" lc "green"
+		with lines title "FFTW sse2" lc "green"
 unset out
 unset term
