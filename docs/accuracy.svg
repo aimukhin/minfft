@@ -433,7 +433,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(  0, 255,   0)'  d='M516.2,368.4 L558.4,368.4 M96.8,404.4 L122.0,404.4 L147.1,336.7 L172.3,338.4 L197.5,332.6 L222.6,334.9
 		L247.8,327.9 L273.0,309.2 L298.1,302.2 L323.3,297.6 L348.5,287.6 L373.7,281.8 L398.8,271.3 L424.0,264.9
-		L449.2,250.9 L474.3,254.9 L499.5,241.5 L524.7,240.3 L549.8,231.6 L575.0,219.9  '/></g>
+		L449.2,252.6 L474.3,254.9 L499.5,241.5 L524.7,240.3 L549.8,231.6 L575.0,226.9  '/></g>
 	</g>
 	<g id="gnuplot_plot_3" ><title>Kiss FFT</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
