@@ -315,9 +315,9 @@ Our library is also built with `-Ofast` only.
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
-The results of the performance and accuracy tests, along with the
-programs used to conduct them, are available in the `benchmarks`
-subdirectory.
+The results of the performance and accuracy tests are available in the
+`benchmarks` subdirectory.  The programs used to conduct those (and many
+other) tests are in the `tools` subdirectory.
 
 ## SIMD code
 For some SIMD architectures we provide optimized versions, written
