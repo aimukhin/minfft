@@ -104,9 +104,9 @@ if [ $t = FORTRAN ]; then
 	fflags="-lfftw3$FFTW_SFX"
 	for d in $dims; do
 		for x in $xforms; do
-			cpp -P -D$d -D$x $cppflags cmp_fftw.F95 -o cmp_fftw.f95 \
+			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95 \
 			&& \
-			gfortran cmp_fftw.f95 -L.. -lminfft $fflags
+			gfortran chkdft.f95 -L.. -lminfft $fflags
 			if [ $? -ne 0 ]; then
 				exit
 			fi
@@ -114,5 +114,5 @@ if [ $t = FORTRAN ]; then
 			./a.out
 		done
 	done
-	rm ./a.out cmp_fftw.f95 minfft.mod fftw3.mod
+	rm ./a.out chkdft.f95 minfft.mod fftw3.mod
 fi
