@@ -7,7 +7,7 @@
 #include <math.h>
 #include <tgmath.h>
 
-extern const minfft_real pi;
+static const minfft_real pi=3.141592653589793238462643383279502884L;
 
 // make aux data for one-dimensional forward or inverse complex DFT
 

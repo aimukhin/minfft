@@ -7,8 +7,8 @@
 #include <math.h>
 #include <tgmath.h>
 
-const minfft_real pi=3.141592653589793238462643383279502884L;
-const minfft_real sqrt2=1.414213562373095048801688724209698079L;
+static const minfft_real pi=3.141592653589793238462643383279502884L;
+static const minfft_real sqrt2=1.414213562373095048801688724209698079L;
 
 // *** meta-functions ***
 
