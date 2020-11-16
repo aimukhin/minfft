@@ -2,10 +2,10 @@
 ! Copyright (c) 2019 Alexander Mukhin
 ! MIT License
 
-#if MINFFT_FLOAT
+#if MINFFT_SINGLE
 #define MINFFT_R C_FLOAT
 #define MINFFT_C C_FLOAT_COMPLEX
-#elif MINFFT_LONG
+#elif MINFFT_EXTENDED
 #define MINFFT_R C_LONG_DOUBLE
 #define MINFFT_C C_LONG_DOUBLE_COMPLEX
 #else
