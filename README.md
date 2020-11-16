@@ -1,5 +1,5 @@
 # minfft
-A minimalist Fast Fourier Transform library.
+A minimalistic Fast Fourier Transform library.
 
 It achieves high performance by simple means.
 
@@ -34,7 +34,6 @@ The library provides C and Fortran interfaces.
 - [Implementation details](#implementation-details)
 - [Performance](#performance)
 - [Test environment](#test-environment)
-- [SIMD code](#simd-code)
 - [Build](#build)
 - [Conformance](#conformance)
 - [License](#license)
@@ -318,14 +317,6 @@ Celeron® N3050 CPU running at 2160 MHz.
 The results of the performance and accuracy tests are available in the
 `benchmarks` subdirectory.  The programs used to conduct those (and many
 other) tests are in the `tools` subdirectory.
-
-## SIMD code
-For some SIMD architectures we provide optimized versions, written
-manually in assembly language:
-
-- [neon-single](machdep/neon-single/docs/README.md)
-- [sse3-double](machdep/sse3-double/docs/README.md)
-- [sse3-single](machdep/sse3-single/docs/README.md)
 
 ## Build
 We provide `Makefile` to facilitate building the library on POSIX
