@@ -10,7 +10,7 @@
 
 program main
     use minfft
-    use fftw3
+    use fftw
     implicit none
 #if D1
     ! one-dimensional transforms
