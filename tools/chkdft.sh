@@ -92,5 +92,7 @@ if [ $t = FORTRAN ]; then
 			./a.out
 		done
 	done
-	rm ./a.out chkdft.f95 minfft.mod fftw.mod
 fi
+
+# cleanup
+rm -f ./a.out minfft.o chkdft.f95 minfft.mod fftw.mod
