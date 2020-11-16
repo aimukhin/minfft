@@ -63,10 +63,6 @@ mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1
 // *** complex transforms ***
 
 // recursive strided one-dimensional DFT
-#if EXT_DFT
-// use external assembly-language routine
-void rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e);
-#else
 inline static void
 rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
@@ -169,7 +165,6 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	rs_dft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
 	rs_dft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
 }
-#endif
 
 // strided one-dimensional DFT
 inline static void
@@ -190,10 +185,6 @@ minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 }
 
 // recursive strided one-dimensional inverse DFT
-#if EXT_DFT
-// use external assembly-language routine
-void rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e);
-#else
 inline static void
 rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
@@ -296,7 +287,6 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	rs_invdft_1d(N/4,t+N/2,t+N/2,y+sy,4*sy,e+3*N/4);
 	rs_invdft_1d(N/4,t+3*N/4,t+3*N/4,y+3*sy,4*sy,e+3*N/4);
 }
-#endif
 
 // strided one-dimensional inverse DFT
 inline static void
@@ -716,10 +706,6 @@ err:	// memory allocation error
 }
 
 // make aux data for one-dimensional forward or inverse complex DFT
-#if EXT_MKAUX
-// use external modified routine
-minfft_aux* minfft_mkaux_dft_1d (int N);
-#else
 minfft_aux*
 minfft_mkaux_dft_1d (int N) {
 	minfft_aux *a;
@@ -757,7 +743,6 @@ err:	// memory allocation error
 	minfft_free_aux(a);
 	return NULL;
 }
-#endif
 
 // make aux data for any-dimensional forward or inverse complex DFT
 minfft_aux*
