@@ -318,17 +318,6 @@ The results of the performance and accuracy tests are available in the
 `benchmarks` subdirectory.  The programs used to conduct those (and many
 other) tests are in the `tools` subdirectory.
 
-## Build
-We provide `Makefile` to facilitate building the library on POSIX
-systems.  The makefile contains the following targets:
-
-- `double` (default)
-- `single`
-- `extended`
-- `neon-single`
-- `sse3-double`
-- `sse3-single`
-
 ## Conformance
 The source code conforms to the C99 and Fortran 2003 standards.
 
