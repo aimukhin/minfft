@@ -299,7 +299,7 @@ We use `benchFFT` tool version 3.1 to benchmark our library and its
 competitors.
 
 The libraries being compared are built with the GNU C compiler version
-9.1.0 for the x86_64 platform. They are built with optimization options
+10.2.0 for the x86_64 platform. They are built with optimization options
 which give each library best performance.
 
 The version of FFTW used is 3.3.8. To make a fair comparison, we
