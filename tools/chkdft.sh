@@ -16,7 +16,7 @@ fi
 
 # set compiler flags
 # common
-cflags="-std=c99 -pedantic -Wall -Wextra -lm"
+cflags="-std=c99 -pedantic -Wall -Wextra -lm $CFLAGS"
 # for minfft
 cflags_minfft="-DMINFFT_$2 -I.. ./minfft.o"
 # for FFTW
@@ -43,28 +43,21 @@ echo Building minfft...
 cc $cflags -DMINFFT_$2 -c ../minfft.c
 echo done.
 
-# tests of the library itself
-## inversion
-if [ $t = INV ]; then
+# CMP_FFTW
+if [ $t = CMP_FFTW ]; then
 	dims="D1 D2 D3"
-	xforms="DFT REALDFT DCT2 DCT3 DCT4 DST4"
-	do_tests INV "$dims" "$xforms"
+	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
+	do_tests CMP_FFTW "$dims" "$xforms" "$cflags_fftw"
 fi
-## performance
+
+# PERF
 if [ $t = PERF ]; then
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
 	do_tests PERF "$dims" "$xforms"
 fi
 
-# comparisons with FFTW
-## accuracy
-if [ $t = CMP_FFTW ]; then
-	dims="D1 D2 D3"
-	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	do_tests CMP_FFTW "$dims" "$xforms" "$cflags_fftw"
-fi
-## performance
+# PERF_FFTW
 if [ $t = PERF_FFTW ]; then
 	dims="D1 D2 D3"
 	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
