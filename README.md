@@ -309,7 +309,7 @@ option FFTW_MEASURE. FFTW is built with its default optimization
 options (`-O3 -fomit-frame-pointer -mtune=native -malign-double
 -fstrict-aliasing -fno-schedule-insns`).
 
-The version of Kiss FFT used is 1.3.0. It is built with the only
+The version of Kiss FFT used is 1.3.1. It is built with the only
 optimization option `-Ofast`.
 
 Our library is also built with `-Ofast` only.
