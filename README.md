@@ -302,12 +302,13 @@ The libraries being compared are built with the GNU C compiler version
 10.2.0 for the x86_64 platform. They are built with optimization options
 which give each library best performance.
 
-The version of FFTW used is 3.3.8. To make a fair comparison, we
+The version of FFTW used is 3.3.8, built with its default compiler
+flags. Since this library is highly sophisticated, we decided to take
+some measures to put it into a comparable "weight class". First, we
 disable all its SIMD optimizations, and therefore compare performance of
-the machine-independent code. FFTW plans are created with the default
-option FFTW_MEASURE. FFTW is built with its default optimization
-options (`-O3 -fomit-frame-pointer -mtune=native -malign-double
--fstrict-aliasing -fno-schedule-insns`).
+the machine-independent code. Next, we create FFTW plans with the
+FFTW_ESTIMATE option. This puts FFTW in a fairer position with regard
+to the setup time.
 
 The version of Kiss FFT used is 1.3.1. It is built with the only
 optimization option `-Ofast`.
