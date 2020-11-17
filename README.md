@@ -91,8 +91,12 @@ C             | Fortran
 `minfft_cmpl` | `complex(minfft_cmpl)`
 `minfft_aux`  | `type(minfft_aux)`
 
-By default, the library operates with double precision, but can easily
-be adapted for single or extended precision.
+By default, the library operates with double precision.
+
+However, since the code uses type-generic math everywhere, it can easily
+be adapted for other data types. This is further facilitated by using
+preprocessor macros. Just define `MINFFT_SINGLE` or `MINFFT_EXTENDED`
+macros to build single or extended precision versions.
 
 ## Transforms
 Below is a list of transforms with their definitions, auxiliary data
