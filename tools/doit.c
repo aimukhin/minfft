@@ -3,11 +3,16 @@
 
 BEGIN_BENCH_DOC
 BENCH_DOC("name", "minfft")
+BENCH_DOC("version", "2.0.0")
+BENCH_DOC("year", "2020")
 BENCH_DOC("author", "Alexander Mukhin")
-BENCH_DOC("year", "2019")
 BENCH_DOC("language", "C")
 BENCH_DOC("email", "alexander.i.mukhin@gmail.com")
 BENCH_DOC("url", "https://github.com/aimukhin/minfft/")
+BENCH_DOC("copyright",
+"MIT License\n"
+"Copyright (c) 2020 Alexander Mukhin\n"
+)
 END_BENCH_DOC
 
 #include "minfft.h"
