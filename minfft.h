@@ -5,15 +5,15 @@
 #include <complex.h>
 
 #if MINFFT_SINGLE
-#define MINFFT_R float
+typedef float minfft_real;
+typedef float complex minfft_cmpl;
 #elif MINFFT_EXTENDED
-#define MINFFT_R long double
+typedef long double minfft_real;
+typedef long double complex minfft_cmpl;
 #else
-#define MINFFT_R double
+typedef double minfft_real;
+typedef double complex minfft_cmpl;
 #endif
-
-#define minfft_real MINFFT_R
-#define minfft_cmpl MINFFT_R complex
 
 struct minfft_aux {
 	int N; // number of elements to transform
