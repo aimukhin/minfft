@@ -9,9 +9,9 @@ set out "speed.svg"
 set term svg
 plot [] [0:] \
 	"minfft.speed" using (log2($3)):4 \
-		with lines title "minfft mi" lc "blue", \
+		with lines title "minfft" lc "blue", \
 	"fftw.speed" using (log2($3)):4 \
-		with lines title "FFTW mi" lc "green", \
+		with lines title "FFTW (machine-independent code, ESTIMATE mode)" lc "green", \
 	"kissfft.speed" using (log2($3)):4 \
 		with lines title "Kiss FFT" lc "red"
 unset out
