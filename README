@@ -184,3 +184,9 @@ The source code conforms to the C99 and Fortran 2003 standards.
 LICENSE
 -------
 MIT.
+
+
+SEE ALSO
+--------
+The complete documentation is available at
+	https://github.com/aimukhin/minfft/
