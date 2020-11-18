@@ -48,15 +48,17 @@ if [ $1 = FORTRAN ]; then
 	# compile modules
 	gfortran ../minfft.F03 \
 		-fsyntax-only \
-		-std=f2003 -Wall -Wextra -pedantic \
+		-std=f2003 -pedantic -Wall -Wextra \
 		-DMINFFT_$2
 	gfortran fftw.f03 \
 		-fsyntax-only \
-		-std=f2003 -Wall -Wextra -pedantic \
+		-std=f2003 -pedantic -Wall -Wextra \
 		-I ~/build/fftw-mi/include
 	# run tests
 	for d in $dims; do
 		for x in $xforms; do
+			# source requires more preprocessing
+			# than gfortran does in traditional mode
 			cpp chkdft.F03 -o chkdft.f03 \
 				-D$d -D$x \
 				-DFFTW_SFX=$FFTW_SFX \
