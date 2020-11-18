@@ -1,83 +1,64 @@
 #!/bin/sh
 
-# Run tests
-
 # init
 if [ $# -ne 1 -a $# -ne 2 ]; then
-	echo "Usage: $0 test [SINGLE|EXTENDED]"
+	echo "Usage: $0 C|FORTRAN [SINGLE|EXTENDED]"
 	exit 1
 fi
-t=$1
 if [ "$2" = SINGLE ]; then
 	FFTW_SFX=f
 elif [ "$2" = EXTENDED ]; then
 	FFTW_SFX=l
 fi
 
-# set compiler flags
-# common
-cflags="-std=c99 -pedantic -Wall -Wextra -lm $CFLAGS"
-# for minfft
-cflags_minfft="-DMINFFT_$2 -I.. ./minfft.o"
-# for FFTW
-cflags_fftw="$(echo -I ~/build/fftw-mi/include -L ~/build/fftw-mi/lib -DFFTW_SFX=$FFTW_SFX -lfftw3$FFTW_SFX)"
+# build minfft
+echo Building minfft...
+cc $OFLAGS -std=c99 -pedantic -Wall -Wextra -DMINFFT_$2 -c ../minfft.c
+echo done.
 
-# compile and run tests
-do_tests() {
-	t=$1
-	for d in $2; do
-		for x in $3; do
-			cc -D$t -D$d -D$x chkdft.c $cflags $cflags_minfft $4
+# tests to run
+dims="D1 D2 D3"
+xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
+
+# C
+if [ $1 = C ]; then
+	for d in $dims; do
+		for x in $xforms; do
+			cc chkdft.c \
+			-D$d -D$x \
+			-std=c99 -pedantic -Wall -Wextra \
+			-DMINFFT_$2 -I .. \
+			./minfft.o \
+			-DFFTW_SFX=$FFTW_SFX \
+			-I ~/build/fftw-mi/include \
+			-L ~/build/fftw-mi/lib \
+			-lfftw3$FFTW_SFX \
+			-lm
 			if [ $? -ne 0 ]; then
 				exit
 			fi
-			echo "# $t $d $x"
+			echo "# $d $x"
 			./a.out
 		done
 	done
-	rm ./a.out
-}
-
-# build minfft
-echo Building minfft...
-cc $cflags -DMINFFT_$2 -c ../minfft.c
-echo done.
-
-# CMP_FFTW
-if [ $t = CMP_FFTW ]; then
-	dims="D1 D2 D3"
-	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	do_tests CMP_FFTW "$dims" "$xforms" "$cflags_fftw"
 fi
 
-# PERF
-if [ $t = PERF ]; then
-	dims="D1 D2 D3"
-	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	do_tests PERF "$dims" "$xforms"
-fi
-
-# PERF_FFTW
-if [ $t = PERF_FFTW ]; then
-	dims="D1 D2 D3"
-	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	do_tests PERF_FFTW "$dims" "$xforms" "$cflags_fftw"
-fi
-
-# test of Fortran interface (by comparison with FFTW)
-if [ $t = FORTRAN ]; then
-	# Compile interface modules
+# Fortran
+if [ $1 = FORTRAN ]; then
 	gfortran -fsyntax-only -DMINFFT_$2 ../minfft.F03
 	gfortran -fsyntax-only -I ~/build/fftw-mi/include fftw.f03
-	# Run tests
-	dims="D1 D2 D3"
-	xforms="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
-	cppflags="-DFFTW_SFX=$FFTW_SFX"
 	for d in $dims; do
 		for x in $xforms; do
-			cpp -P -D$d -D$x $cppflags chkdft.F95 -o chkdft.f95 \
+			cpp chkdft.F95 -o chkdft.f95 \
+			-D$d -D$x \
+			-DFFTW_SFX=$FFTW_SFX \
+			-P \
 			&& \
-			gfortran chkdft.f95 $cflags_minfft $cflags_fftw
+			gfortran chkdft.f95 \
+			-std=f2003 -pedantic -Wall -Wextra \
+			./minfft.o \
+			-L ~/build/fftw-mi/lib \
+			-lfftw3$FFTW_SFX
 			if [ $? -ne 0 ]; then
 				exit
 			fi

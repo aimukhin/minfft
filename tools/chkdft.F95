@@ -1,4 +1,6 @@
 ! Compare minfft with FFTW
+! Dimensionality: D1 D2 D3
+! Transforms: DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4
 
 ! macros for calling variants of FFTW
 #ifndef FFTW_SFX
