@@ -25,15 +25,15 @@ if [ $1 = C ]; then
 	for d in $dims; do
 		for x in $xforms; do
 			cc chkdft.c \
-			-D$d -D$x \
-			-std=c99 -pedantic -Wall -Wextra \
-			-DMINFFT_$2 -I .. \
-			./minfft.o \
-			-DFFTW_SFX=$FFTW_SFX \
-			-I ~/build/fftw-mi/include \
-			-L ~/build/fftw-mi/lib \
-			-lfftw3$FFTW_SFX \
-			-lm
+				-D$d -D$x \
+				-std=c99 -pedantic -Wall -Wextra \
+				-DMINFFT_$2 -I .. \
+				./minfft.o \
+				-DFFTW_SFX=$FFTW_SFX \
+				-I ~/build/fftw-mi/include \
+				-L ~/build/fftw-mi/lib \
+				-lfftw3$FFTW_SFX \
+				-lm
 			if [ $? -ne 0 ]; then
 				exit
 			fi
@@ -45,20 +45,28 @@ fi
 
 # Fortran
 if [ $1 = FORTRAN ]; then
-	gfortran -fsyntax-only -DMINFFT_$2 ../minfft.F03
-	gfortran -fsyntax-only -I ~/build/fftw-mi/include fftw.f03
+	# compile modules
+	gfortran ../minfft.F03 \
+		-fsyntax-only \
+		-std=f2003 -Wall -Wextra -pedantic \
+		-DMINFFT_$2
+	gfortran fftw.f03 \
+		-fsyntax-only \
+		-std=f2003 -Wall -Wextra -pedantic \
+		-I ~/build/fftw-mi/include
+	# run tests
 	for d in $dims; do
 		for x in $xforms; do
-			cpp chkdft.F95 -o chkdft.f95 \
-			-D$d -D$x \
-			-DFFTW_SFX=$FFTW_SFX \
-			-P \
+			cpp chkdft.F03 -o chkdft.f03 \
+				-D$d -D$x \
+				-DFFTW_SFX=$FFTW_SFX \
+				-P \
 			&& \
-			gfortran chkdft.f95 \
-			-std=f2003 -pedantic -Wall -Wextra \
-			./minfft.o \
-			-L ~/build/fftw-mi/lib \
-			-lfftw3$FFTW_SFX
+			gfortran chkdft.f03 \
+				-std=f2003 -pedantic -Wall -Wextra \
+				./minfft.o \
+				-L ~/build/fftw-mi/lib \
+				-lfftw3$FFTW_SFX
 			if [ $? -ne 0 ]; then
 				exit
 			fi
@@ -69,4 +77,4 @@ if [ $1 = FORTRAN ]; then
 fi
 
 # cleanup
-rm -f ./a.out minfft.o chkdft.f95 minfft.mod fftw.mod
+rm -f ./a.out minfft.o chkdft.f03 minfft.mod fftw.mod
