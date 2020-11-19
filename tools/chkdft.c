@@ -27,6 +27,7 @@ main (void) {
 	const int MAXN=65536*16;
 	int N,n,Ncmp;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real r; // relative error
 	FFTW(plan) p;
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -151,7 +152,11 @@ main (void) {
 			v=fabs(y[n]);
 			vmax=(v>vmax)?v:vmax;
 		}
-		printf("%12d\t%g\n",N,(double)(dmax/vmax));
+		r=dmax/vmax;
+		printf("%12d\t%g\n",N,(double)r);
+		if (r>=T)
+			// threshold exceeded
+			return 1;
 		// free resources
 		free(x);
 		free(y);
@@ -167,6 +172,7 @@ main (void) {
 	const int MAXN=1024;
 	int N,n,Ncmp;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real r; // relative error
 	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -293,7 +299,11 @@ main (void) {
 		// print results
 		char s[256];
 		snprintf(s,256,"%d*%d",2*N,N);
-		printf("%12s\t%g\n",s,(double)(dmax/vmax));
+		r=dmax/vmax;
+		printf("%12s\t%g\n",s,(double)r);
+		if (r>=T)
+			// threshold exceeded
+			return 1;
 		// free resources
 		free(x);
 		free(y);
@@ -309,6 +319,7 @@ main (void) {
 	const int MAXN=64;
 	int N,n,Ncmp;
 	minfft_real d,dmax,v,vmax; // current and maximum absolute values
+	minfft_real r; // relative error
 	FFTW(plan) p; // plan
 	minfft_aux *a; // aux data
 	for (N=1; N<=MAXN; N*=2) {
@@ -435,7 +446,11 @@ main (void) {
 		// print results
 		char s[256];
 		snprintf(s,256,"%d*%d*%d",4*N,2*N,N);
-		printf("%12s\t%g\n",s,(double)(dmax/vmax));
+		r=dmax/vmax;
+		printf("%12s\t%g\n",s,(double)r);
+		if (r>=T)
+			// threshold exceeded
+			return 1;
 		// free resources
 		free(x);
 		free(y);
@@ -444,5 +459,7 @@ main (void) {
 		minfft_free_aux(a);
 	}
 #endif
+
+return 0;
 
 }

@@ -18,7 +18,7 @@ program main
     ! one-dimensional transforms
     integer,parameter :: maxn=65536*16 ! max transform size
     integer :: n ! current transform size
-    real(minfft_real) :: dmax,vmax ! accuracy measurements
+    real(minfft_real) :: r ! relative error
     type(minfft_aux) :: a ! minfft aux
     type(C_PTR) :: p ! FFTW plan
 #if DFT || INVDFT
@@ -130,9 +130,9 @@ program main
         call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
-        dmax=maxval(abs(mo-fo))
-        vmax=maxval(abs(fo))
-        print *,n,dmax/vmax
+        r=maxval(abs(mo-fo))/maxval(abs(fo))
+        print *,n,r
+        if (r>=T) stop 1 ! error threshold exceeded
         ! free plans
         call minfft_free_aux(a)
         call FFTW(destroy_plan)(p)
@@ -146,7 +146,7 @@ program main
     ! two-dimensional transforms
     integer,parameter :: maxn=1024 ! max transform size
     integer :: n ! current transform size
-    real(minfft_real) :: dmax,vmax ! accuracy measurements
+    real(minfft_real) :: r ! relative error
     type(minfft_aux) :: a ! minfft aux
     type(C_PTR) :: p ! FFTW plan
 #if DFT || INVDFT
@@ -260,9 +260,9 @@ program main
         call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
-        dmax=maxval(abs(mo-fo))
-        vmax=maxval(abs(fo))
-        print *,2*n,n,dmax/vmax
+        r=maxval(abs(mo-fo))/maxval(abs(fo))
+        print *,2*n,n,r
+        if (r>=T) stop 1 ! error threshold exceeded
         ! free plans
         call minfft_free_aux(a)
         call FFTW(destroy_plan)(p)
@@ -276,7 +276,7 @@ program main
     ! three-dimensional transforms
     integer,parameter :: maxn=64 ! max transform size
     integer :: n ! current transform size
-    real(minfft_real) :: dmax,vmax ! accuracy measurements
+    real(minfft_real) :: r ! relative error
     type(minfft_aux) :: a ! minfft aux
     type(C_PTR) :: p ! FFTW plan
 #if DFT || INVDFT
@@ -392,9 +392,9 @@ program main
         call FFTW(execute_r2r)(p,fi,fo)
 #endif
         ! compare results
-        dmax=maxval(abs(mo-fo))
-        vmax=maxval(abs(fo))
-        print *,4*n,2*n,n,dmax/vmax
+        r=maxval(abs(mo-fo))/maxval(abs(fo))
+        print *,4*n,2*n,n,r
+        if (r>=T) stop 1 ! error threshold exceeded
         ! free plans
         call minfft_free_aux(a)
         call FFTW(destroy_plan)(p)
