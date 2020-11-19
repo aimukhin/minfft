@@ -153,7 +153,7 @@ main (void) {
 			vmax=(v>vmax)?v:vmax;
 		}
 		r=dmax/vmax;
-		printf("%12d\t%g\n",N,(double)r);
+		printf("%d\t%g\n",N,(double)r);
 		if (r>=T)
 			// threshold exceeded
 			return 1;
@@ -297,10 +297,8 @@ main (void) {
 			vmax=(v>vmax)?v:vmax;
 		}
 		// print results
-		char s[256];
-		snprintf(s,256,"%d*%d",2*N,N);
 		r=dmax/vmax;
-		printf("%12s\t%g\n",s,(double)r);
+		printf("%d\t%d\t%g\n",2*N,N,(double)r);
 		if (r>=T)
 			// threshold exceeded
 			return 1;
@@ -444,10 +442,8 @@ main (void) {
 			vmax=(v>vmax)?v:vmax;
 		}
 		// print results
-		char s[256];
-		snprintf(s,256,"%d*%d*%d",4*N,2*N,N);
 		r=dmax/vmax;
-		printf("%12s\t%g\n",s,(double)r);
+		printf("%d\t%d\t%d\t%g\n",4*N,2*N,N,(double)r);
 		if (r>=T)
 			// threshold exceeded
 			return 1;
