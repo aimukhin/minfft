@@ -299,28 +299,23 @@ We use `benchFFT` tool version 3.1 to benchmark our library and its
 competitors.
 
 The libraries being compared are built with the GNU C compiler version
-10.2.0 for the x86_64 platform. They are built with optimization options
-which give each library best performance.
+10.2.0 for the x86_64 platform with the only optimization option
+`-Ofast`.
 
-The version of FFTW used is 3.3.8, built with its default compiler
-flags. Since this library is highly sophisticated, we decided to take
-some measures to put it into a comparable "weight class". First, we
-disable all its SIMD optimizations, and therefore compare performance of
-the machine-independent code. Next, we create FFTW plans with the
-FFTW_ESTIMATE option. This puts FFTW in a fairer position with regard
-to the setup time.
+The version of FFTW used is 3.3.8. Since this library is highly
+sophisticated, we decided to take some measures to put it into a
+comparable "weight class". First, we disable all its SIMD optimizations,
+and therefore compare performance of the machine-independent code. Next,
+we create FFTW plans with the `FFTW_ESTIMATE` option. This puts FFTW in
+a fairer position with regard to the setup time.
 
-The version of Kiss FFT used is 1.3.1. It is built with the only
-optimization option `-Ofast`.
-
-Our library is also built with `-Ofast` only.
+The version of Kiss FFT used is 1.3.1.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
 
 The results of the performance and accuracy tests are available in the
-`benchmarks` subdirectory. The programs used to conduct those (and many
-other) tests are in the `tools` subdirectory.
+`benchmarks` subdirectory.
 
 ## Conformance
 The source code conforms to the C99 and Fortran 2003 standards.
