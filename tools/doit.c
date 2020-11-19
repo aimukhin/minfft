@@ -3,7 +3,7 @@
 
 BEGIN_BENCH_DOC
 BENCH_DOC("name", "minfft")
-BENCH_DOC("version", "2.0.0")
+BENCH_DOC("version", "1.2.0")
 BENCH_DOC("year", "2020")
 BENCH_DOC("author", "Alexander Mukhin")
 BENCH_DOC("language", "C")
@@ -40,12 +40,12 @@ minfft_aux *a; // aux data
 
 void copy_h2c(struct problem *p, bench_complex *out)
 {
-     copy_h2c_unpacked(p, out, -1.0);
+     copy_h2c_unpacked(p,out,-1.0);
 }
 
 void copy_c2h(struct problem *p, bench_complex *in)
 {
-     copy_c2h_unpacked(p, in, -1.0);
+     copy_c2h_unpacked(p,in,-1.0);
 }
 
 int can_do(struct problem *p)
@@ -61,9 +61,9 @@ void setup(struct problem *p)
 {
 	BENCH_ASSERT(can_do(p));
 	if (p->kind==PROBLEM_COMPLEX)
-		a = minfft_mkaux_dft(p->rank,p->n);
+		a=minfft_mkaux_dft(p->rank,p->n);
 	else
-		a = minfft_mkaux_realdft(p->rank,p->n);
+		a=minfft_mkaux_realdft(p->rank,p->n);
 }
 
 void doit(int iter, struct problem *p)
