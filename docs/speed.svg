@@ -454,9 +454,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,316.9 L106.2,153.8 L132.3,139.3 L158.3,111.2 L184.4,108.9 L210.4,106.9
-		L236.5,110.8 L262.5,108.4 L288.5,116.6 L314.6,121.8 L340.6,126.9 L366.7,127.3 L392.7,129.5 L418.7,147.6
-		L444.8,201.7 L470.8,245.0 L496.9,252.7 L522.9,253.3 L549.0,252.9 L575.0,256.9  '/></g>
+	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,317.0 L106.2,142.1 L132.3,139.3 L158.3,115.6 L184.4,108.9 L210.4,106.5
+		L236.5,111.6 L262.5,108.2 L288.5,115.9 L314.6,122.0 L340.6,127.0 L366.7,127.4 L392.7,130.7 L418.7,154.0
+		L444.8,208.6 L470.8,245.3 L496.9,251.5 L522.9,251.1 L549.0,252.4 L575.0,256.0  '/></g>
 	</g>
 	<g id="gnuplot_plot_2" ><title>FFTW (machine-independent code, ESTIMATE mode)</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -465,9 +465,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 255,   0)'  d='M516.2,90.1 L558.4,90.1 M80.2,340.8 L106.2,199.7 L132.3,127.7 L158.3,86.8 L184.4,106.2 L210.4,153.5
-		L236.5,144.7 L262.5,146.2 L288.5,153.1 L314.6,171.0 L340.6,194.0 L366.7,207.5 L392.7,196.8 L418.7,200.7
-		L444.8,214.6 L470.8,285.3 L496.9,300.7 L522.9,301.9 L549.0,318.2 L575.0,319.4  '/></g>
+	<path stroke='rgb(  0, 255,   0)'  d='M516.2,90.1 L558.4,90.1 M80.2,337.8 L106.2,189.2 L132.3,139.3 L158.3,64.4 L184.4,68.0 L210.4,125.5
+		L236.5,103.3 L262.5,149.6 L288.5,146.6 L314.6,176.2 L340.6,193.6 L366.7,202.2 L392.7,210.8 L418.7,210.0
+		L444.8,221.7 L470.8,283.5 L496.9,299.4 L522.9,300.5 L549.0,318.1 L575.0,319.0  '/></g>
 	</g>
 	<g id="gnuplot_plot_3" ><title>Kiss FFT</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -476,9 +476,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(255,   0,   0)'  d='M516.2,108.1 L558.4,108.1 M80.2,353.8 L106.2,264.5 L132.3,320.0 L158.3,251.3 L184.4,294.6 L210.4,234.6
-		L236.5,276.0 L262.5,222.8 L288.5,264.5 L314.6,226.5 L340.6,263.8 L366.7,240.4 L392.7,269.1 L418.7,249.5
-		L444.8,306.6 L470.8,325.4 L496.9,354.6 L522.9,364.2 L549.0,373.1 L575.0,372.1  '/></g>
+	<path stroke='rgb(255,   0,   0)'  d='M516.2,108.1 L558.4,108.1 M80.2,353.8 L106.2,264.5 L132.3,320.0 L158.3,251.3 L184.4,294.6 L210.4,234.7
+		L236.5,276.0 L262.5,222.8 L288.5,264.5 L314.6,226.7 L340.6,263.8 L366.7,240.5 L392.7,268.8 L418.7,249.8
+		L444.8,305.9 L470.8,325.8 L496.9,353.0 L522.9,357.4 L549.0,368.4 L575.0,367.6  '/></g>
 	</g>
 <g fill="none" color="white" stroke="rgb(255,   0,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
