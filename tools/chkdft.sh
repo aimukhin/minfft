@@ -17,7 +17,7 @@ fi
 
 # build minfft
 echo Building minfft...
-cc $OFLAGS -std=c99 -pedantic -Wall -Wextra -DMINFFT_$2 -c ../minfft.c
+cc $CFLAGS -std=c99 -pedantic -Wall -Wextra -DMINFFT_$2 -c ../minfft.c
 echo done.
 
 # tests to run
