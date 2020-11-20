@@ -33,8 +33,8 @@ if [ $1 = C ]; then
 				-std=c99 -pedantic -Wall -Wextra \
 				-DMINFFT_$2 -I .. ./minfft.o \
 				-DFFTW_SFX=$FFTW_SFX \
-				-I ~/build/fftw-mi/include \
-				-L ~/build/fftw-mi/lib \
+				-I ~/build/fftw/include \
+				-L ~/build/fftw/lib \
 				-lfftw3$FFTW_SFX \
 				-lm \
 			&& \
@@ -59,7 +59,7 @@ if [ $1 = FORTRAN ]; then
 	gfortran fftw.f03 \
 		-fsyntax-only \
 		-std=f2003 -pedantic -Wall -Wextra \
-		-I ~/build/fftw-mi/include
+		-I ~/build/fftw/include
 	# run tests
 	for d in $dims; do
 		for x in $xforms; do
@@ -73,7 +73,7 @@ if [ $1 = FORTRAN ]; then
 			gfortran chkdft.f03 \
 				-std=f2003 -pedantic -Wall -Wextra \
 				./minfft.o \
-				-L ~/build/fftw-mi/lib \
+				-L ~/build/fftw/lib \
 				-lfftw3$FFTW_SFX \
 			&& \
 			echo "# $d $x" \
