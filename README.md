@@ -313,9 +313,9 @@ FFTW plans with the `FFTW_ESTIMATE` option. This puts FFTW in a fairer
 position with regard to the setup time.
 
 The version of Kiss FFT used is 1.3.1. It is built with the only
-optimization option `-Ofast`.
+optimization option `-O3`.
 
-Our library is also built with `-Ofast` only.
+Our library is also built with `-O3` only.
 
 The performance measurements are made on an isolated core of an Intel®
 Celeron® N3050 CPU running at 2160 MHz.
