@@ -540,7 +540,6 @@ minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a) {
 inline static void
 invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	int n; // counter
-	minfft_cmpl u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_cmpl *e=a->e; // exponent vector
 	minfft_cmpl *w=(minfft_cmpl*)y; // alias
@@ -552,7 +551,7 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	}
 	if (N==2) {
 		// trivial case
-		minfft_real t0,t1; // temporary values
+		register minfft_real t0,t1; // temporary values
 		t0=creal(z[0]);
 		t1=creal(z[1]);
 		y[0]=t0+t1;
@@ -561,14 +560,42 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	}
 	// reduce to inverse complex DFT of length N/2
 	// prepare complex DFT inputs
-	t[0]=(z[0]+z[N/2])+I*(z[0]-z[N/2]);
+	minfft_real *tr,*er,*zr;
+	minfft_real *ti,*ei,*zi;
+	tr=(minfft_real*)t;
+	ti=tr+1;
+	er=(minfft_real*)e;
+	ei=er+1;
+	zr=(minfft_real*)z;
+	zi=zr+1;
+	// t[0]=(z[0]+z[N/2])+I*(z[0]-z[N/2]);
+	tr[0]=zr[0]+zr[N];
+	ti[0]=zr[0]-zr[N];
 	for (n=1; n<N/4; ++n) {
-		u=z[n]+conj(z[N/2-n]);
-		v=I*(z[n]-conj(z[N/2-n]))*conj(e[n]);
-		t[n]=u+v;
-		t[N/2-n]=conj(u-v);
+		register minfft_real ur,vr;
+		register minfft_real ui,vi;
+		register minfft_real ttr,ter;
+		register minfft_real tti,tei;
+		// u=z[n]+conj(z[N/2-n]);
+		ur=zr[2*n]+zr[N-2*n];
+		ui=zi[2*n]-zi[N-2*n];
+		// v=I*(z[n]-conj(z[N/2-n]))*conj(e[n]);
+		ttr=zr[2*n]-zr[N-2*n];
+		tti=zi[2*n]+zi[N-2*n];
+		ter=ei[2*n]; // te=I*conj(e[n])
+		tei=er[2*n];
+		vr=ttr*ter-tti*tei;
+		vi=ttr*tei+tti*ter;
+		// t[n]=u+v;
+		tr[2*n]=ur+vr;
+		ti[2*n]=ui+vi;
+		// t[N/2-n]=conj(u-v);
+		tr[N-2*n]=ur-vr;
+		ti[N-2*n]=-ui+vi;
 	}
-	t[N/4]=2*conj(z[N/4]);
+	// t[N/4]=2*conj(z[N/4]);
+	tr[N/2]=2*zr[N/2];
+	ti[N/2]=-2*zi[N/2];
 	// do inverse complex DFT
 	s_invdft_1d(t,w,1,a->sub1);
 }
