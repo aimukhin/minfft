@@ -66,17 +66,15 @@ mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1
 inline static void
 rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
-	minfft_cmpl t0,t1,t2,t3; // temporary values
-	minfft_real *xr,*xi,*tr,*ti,*er,*ei; // arrays of real and imaginary parts
-	minfft_real t0r,t0i,t1r,t1i,t2r,t2i,t3r,t3i; // temporary values
 	// split-radix DIF
 	if (N==1) {
-		// trivial terminal case
+		// terminal case
 		y[0]=x[0];
 		return;
 	}
 	if (N==2) {
 		// terminal case
+		register minfft_cmpl t0,t1;
 		t0=x[0]+x[1];
 		t1=x[0]-x[1];
 		y[0]=t0;
@@ -85,6 +83,7 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==4) {
 		// terminal case
+		register minfft_cmpl t0,t1,t2,t3;
 		t0=x[0]+x[2];
 		t1=x[1]+x[3];
 		t2=x[0]-x[2];
@@ -97,38 +96,101 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==8) {
 		// terminal case
-		minfft_cmpl t00,t01,t02,t03;
-		minfft_cmpl t10,t11,t12,t13;
-		const minfft_cmpl E1=0.707106781186547524400844362104849039L*(1-I);
-		const minfft_cmpl E3=0.707106781186547524400844362104849039L*(-1-I);
-		t0=x[0]+x[4];
-		t1=x[2]+x[6];
-		t2=x[0]-x[4];
-		t3=I*(x[2]-x[6]);
-		t00=t0+t1;
-		t01=t2-t3;
-		t02=t0-t1;
-		t03=t2+t3;
-		t0=x[1]+x[5];
-		t1=x[3]+x[7];
-		t2=x[1]-x[5];
-		t3=I*(x[3]-x[7]);
-		t10=t0+t1;
-		t11=(t2-t3)*E1;
-		t12=(t0-t1)*(-I);
-		t13=(t2+t3)*E3;
-		y[0]=t00+t10;
-		y[sy]=t01+t11;
-		y[2*sy]=t02+t12;
-		y[3*sy]=t03+t13;
-		y[4*sy]=t00-t10;
-		y[5*sy]=t01-t11;
-		y[6*sy]=t02-t12;
-		y[7*sy]=t03-t13;
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
+		register minfft_real t00r,t01r,t02r,t03r;
+		register minfft_real t00i,t01i,t02i,t03i;
+		register minfft_real t10r,t11r,t12r,t13r;
+		register minfft_real t10i,t11i,t12i,t13i;
+		register minfft_real ttr,tti;
+		const minfft_real e1=0.707106781186547524400844362104849039L;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// t0=x[0]+x[4];
+		t0r=xr[0]+xr[8];
+		t0i=xi[0]+xi[8];
+		// t1=x[2]+x[6];
+		t1r=xr[4]+xr[12];
+		t1i=xi[4]+xi[12];
+		// t2=x[0]-x[4];
+		t2r=xr[0]-xr[8];
+		t2i=xi[0]-xi[8];
+		// t3=I*(x[2]-x[6]);
+		t3r=-xi[4]+xi[12];
+		t3i=xr[4]-xr[12];
+		// t00=t0+t1;
+		t00r=t0r+t1r;
+		t00i=t0i+t1i;
+		// t01=t2-t3;
+		t01r=t2r-t3r;
+		t01i=t2i-t3i;
+		// t02=t0-t1;
+		t02r=t0r-t1r;
+		t02i=t0i-t1i;
+		// t03=t2+t3;
+		t03r=t2r+t3r;
+		t03i=t2i+t3i;
+		// t0=x[1]+x[5];
+		t0r=xr[2]+xr[10];
+		t0i=xi[2]+xi[10];
+		// t1=x[3]+x[7];
+		t1r=xr[6]+xr[14];
+		t1i=xi[6]+xi[14];
+		// t2=x[1]-x[5];
+		t2r=xr[2]-xr[10];
+		t2i=xi[2]-xi[10];
+		// t3=I*(x[3]-x[7]);
+		t3r=-xi[6]+xi[14];
+		t3i=xr[6]-xr[14];
+		// t10=t0+t1;
+		t10r=t0r+t1r;
+		t10i=t0i+t1i;
+		// t11=(t2-t3)*E1;
+		ttr=t2r-t3r;
+		tti=t2i-t3i;
+		t11r=e1*(ttr+tti);
+		t11i=e1*(tti-ttr);
+		// t12=(t0-t1)*(-I);
+		t12r=t0i-t1i;
+		t12i=-t0r+t1r;
+		// t13=(t2+t3)*E3;
+		ttr=t2r+t3r;
+		tti=t2i+t3i;
+		t13r=e1*(tti-ttr);
+		t13i=-e1*(tti+ttr);
+		// y[0]=t00+t10;
+		yr[0]=t00r+t10r;
+		yi[0]=t00i+t10i;
+		// y[sy]=t01+t11;
+		yr[2*sy]=t01r+t11r;
+		yi[2*sy]=t01i+t11i;
+		// y[2*sy]=t02+t12;
+		yr[4*sy]=t02r+t12r;
+		yi[4*sy]=t02i+t12i;
+		// y[3*sy]=t03+t13;
+		yr[6*sy]=t03r+t13r;
+		yi[6*sy]=t03i+t13i;
+		// y[4*sy]=t00-t10;
+		yr[8*sy]=t00r-t10r;
+		yi[8*sy]=t00i-t10i;
+		// y[5*sy]=t01-t11;
+		yr[10*sy]=t01r-t11r;
+		yi[10*sy]=t01i-t11i;
+		// y[6*sy]=t02-t12;
+		yr[12*sy]=t02r-t12r;
+		yi[12*sy]=t02i-t12i;
+		// y[7*sy]=t03-t13;
+		yr[14*sy]=t03r-t13r;
+		yi[14*sy]=t03i-t13i;
 		return;
 	}
 	// recursion
-	// prepare pointers
+	minfft_real *xr,*tr,*er;
+	minfft_real *xi,*ti,*ei;
 	xr=(minfft_real*)x;
 	xi=xr+1;
 	tr=(minfft_real*)t;
@@ -137,8 +199,8 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
-		// we use real arithmetics in this most time-consuming loop
-		// since compilers often poorly optimize complex arithmetics
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
 		// t0=x[n]+x[n+N/2];
 		t0r=xr[2*n]+xr[2*n+N];
 		t0i=xi[2*n]+xi[2*n+N];
@@ -196,17 +258,15 @@ minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 inline static void
 rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; // counter
-	minfft_cmpl t0,t1,t2,t3; // temporary values
-	minfft_real *xr,*xi,*tr,*ti,*er,*ei; // arrays of real and imaginary parts
-	minfft_real t0r,t0i,t1r,t1i,t2r,t2i,t3r,t3i; // temporary values
 	// split-radix DIF
 	if (N==1) {
-		// trivial terminal case
+		// terminal case
 		y[0]=x[0];
 		return;
 	}
 	if (N==2) {
 		// terminal case
+		register minfft_cmpl t0,t1;
 		t0=x[0]+x[1];
 		t1=x[0]-x[1];
 		y[0]=t0;
@@ -215,6 +275,7 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==4) {
 		// terminal case
+		register minfft_cmpl t0,t1,t2,t3;
 		t0=x[0]+x[2];
 		t1=x[1]+x[3];
 		t2=x[0]-x[2];
@@ -227,38 +288,101 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==8) {
 		// terminal case
-		minfft_cmpl t00,t01,t02,t03;
-		minfft_cmpl t10,t11,t12,t13;
-		const minfft_cmpl E1=0.707106781186547524400844362104849039L*(1+I);
-		const minfft_cmpl E3=0.707106781186547524400844362104849039L*(-1+I);
-		t0=x[0]+x[4];
-		t1=x[2]+x[6];
-		t2=x[0]-x[4];
-		t3=I*(x[2]-x[6]);
-		t00=t0+t1;
-		t01=t2+t3;
-		t02=t0-t1;
-		t03=t2-t3;
-		t0=x[1]+x[5];
-		t1=x[3]+x[7];
-		t2=x[1]-x[5];
-		t3=I*(x[3]-x[7]);
-		t10=t0+t1;
-		t11=(t2+t3)*E1;
-		t12=(t0-t1)*I;
-		t13=(t2-t3)*E3;
-		y[0]=t00+t10;
-		y[sy]=t01+t11;
-		y[2*sy]=t02+t12;
-		y[3*sy]=t03+t13;
-		y[4*sy]=t00-t10;
-		y[5*sy]=t01-t11;
-		y[6*sy]=t02-t12;
-		y[7*sy]=t03-t13;
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
+		register minfft_real t00r,t01r,t02r,t03r;
+		register minfft_real t00i,t01i,t02i,t03i;
+		register minfft_real t10r,t11r,t12r,t13r;
+		register minfft_real t10i,t11i,t12i,t13i;
+		register minfft_real ttr,tti;
+		const minfft_real e1=0.707106781186547524400844362104849039L;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// t0=x[0]+x[4];
+		t0r=xr[0]+xr[8];
+		t0i=xi[0]+xi[8];
+		// t1=x[2]+x[6];
+		t1r=xr[4]+xr[12];
+		t1i=xi[4]+xi[12];
+		// t2=x[0]-x[4];
+		t2r=xr[0]-xr[8];
+		t2i=xi[0]-xi[8];
+		// t3=I*(x[2]-x[6]);
+		t3r=-xi[4]+xi[12];
+		t3i=xr[4]-xr[12];
+		// t00=t0+t1;
+		t00r=t0r+t1r;
+		t00i=t0i+t1i;
+		// t01=t2+t3;
+		t01r=t2r+t3r;
+		t01i=t2i+t3i;
+		// t02=t0-t1;
+		t02r=t0r-t1r;
+		t02i=t0i-t1i;
+		// t03=t2-t3;
+		t03r=t2r-t3r;
+		t03i=t2i-t3i;
+		// t0=x[1]+x[5];
+		t0r=xr[2]+xr[10];
+		t0i=xi[2]+xi[10];
+		// t1=x[3]+x[7];
+		t1r=xr[6]+xr[14];
+		t1i=xi[6]+xi[14];
+		// t2=x[1]-x[5];
+		t2r=xr[2]-xr[10];
+		t2i=xi[2]-xi[10];
+		// t3=I*(x[3]-x[7]);
+		t3r=-xi[6]+xi[14];
+		t3i=xr[6]-xr[14];
+		// t10=t0+t1;
+		t10r=t0r+t1r;
+		t10i=t0i+t1i;
+		// t11=(t2+t3)*E1;
+		ttr=t2r+t3r;
+		tti=t2i+t3i;
+		t11r=e1*(ttr-tti);
+		t11i=e1*(ttr+tti);
+		// t12=(t0-t1)*I;
+		t12r=-t0i+t1i;
+		t12i=t0r-t1r;
+		// t13=(t2-t3)*E3;
+		ttr=t2r-t3r;
+		tti=t2i-t3i;
+		t13r=-e1*(ttr+tti);
+		t13i=e1*(ttr-tti);
+		// y[0]=t00+t10;
+		yr[0]=t00r+t10r;
+		yi[0]=t00i+t10i;
+		// y[sy]=t01+t11;
+		yr[2*sy]=t01r+t11r;
+		yi[2*sy]=t01i+t11i;
+		// y[2*sy]=t02+t12;
+		yr[4*sy]=t02r+t12r;
+		yi[4*sy]=t02i+t12i;
+		// y[3*sy]=t03+t13;
+		yr[6*sy]=t03r+t13r;
+		yi[6*sy]=t03i+t13i;
+		// y[4*sy]=t00-t10;
+		yr[8*sy]=t00r-t10r;
+		yi[8*sy]=t00i-t10i;
+		// y[5*sy]=t01-t11;
+		yr[10*sy]=t01r-t11r;
+		yi[10*sy]=t01i-t11i;
+		// y[6*sy]=t02-t12;
+		yr[12*sy]=t02r-t12r;
+		yi[12*sy]=t02i-t12i;
+		// y[7*sy]=t03-t13;
+		yr[14*sy]=t03r-t13r;
+		yi[14*sy]=t03i-t13i;
 		return;
 	}
 	// recursion
-	// prepare pointers
+	minfft_real *xr,*tr,*er;
+	minfft_real *xi,*ti,*ei;
 	xr=(minfft_real*)x;
 	xi=xr+1;
 	tr=(minfft_real*)t;
@@ -267,8 +391,8 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
-		// we use real arithmetics in this most time-consuming loop
-		// since compilers often poorly optimize complex arithmetics
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
 		// t0=x[n]+x[n+N/2];
 		t0r=xr[2*n]+xr[2*n+N];
 		t0i=xi[2*n]+xi[2*n+N];
