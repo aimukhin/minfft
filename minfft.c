@@ -452,7 +452,6 @@ minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 inline static void
 s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	int n; // counter
-	minfft_cmpl u,v; // temporary values
 	int N=a->N; // transform length
 	minfft_cmpl *e=a->e; // exponent vector
 	minfft_cmpl *w=(minfft_cmpl*)x; // alias
@@ -464,7 +463,7 @@ s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	}
 	if (N==2) {
 		// trivial case
-		minfft_real t0,t1; // temporary values
+		register minfft_real t0,t1;
 		t0=x[0];
 		t1=x[1];
 		z[0]=t0+t1;
@@ -475,16 +474,48 @@ s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	// do complex DFT
 	s_dft_1d(w,t,1,a->sub1);
 	// recover results
-	u=t[0];
-	z[0]=creal(u)+cimag(u);
-	z[sz*N/2]=creal(u)-cimag(u);
+	register minfft_real ur,vr;
+	register minfft_real ui,vi;
+	minfft_real *tr,*er,*zr;
+	minfft_real *ti,*ei,*zi;
+	tr=(minfft_real*)t;
+	ti=tr+1;
+	er=(minfft_real*)e;
+	ei=er+1;
+	zr=(minfft_real*)z;
+	zi=zr+1;
+	// u=t[0];
+	ur=tr[0];
+	ui=ti[0];
+	// z[0]=creal(u)+cimag(u);
+	zr[0]=ur+ui;
+	zi[0]=0;
+	// z[sz*N/2]=creal(u)-cimag(u);
+	zr[sz*N]=ur-ui;
+	zi[sz*N]=0;
 	for (n=1; n<N/4; ++n) {
-		u=(t[n]+conj(t[N/2-n]))/2;
-		v=(t[n]-conj(t[N/2-n]))*e[n]/(2*I);
-		z[sz*n]=u+v;
-		z[sz*(N/2-n)]=conj(u-v);
+		register minfft_real ttr,ter;
+		register minfft_real tti,tei;
+		// u=(t[n]+conj(t[N/2-n]))/2;
+		ur=(tr[2*n]+tr[N-2*n])/2;
+		ui=(ti[2*n]-ti[N-2*n])/2;
+		// v=(t[n]-conj(t[N/2-n]))*e[n]/(2*I);
+		ttr=tr[2*n]-tr[N-2*n];
+		tti=ti[2*n]+ti[N-2*n];
+		ter=ei[2*n]; // te=e[n]/I
+		tei=-er[2*n];
+		vr=(ttr*ter-tti*tei)/2;
+		vi=(ttr*tei+tti*ter)/2;
+		// z[sz*n]=u+v;
+		zr[2*sz*n]=ur+vr;
+		zi[2*sz*n]=ui+vi;
+		// z[sz*(N/2-n)]=conj(u-v);
+		zr[sz*(N-2*n)]=ur-vr;
+		zi[sz*(N-2*n)]=-ui+vi;
 	}
-	z[sz*N/4]=conj(t[N/4]);
+	// z[sz*N/4]=conj(t[N/4]);
+	zr[sz*N/2]=tr[N/2];
+	zi[sz*N/2]=-ti[N/2];
 }
 
 // real DFT of arbitrary dimension
