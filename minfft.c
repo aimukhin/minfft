@@ -94,15 +94,38 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==4) {
 		// terminal case
-		register minfft_cmpl t0,t1,t2,t3;
-		t0=x[0]+x[2];
-		t1=x[1]+x[3];
-		t2=x[0]-x[2];
-		t3=I*(x[1]-x[3]);
-		y[0]=t0+t1;
-		y[sy]=t2-t3;
-		y[2*sy]=t0-t1;
-		y[3*sy]=t2+t3;
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// t0=x[0]+x[2];
+		t0r=xr[0]+xr[4];
+		t0i=xi[0]+xi[4];
+		// t1=x[1]+x[3];
+		t1r=xr[2]+xr[6];
+		t1i=xi[2]+xi[6];
+		// t2=x[0]-x[2];
+		t2r=xr[0]-xr[4];
+		t2i=xi[0]-xi[4];
+		// t3=I*(x[1]-x[3]);
+		t3r=-xi[2]+xi[6];
+		t3i=xr[2]-xr[6];
+		// y[0]=t0+t1;
+		yr[0]=t0r+t1r;
+		yi[0]=t0i+t1i;
+		// y[sy]=t2-t3;
+		yr[2*sy]=t2r-t3r;
+		yi[2*sy]=t2i-t3i;
+		// y[2*sy]=t0-t1;
+		yr[4*sy]=t0r-t1r;
+		yi[4*sy]=t0i-t1i;
+		// y[3*sy]=t2+t3;
+		yr[6*sy]=t2r+t3r;
+		yi[6*sy]=t2i+t3i;
 		return;
 	}
 	if (N==8) {
@@ -285,15 +308,38 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==4) {
 		// terminal case
-		register minfft_cmpl t0,t1,t2,t3;
-		t0=x[0]+x[2];
-		t1=x[1]+x[3];
-		t2=x[0]-x[2];
-		t3=I*(x[1]-x[3]);
-		y[0]=t0+t1;
-		y[sy]=t2+t3;
-		y[2*sy]=t0-t1;
-		y[3*sy]=t2-t3;
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		register minfft_real t0r,t1r,t2r,t3r;
+		register minfft_real t0i,t1i,t2i,t3i;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// t0=x[0]+x[2];
+		t0r=xr[0]+xr[4];
+		t0i=xi[0]+xi[4];
+		// t1=x[1]+x[3];
+		t1r=xr[2]+xr[6];
+		t1i=xi[2]+xi[6];
+		// t2=x[0]-x[2];
+		t2r=xr[0]-xr[4];
+		t2i=xi[0]-xi[4];
+		// t3=I*(x[1]-x[3]);
+		t3r=-xi[2]+xi[6];
+		t3i=xr[2]-xr[6];
+		// y[0]=t0+t1;
+		yr[0]=t0r+t1r;
+		yi[0]=t0i+t1i;
+		// y[sy]=t2+t3;
+		yr[2*sy]=t2r+t3r;
+		yi[2*sy]=t2i+t3i;
+		// y[2*sy]=t0-t1;
+		yr[4*sy]=t0r-t1r;
+		yi[4*sy]=t0i-t1i;
+		// y[3*sy]=t2-t3;
+		yr[6*sy]=t2r-t3r;
+		yi[6*sy]=t2i-t3i;
 		return;
 	}
 	if (N==8) {
