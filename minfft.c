@@ -834,17 +834,22 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
-	for (n=0; n<N/2; ++n)
-		t[n]=*e++*(x[2*n]+I*x[N-1-2*n]);
-	// do complex DFT in-place
-	s_dft_1d(t,t,1,a->sub1);
-	// recover results
 	minfft_real *tr,*er;
 	minfft_real *ti,*ei;
 	tr=(minfft_real*)t;
 	ti=tr+1;
 	er=(minfft_real*)e;
 	ei=er+1;
+	for (n=0; n<N/2; ++n) {
+		// t[n]=*e++*(x[2*n]+I*x[N-1-2*n]);
+		tr[2*n]=er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
+		ti[2*n]=er[2*n]*x[N-1-2*n]+ei[2*n]*x[2*n];
+	}
+	// do complex DFT in-place
+	s_dft_1d(t,t,1,a->sub1);
+	// recover results
+	er+=N;
+	ei+=N;
 	for (n=0; n<N/2; ++n) {
 		// y[sy*2*n]=2*creal(*e++*t[n]);
 		y[sy*2*n]=2*(er[4*n]*tr[2*n]-ei[4*n]*ti[2*n]);
@@ -879,17 +884,22 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
-	for (n=0; n<N/2; ++n)
-		t[n]=-*e++*(x[2*n]-I*x[N-1-2*n]);
-	// do complex DFT in-place
-	s_dft_1d(t,t,1,a->sub1);
-	// recover results
 	minfft_real *tr,*er;
 	minfft_real *ti,*ei;
 	tr=(minfft_real*)t;
 	ti=tr+1;
 	er=(minfft_real*)e;
 	ei=er+1;
+	for (n=0; n<N/2; ++n) {
+		// t[n]=-*e++*(x[2*n]-I*x[N-1-2*n]);
+		tr[2*n]=-er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
+		ti[2*n]=er[2*n]*x[N-1-2*n]-ei[2*n]*x[2*n];
+	}
+	// do complex DFT in-place
+	s_dft_1d(t,t,1,a->sub1);
+	// recover results
+	er+=N;
+	ei+=N;
 	for (n=0; n<N/2; ++n) {
 		// y[sy*2*n]=2*cimag(*e++*t[n]);
 		y[sy*2*n]=2*(er[4*n]*ti[2*n]+ei[4*n]*tr[2*n]);
