@@ -980,7 +980,7 @@ make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
 	else {
 		p=1;
 		for (i=0; i<d; ++i)
-			p *= Ns[i];
+			p*=Ns[i];
 		a=malloc(sizeof(minfft_aux));
 		if (a==NULL)
 			goto err;
@@ -1007,7 +1007,7 @@ minfft_aux*
 minfft_mkaux_dft_1d (int N) {
 	minfft_aux *a;
 	int n;
-	minfft_cmpl *e;
+	minfft_real *e;
 	if (N<=0 || N&(N-1))
 		// error if N is negative or not a power of two
 		return NULL;
@@ -1022,13 +1022,15 @@ minfft_mkaux_dft_1d (int N) {
 		a->e=malloc(N*sizeof(minfft_cmpl));
 		if (a->e==NULL)
 			goto err;
-		e=a->e;
+		e=(minfft_real*)a->e;
 		while (N>=16) {
 			for (n=0; n<N/4; ++n) {
-				*e++=exp(-2*pi*I*n/N);
-				*e++=exp(-2*pi*I*3*n/N);
+				*e++=cos(-2*pi*n/N);
+				*e++=sin(-2*pi*n/N);
+				*e++=cos(-2*pi*3*n/N);
+				*e++=sin(-2*pi*3*n/N);
 			}
-			N /= 2;
+			N/=2;
 		}
 	} else {
 		a->t=NULL;
@@ -1064,7 +1066,7 @@ minfft_aux*
 minfft_mkaux_realdft_1d (int N) {
 	minfft_aux *a;
 	int n;
-	minfft_cmpl *e;
+	minfft_real *e;
 	if (N<=0 || N&(N-1))
 		// error if N is negative or not a power of two
 		return NULL;
@@ -1079,9 +1081,11 @@ minfft_mkaux_realdft_1d (int N) {
 		a->e=malloc((N/4)*sizeof(minfft_cmpl));
 		if (a->e==NULL)
 			goto err;
-		e=a->e;
-		for (n=0; n<N/4; ++n)
-			*e++=exp(-2*pi*I*n/N);
+		e=(minfft_real*)a->e;
+		for (n=0; n<N/4; ++n) {
+			*e++=cos(-2*pi*n/N);
+			*e++=sin(-2*pi*n/N);
+		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 	} else {
 		a->t=NULL;
@@ -1106,7 +1110,7 @@ minfft_mkaux_realdft (int d, int *Ns) {
 	else {
 		p=1;
 		for (i=0; i<d-1; ++i)
-			p *= Ns[i];
+			p*=Ns[i];
 		a=malloc(sizeof(minfft_aux));
 		if (a==NULL)
 			goto err;
@@ -1145,7 +1149,7 @@ minfft_aux*
 minfft_mkaux_t2t3_1d (int N) {
 	minfft_aux *a;
 	int n;
-	minfft_cmpl *e;
+	minfft_real *e;
 	if (N<=0 || N&(N-1))
 		// error if N is negative or not a power of two
 		return NULL;
@@ -1160,9 +1164,11 @@ minfft_mkaux_t2t3_1d (int N) {
 		a->e=malloc((N/2)*sizeof(minfft_cmpl));
 		if (a->e==NULL)
 			goto err;
-		e=a->e;
-		for (n=0; n<N/2; ++n)
-			*e++=exp(-2*pi*I*n/(4*N));
+		e=(minfft_real*)a->e;
+		for (n=0; n<N/2; ++n) {
+			*e++=cos(-2*pi*n/4/N);
+			*e++=sin(-2*pi*n/4/N);
+		}
 	} else {
 		a->t=NULL;
 		a->e=NULL;
@@ -1200,7 +1206,7 @@ minfft_aux*
 minfft_mkaux_t4_1d (int N) {
 	minfft_aux *a;
 	int n;
-	minfft_cmpl *e;
+	minfft_real *e;
 	if (N<=0 || N&(N-1))
 		// error if N is negative or not a power of two
 		return NULL;
@@ -1215,11 +1221,15 @@ minfft_mkaux_t4_1d (int N) {
 		a->e=malloc((N/2+N)*sizeof(minfft_cmpl));
 		if (a->e==NULL)
 			goto err;
-		e=a->e;
-		for (n=0; n<N/2; ++n)
-			*e++=exp(-2*pi*I*n/(2*N));
-		for (n=0; n<N; ++n)
-			*e++=exp(-2*pi*I*(2*n+1)/(8*N));
+		e=(minfft_real*)a->e;
+		for (n=0; n<N/2; ++n) {
+			*e++=cos(-2*pi*n/2/N);
+			*e++=sin(-2*pi*n/2/N);
+		}
+		for (n=0; n<N; ++n) {
+			*e++=cos(-2*pi*(2*n+1)/8/N);
+			*e++=sin(-2*pi*(2*n+1)/8/N);
+		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 		if (a->sub1==NULL)
 			goto err;
