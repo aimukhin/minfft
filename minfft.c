@@ -7,9 +7,19 @@
 #include <math.h>
 #include <tgmath.h>
 
+// constants
 static const minfft_real pi=3.141592653589793238462643383279502884L;
 static const minfft_real sqrt2=1.414213562373095048801688724209698079L;
 static const minfft_real invsqrt2=0.707106781186547524400844362104849039L;
+
+// aux structure
+struct minfft_aux {
+	int N; // number of elements to transform
+	void *t; // temporary buffer
+	void *e; // exponent vector
+	struct minfft_aux *sub1; // subtransform structure
+	struct minfft_aux *sub2; // subtransform structure
+};
 
 // *** meta-functions ***
 

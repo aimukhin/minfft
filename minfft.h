@@ -15,13 +15,6 @@ typedef double minfft_real;
 typedef double complex minfft_cmpl;
 #endif
 
-struct minfft_aux {
-	int N; // number of elements to transform
-	void *t; // temporary buffer
-	void *e; // exponent vector
-	struct minfft_aux *sub1; // subtransform structure
-	struct minfft_aux *sub2; // subtransform structure
-};
 typedef struct minfft_aux minfft_aux;
 
 void minfft_dft (minfft_cmpl*, minfft_cmpl*, const minfft_aux*);
