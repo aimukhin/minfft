@@ -738,8 +738,17 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
 	z[0]=x[0];
-	for (n=1; n<N/2; ++n)
-		z[n]=conj((x[n]+I*x[N-n])*e[n]);
+	minfft_real *er,*zr;
+	minfft_real *ei,*zi;
+	er=(minfft_real*)e;
+	ei=er+1;
+	zr=(minfft_real*)z;
+	zi=zr+1;
+	for (n=1; n<N/2; ++n) {
+		// z[n]=conj((x[n]+I*x[N-n])*e[n]);
+		zr[2*n]=x[n]*er[2*n]-x[N-n]*ei[2*n];
+		zi[2*n]=-x[n]*ei[2*n]-x[N-n]*er[2*n];
+	}
 	z[N/2]=sqrt2*x[N/2];
 	// do inverse real DFT in-place
 	invrealdft_1d(z,t,a->sub1);
@@ -778,8 +787,17 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
 	z[0]=x[N-1];
-	for (n=1; n<N/2; ++n)
-		z[n]=conj((x[N-n-1]+I*x[n-1])*e[n]);
+	minfft_real *er,*zr;
+	minfft_real *ei,*zi;
+	er=(minfft_real*)e;
+	ei=er+1;
+	zr=(minfft_real*)z;
+	zi=zr+1;
+	for (n=1; n<N/2; ++n) {
+		// z[n]=conj((x[N-n-1]+I*x[n-1])*e[n]);
+		zr[2*n]=x[N-n-1]*er[2*n]-x[n-1]*ei[2*n];
+		zi[2*n]=-x[N-n-1]*ei[2*n]-x[n-1]*er[2*n];
+	}
 	z[N/2]=sqrt2*x[N/2-1];
 	// do inverse real DFT in-place
 	invrealdft_1d(z,t,a->sub1);
