@@ -821,9 +821,17 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	// do complex DFT in-place
 	s_dft_1d(t,t,1,a->sub1);
 	// recover results
+	minfft_real *tr,*er;
+	minfft_real *ti,*ei;
+	tr=(minfft_real*)t;
+	ti=tr+1;
+	er=(minfft_real*)e;
+	ei=er+1;
 	for (n=0; n<N/2; ++n) {
-		y[sy*2*n]=2*creal(*e++*t[n]);
-		y[sy*(2*n+1)]=2*creal(*e++*conj(t[N/2-1-n]));
+		// y[sy*2*n]=2*creal(*e++*t[n]);
+		y[sy*2*n]=2*(er[4*n]*tr[2*n]-ei[4*n]*ti[2*n]);
+		// y[sy*(2*n+1)]=2*creal(*e++*conj(t[N/2-1-n]));
+		y[sy*(2*n+1)]=2*(er[4*n+2]*tr[N-2-2*n]+ei[4*n+2]*ti[N-2-2*n]);
 	}
 }
 
@@ -858,9 +866,17 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	// do complex DFT in-place
 	s_dft_1d(t,t,1,a->sub1);
 	// recover results
+	minfft_real *tr,*er;
+	minfft_real *ti,*ei;
+	tr=(minfft_real*)t;
+	ti=tr+1;
+	er=(minfft_real*)e;
+	ei=er+1;
 	for (n=0; n<N/2; ++n) {
-		y[sy*2*n]=2*cimag(*e++*t[n]);
-		y[sy*(2*n+1)]=2*cimag(*e++*conj(t[N/2-1-n]));
+		// y[sy*2*n]=2*cimag(*e++*t[n]);
+		y[sy*2*n]=2*(er[4*n]*ti[2*n]+ei[4*n]*tr[2*n]);
+		// y[sy*(2*n+1)]=2*cimag(*e++*conj(t[N/2-1-n]));
+		y[sy*(2*n+1)]=2*(-er[4*n+2]*ti[N-2-2*n]+ei[4*n+2]*tr[N-2-2*n]);
 	}
 }
 
