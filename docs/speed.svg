@@ -467,9 +467,9 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,325.7 L106.2,205.6 L132.3,80.7 L158.3,126.5 L184.4,107.3 L210.4,122.1
-		L236.5,125.1 L262.5,128.3 L288.5,137.6 L314.6,144.8 L340.6,149.7 L366.7,150.7 L392.7,153.7 L418.7,175.3
-		L444.8,222.1 L470.8,259.2 L496.9,268.7 L522.9,269.4 L549.0,269.6 L575.0,269.7  '/></g>
+	<path stroke='rgb(  0,   0, 255)'  d='M516.2,72.1 L558.4,72.1 M80.2,325.7 L106.2,168.3 L132.3,85.2 L158.3,111.0 L184.4,101.6 L210.4,114.0
+		L236.5,120.9 L262.5,122.8 L288.5,134.6 L314.6,140.1 L340.6,145.3 L366.7,144.6 L392.7,152.7 L418.7,167.5
+		L444.8,216.6 L470.8,259.6 L496.9,268.7 L522.9,268.6 L549.0,268.8 L575.0,272.3  '/></g>
 	</g>
 	<g id="gnuplot_plot_2" ><title>FFTW (machine-independent code, ESTIMATE mode)</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
