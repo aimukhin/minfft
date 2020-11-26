@@ -9,6 +9,7 @@
 
 static const minfft_real pi=3.141592653589793238462643383279502884L;
 static const minfft_real sqrt2=1.414213562373095048801688724209698079L;
+static const minfft_real invsqrt2=0.707106781186547524400844362104849039L;
 
 // *** meta-functions ***
 
@@ -105,7 +106,6 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 		register minfft_real t10r,t11r,t12r,t13r;
 		register minfft_real t10i,t11i,t12i,t13i;
 		register minfft_real ttr,tti;
-		const minfft_real e1=0.707106781186547524400844362104849039L;
 		xr=(minfft_real*)x;
 		xi=xr+1;
 		yr=(minfft_real*)y;
@@ -149,19 +149,19 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 		// t10=t0+t1;
 		t10r=t0r+t1r;
 		t10i=t0i+t1i;
-		// t11=(t2-t3)*E1;
+		// t11=(t2-t3)*invsqrt2*(1-I);
 		ttr=t2r-t3r;
 		tti=t2i-t3i;
-		t11r=e1*(ttr+tti);
-		t11i=e1*(tti-ttr);
+		t11r=invsqrt2*(ttr+tti);
+		t11i=invsqrt2*(tti-ttr);
 		// t12=(t0-t1)*(-I);
 		t12r=t0i-t1i;
 		t12i=-t0r+t1r;
-		// t13=(t2+t3)*E3;
+		// t13=(t2+t3)*invsqrt2*(-1-I);
 		ttr=t2r+t3r;
 		tti=t2i+t3i;
-		t13r=e1*(tti-ttr);
-		t13i=-e1*(tti+ttr);
+		t13r=invsqrt2*(tti-ttr);
+		t13i=-invsqrt2*(tti+ttr);
 		// y[0]=t00+t10;
 		yr[0]=t00r+t10r;
 		yi[0]=t00i+t10i;
@@ -297,7 +297,6 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 		register minfft_real t10r,t11r,t12r,t13r;
 		register minfft_real t10i,t11i,t12i,t13i;
 		register minfft_real ttr,tti;
-		const minfft_real e1=0.707106781186547524400844362104849039L;
 		xr=(minfft_real*)x;
 		xi=xr+1;
 		yr=(minfft_real*)y;
@@ -341,19 +340,19 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 		// t10=t0+t1;
 		t10r=t0r+t1r;
 		t10i=t0i+t1i;
-		// t11=(t2+t3)*E1;
+		// t11=(t2+t3)*invsqrt2*(1+I);
 		ttr=t2r+t3r;
 		tti=t2i+t3i;
-		t11r=e1*(ttr-tti);
-		t11i=e1*(ttr+tti);
+		t11r=invsqrt2*(ttr-tti);
+		t11i=invsqrt2*(ttr+tti);
 		// t12=(t0-t1)*I;
 		t12r=-t0i+t1i;
 		t12i=t0r-t1r;
-		// t13=(t2-t3)*E3;
+		// t13=(t2-t3)*invsqrt2*(-1+I);
 		ttr=t2r-t3r;
 		tti=t2i-t3i;
-		t13r=-e1*(ttr+tti);
-		t13i=e1*(ttr-tti);
+		t13r=-invsqrt2*(ttr+tti);
+		t13i=invsqrt2*(ttr-tti);
 		// y[0]=t00+t10;
 		yr[0]=t00r+t10r;
 		yi[0]=t00i+t10i;
