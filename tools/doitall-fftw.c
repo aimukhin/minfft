@@ -13,7 +13,7 @@
 #endif
 
 BEGIN_BENCH_DOC
-BENCH_DOC("name", "fftw3-r2r")
+BENCH_DOC("name", "fftw3")
 END_BENCH_DOC 
 
 FFTW(plan) the_plan=0;
@@ -38,28 +38,41 @@ void useropt(const char *arg)
 
 int can_do(struct problem *p)
 {
-	return (p->kind==PROBLEM_REAL);
+	return 1;
 }
 
 void copy_h2c(struct problem *p, bench_complex *out)
 {
-	copy_h2c_1d_halfcomplex(p, out, -1.0);
+	copy_h2c_unpacked(p, out, -1.0);
 }
 
 void copy_c2h(struct problem *p, bench_complex *in)
 {
-	copy_c2h_1d_halfcomplex(p, in, -1.0);
+	copy_c2h_unpacked(p, in, -1.0);
 }
 
 void setup(struct problem *p)
 {
 	BENCH_ASSERT(can_do(p));
-	BENCH_ASSERT(the_kind!=-1);
-	int i;
-	fftw_r2r_kind kind[MAX_RANK];
-	for (i=0; i<p->rank; ++i)
-		kind[i]=the_kind;
-	the_plan=FFTW(plan_r2r)(p->rank, p->n, p->in, p->out, kind, the_flags);
+	if (p->kind==PROBLEM_COMPLEX)
+		// complex transforms
+		the_plan=FFTW(plan_dft)(p->rank,p->n,p->in,p->out,p->sign,the_flags);
+	else
+		// real transforms
+		if (the_kind!=-1) {
+			// real symmetric transforms
+			int i;
+			fftw_r2r_kind kind[MAX_RANK];
+			for (i=0; i<p->rank; ++i)
+				kind[i]=the_kind;
+			the_plan=FFTW(plan_r2r)(p->rank,p->n,p->in,p->out,kind,the_flags);
+		} else
+			if (p->sign==-1)
+				// real to complex
+				the_plan=FFTW(plan_dft_r2c)(p->rank,p->n,p->in,p->out,the_flags);
+			else
+				// complex to real
+				the_plan=FFTW(plan_dft_c2r)(p->rank,p->n,p->in,p->out,the_flags);
 	BENCH_ASSERT(the_plan);
 }
 
