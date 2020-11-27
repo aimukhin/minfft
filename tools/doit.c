@@ -64,6 +64,7 @@ void setup(struct problem *p)
 		a=minfft_mkaux_dft(p->rank,p->n);
 	else
 		a=minfft_mkaux_realdft(p->rank,p->n);
+	BENCH_ASSERT(a!=NULL);
 }
 
 void doit(int iter, struct problem *p)
