@@ -220,6 +220,7 @@ cmp (void) {
 	return dmax/vmax;
 }
 
+#if PERF
 int
 mflops (double us) {
 	int i,p;
@@ -250,11 +251,11 @@ perf (void(*doit)(int)) {
 	}
 	return p;
 }
+#endif
 
 int
 main (int argc, char **argv) {
 	double r;
-	int p1,p2;
 	if (argc!=2)
 		return 1;
 	if (parse(argv[1])!=0)
@@ -264,11 +265,18 @@ main (int argc, char **argv) {
 	setup_minfft();
 	setup_fftw();
 	r=cmp();
+#if PERF
+	int p1,p2;
 	p1=perf(doit_minfft);
 	p2=perf(doit_fftw);
+#endif
 	cleanup_minfft();
 	cleanup_fftw();
 	dealloc();
+#if PERF
 	printf("%g %d %d\n",r,p1,p2);
-	return 0;
+#else
+	printf("%g\n",r);
+#endif
+	return r>THR;
 }
