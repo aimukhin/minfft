@@ -107,14 +107,43 @@ init (void) {
 
 void
 setup_minfft (void) {
+// we test every mkaux routine
 #if DFT||INVDFT
-	P.x1=minfft_mkaux_dft(P.d,P.n);
+	if (P.d==1)
+		P.x1=minfft_mkaux_dft_1d(P.n[0]);
+	else if (P.d==2)
+		P.x1=minfft_mkaux_dft_2d(P.n[0],P.n[1]);
+	else if (P.d==3)
+		P.x1=minfft_mkaux_dft_3d(P.n[0],P.n[1],P.n[2]);
+	else
+		P.x1=minfft_mkaux_dft(P.d,P.n);
 #elif REALDFT||INVREALDFT
-	P.x1=minfft_mkaux_realdft(P.d,P.n);
+	if (P.d==1)
+		P.x1=minfft_mkaux_realdft_1d(P.n[0]);
+	else if (P.d==2)
+		P.x1=minfft_mkaux_realdft_2d(P.n[0],P.n[1]);
+	else if (P.d==3)
+		P.x1=minfft_mkaux_realdft_3d(P.n[0],P.n[1],P.n[2]);
+	else
+		P.x1=minfft_mkaux_realdft(P.d,P.n);
 #elif DCT2||DST2||DCT3||DST3
-	P.x1=minfft_mkaux_t2t3(P.d,P.n);
+	if (P.d==1)
+		P.x1=minfft_mkaux_t2t3_1d(P.n[0]);
+	else if (P.d==2)
+		P.x1=minfft_mkaux_t2t3_2d(P.n[0],P.n[1]);
+	else if (P.d==3)
+		P.x1=minfft_mkaux_t2t3_3d(P.n[0],P.n[1],P.n[2]);
+	else
+		P.x1=minfft_mkaux_t2t3(P.d,P.n);
 #elif DCT4||DST4
-	P.x1=minfft_mkaux_t4(P.d,P.n);
+	if (P.d==1)
+		P.x1=minfft_mkaux_t4_1d(P.n[0]);
+	else if (P.d==2)
+		P.x1=minfft_mkaux_t4_2d(P.n[0],P.n[1]);
+	else if (P.d==3)
+		P.x1=minfft_mkaux_t4_3d(P.n[0],P.n[1],P.n[2]);
+	else
+		P.x1=minfft_mkaux_t4(P.d,P.n);
 #endif
 }
 
@@ -238,7 +267,7 @@ perf (void(*doit)(int)) {
 	int T;
 	struct timeval t1,t2;
 	double us;
-	int p=-1;
+	int p=0;
 	for (T=1; T<T_MAX; T*=2) {
 		gettimeofday(&t1,NULL);
 		(*doit)(T);
@@ -269,14 +298,12 @@ main (int argc, char **argv) {
 	int p1,p2;
 	p1=perf(doit_minfft);
 	p2=perf(doit_fftw);
-#endif
-	cleanup_minfft();
-	cleanup_fftw();
-	dealloc();
-#if PERF
 	printf("%g %d %d\n",r,p1,p2);
 #else
 	printf("%g\n",r);
 #endif
+	cleanup_minfft();
+	cleanup_fftw();
+	dealloc();
 	return r>THR;
 }
