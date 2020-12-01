@@ -107,43 +107,14 @@ init (void) {
 
 void
 setup_minfft (void) {
-// we test every mkaux routine
 #if DFT||INVDFT
-	if (P.d==1)
-		P.x1=minfft_mkaux_dft_1d(P.n[0]);
-	else if (P.d==2)
-		P.x1=minfft_mkaux_dft_2d(P.n[0],P.n[1]);
-	else if (P.d==3)
-		P.x1=minfft_mkaux_dft_3d(P.n[0],P.n[1],P.n[2]);
-	else
-		P.x1=minfft_mkaux_dft(P.d,P.n);
+	P.x1=minfft_mkaux_dft(P.d,P.n);
 #elif REALDFT||INVREALDFT
-	if (P.d==1)
-		P.x1=minfft_mkaux_realdft_1d(P.n[0]);
-	else if (P.d==2)
-		P.x1=minfft_mkaux_realdft_2d(P.n[0],P.n[1]);
-	else if (P.d==3)
-		P.x1=minfft_mkaux_realdft_3d(P.n[0],P.n[1],P.n[2]);
-	else
-		P.x1=minfft_mkaux_realdft(P.d,P.n);
+	P.x1=minfft_mkaux_realdft(P.d,P.n);
 #elif DCT2||DST2||DCT3||DST3
-	if (P.d==1)
-		P.x1=minfft_mkaux_t2t3_1d(P.n[0]);
-	else if (P.d==2)
-		P.x1=minfft_mkaux_t2t3_2d(P.n[0],P.n[1]);
-	else if (P.d==3)
-		P.x1=minfft_mkaux_t2t3_3d(P.n[0],P.n[1],P.n[2]);
-	else
-		P.x1=minfft_mkaux_t2t3(P.d,P.n);
+	P.x1=minfft_mkaux_t2t3(P.d,P.n);
 #elif DCT4||DST4
-	if (P.d==1)
-		P.x1=minfft_mkaux_t4_1d(P.n[0]);
-	else if (P.d==2)
-		P.x1=minfft_mkaux_t4_2d(P.n[0],P.n[1]);
-	else if (P.d==3)
-		P.x1=minfft_mkaux_t4_3d(P.n[0],P.n[1],P.n[2]);
-	else
-		P.x1=minfft_mkaux_t4(P.d,P.n);
+	P.x1=minfft_mkaux_t4(P.d,P.n);
 #endif
 }
 
