@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <tgmath.h>
 
-#define D_MAX 3
+#define D_MAX 4
 #define T_MAX (1<<30)
 #define US_MIN 100000
 
