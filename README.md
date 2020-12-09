@@ -294,8 +294,8 @@ FFTW and Kiss FFT.
 ![](docs/accuracy.svg)
 
 ## Test environment
-We use `benchFFT` tool version 3.1 to benchmark our library and its
-competitors.
+We use `benchFFT` tool (its current `master` branch) to benchmark our
+library and its competitors.
 
 The libraries being compared are built with the GNU C compiler version
 10.2.0 for the x86_64 platform. They are built with the optimization
