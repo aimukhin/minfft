@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # init
-CFLAGS+=" -std=c99 -pedantic -Wall -Wextra"
-CFLAGS+=" $(echo -I.. -I ~/build/fftw/include/ -L ~/build/fftw/lib/)"
-LIBS="-lm"
+CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra"
+CFLAGS="$CFLAGS $(echo -I.. -I ~/build/fftw/include/ -L ~/build/fftw/lib/)"
+LIBS=-lm
 if [ "$1" = PERF ]; then
 	DEFS="-DPERF"
 	shift
@@ -14,14 +14,14 @@ else
 	exit 1
 fi
 if [ "$1" = SINGLE ]; then
-	DEFS+=" -DMINFFT_SINGLE -DFFTW_SFX=f -DTHR=1.0E-06"
-	LIBS+=" -lfftw3f"
+	DEFS="$DEFS -DMINFFT_SINGLE -DFFTW_SFX=f -DTHR=1.0E-06"
+	LIBS="$LIBS -lfftw3f"
 elif [ "$1" = EXTENDED ]; then
-	DEFS+=" -DMINFFT_EXTENDED -DFFTW_SFX=l -DTHR=1.0E-17"
-	LIBS+=" -lfftw3l"
+	DEFS="$DEFS -DMINFFT_EXTENDED -DFFTW_SFX=l -DTHR=1.0E-17"
+	LIBS="$LIBS -lfftw3l"
 else
-	DEFS+=" -DTHR=1.0E-14"
-	LIBS+=" -lfftw3"
+	DEFS="$DEFS -DTHR=1.0E-14"
+	LIBS="$LIBS -lfftw3"
 fi
 
 # build minfft
