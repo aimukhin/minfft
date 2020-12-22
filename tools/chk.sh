@@ -1,9 +1,11 @@
 #!/bin/sh
 
+FFTW=$(echo ~/build/fftw)
+
 # init
 if [ -z $CC ]; then CC=cc; fi
 CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra"
-CFLAGS="$CFLAGS $(echo -I.. -I ~/build/fftw/include/ -L ~/build/fftw/lib/)"
+CFLAGS="$CFLAGS -I.. -I $FFTW/include -L $FFTW/lib"
 LIBS=-lm
 if [ "$1" = PERF ]; then
 	DEFS="-DPERF"
