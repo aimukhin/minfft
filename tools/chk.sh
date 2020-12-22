@@ -39,11 +39,12 @@ for x in $XFORMS; do
 		exit 1
 	fi
 	for s in $SIZES; do
-		echo -n "$x $s "
-		./a.out $s
+		out=$(./a.out $s)
 		if [ $? -ne 0 ]; then
 			echo Failed
 			exit 1
+		else
+			echo $x $s $out
 		fi
 	done
 done
