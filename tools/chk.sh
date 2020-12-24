@@ -28,26 +28,18 @@ else
 fi
 
 # build minfft
-$CC $DEFS $CFLAGS -c ../minfft.c
+$CC $DEFS $CFLAGS -c ../minfft.c || exit 1
 
 # run tests
 XFORMS="DFT INVDFT REALDFT INVREALDFT DCT2 DST2 DCT3 DST3 DCT4 DST4"
 SIZES="2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2x1 4x2 8x4 16x8 32x16 64x32 128x64 256x128 512x256 1024x512 4x2x1 8x4x2 16x8x4 32x16x8 64x32x16 128x64x32 8x4x2x1 16x8x4x2 32x16x8x4 64x32x16x8"
 for x in $XFORMS; do
-	$CC -D$x $DEFS $CFLAGS chk.c minfft.o $LDFLAGS $LIBS
-	if [ $? -ne 0 ]; then
-		exit 1
-	fi
+	$CC -D$x $DEFS $CFLAGS chk.c minfft.o $LDFLAGS $LIBS || break
 	for s in $SIZES; do
-		out=$(./a.out $s)
-		if [ $? -ne 0 ]; then
-			echo Failed
-			exit 1
-		else
-			echo $x $s $out
-		fi
+		out=$(./a.out $s) || { echo $x $s $out FAILED; break 2; }
+		echo $x $s $out
 	done
 done
 
 # cleanup
-rm a.out minfft.o
+rm -f a.out minfft.o
