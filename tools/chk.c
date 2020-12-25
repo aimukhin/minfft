@@ -69,10 +69,10 @@ alloc (void) {
 #elif REALDFT
 	for (p=1,i=0; i<P.d-1; p*=P.n[i++]);
 	P.insz=p*P.n[P.d-1];
-	P.outsz=p*(P.n[P.d-1]+2);
+	P.outsz=p*(P.n[P.d-1]/2+1)*2;
 #elif INVREALDFT
 	for (p=1,i=0; i<P.d-1; p*=P.n[i++]);
-	P.insz=p*(P.n[P.d-1]+2);
+	P.insz=p*(P.n[P.d-1]/2+1)*2;
 	P.outsz=p*P.n[P.d-1];
 #elif DCT2||DST2||DCT3||DST3||DCT4||DST4
 	for (p=1,i=0; i<P.d; p*=P.n[i++]);
