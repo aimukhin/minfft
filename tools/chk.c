@@ -37,7 +37,7 @@ parse (char *s) {
 	while (1) {
 		if (P.d==D_MAX)
 			return -1;
-		while (isdigit(*t)) ++t;
+		while (isdigit((int)*t)) ++t;
 		if (*t=='x') {
 			*t='\0';
 			v=atoi(h);
