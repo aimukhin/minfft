@@ -5,7 +5,20 @@
 #include "minfft.h"
 #include <stdlib.h>
 #include <math.h>
-#include <tgmath.h>
+
+// suffix for math functions
+#if MINFFT_SINGLE
+#define MATH_SFX f
+#elif MINFFT_EXTENDED
+#define MATH_SFX l
+#else
+#define MATH_SFX
+#endif
+
+// macros for calling math functions
+#define T(F) T2(F,MATH_SFX)
+#define T2(F,S) T22(F,S)
+#define T22(F,S) F##S
 
 // constants
 static const minfft_real pi=3.141592653589793238462643383279502884L;
@@ -1080,10 +1093,10 @@ minfft_mkaux_dft_1d (int N) {
 		e=(minfft_real*)a->e;
 		while (N>=16) {
 			for (n=0; n<N/4; ++n) {
-				*e++=cos(-2*pi*n/N);
-				*e++=sin(-2*pi*n/N);
-				*e++=cos(-2*pi*3*n/N);
-				*e++=sin(-2*pi*3*n/N);
+				*e++=T(cos)(-2*pi*n/N);
+				*e++=T(sin)(-2*pi*n/N);
+				*e++=T(cos)(-2*pi*3*n/N);
+				*e++=T(sin)(-2*pi*3*n/N);
 			}
 			N/=2;
 		}
@@ -1138,8 +1151,8 @@ minfft_mkaux_realdft_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/4; ++n) {
-			*e++=cos(-2*pi*n/N);
-			*e++=sin(-2*pi*n/N);
+			*e++=T(cos)(-2*pi*n/N);
+			*e++=T(sin)(-2*pi*n/N);
 		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 	} else {
@@ -1221,8 +1234,8 @@ minfft_mkaux_t2t3_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/2; ++n) {
-			*e++=cos(-2*pi*n/4/N);
-			*e++=sin(-2*pi*n/4/N);
+			*e++=T(cos)(-2*pi*n/4/N);
+			*e++=T(sin)(-2*pi*n/4/N);
 		}
 	} else {
 		a->t=NULL;
@@ -1278,12 +1291,12 @@ minfft_mkaux_t4_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/2; ++n) {
-			*e++=cos(-2*pi*n/2/N);
-			*e++=sin(-2*pi*n/2/N);
+			*e++=T(cos)(-2*pi*n/2/N);
+			*e++=T(sin)(-2*pi*n/2/N);
 		}
 		for (n=0; n<N; ++n) {
-			*e++=cos(-2*pi*(2*n+1)/8/N);
-			*e++=sin(-2*pi*(2*n+1)/8/N);
+			*e++=T(cos)(-2*pi*(2*n+1)/8/N);
+			*e++=T(sin)(-2*pi*(2*n+1)/8/N);
 		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 		if (a->sub1==NULL)
