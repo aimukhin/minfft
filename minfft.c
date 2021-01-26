@@ -93,7 +93,15 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	// split-radix DIF
 	if (N==1) {
 		// terminal case
-		y[0]=x[0];
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// y[0]=x[0];
+		yr[0]=xr[0];
+		yi[0]=xi[0];
 		return;
 	}
 	if (N==2) {
@@ -322,7 +330,15 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	// split-radix DIF
 	if (N==1) {
 		// terminal case
-		y[0]=x[0];
+		minfft_real *xr,*yr;
+		minfft_real *xi,*yi;
+		xr=(minfft_real*)x;
+		xi=xr+1;
+		yr=(minfft_real*)y;
+		yi=yr+1;
+		// y[0]=x[0];
+		yr[0]=xr[0];
+		yi[0]=xi[0];
 		return;
 	}
 	if (N==2) {
@@ -714,11 +730,20 @@ minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
 		int n; // counter
 		minfft_cmpl *t=a->t; // temporary buffer
+		minfft_real *zr,*zi;
+		minfft_real *tr,*ti;
+		zr=(minfft_real*)z;
+		zi=zr+1;
+		tr=(minfft_real*)t;
+		ti=tr+1;
 		int k;
 		// transpose
 		for (n=0; n<N2; ++n)
-			for (k=0; k<N1/2+1; ++k)
-				t[n+N2*k]=z[(N1/2+1)*n+k];
+			for (k=0; k<N1/2+1; ++k) {
+				// t[n+N2*k]=z[(N1/2+1)*n+k];
+				tr[2*n+2*N2*k]=zr[2*(N1/2+1)*n+2*k];
+				ti[2*n+2*N2*k]=zi[2*(N1/2+1)*n+2*k];
+			}
 		// strided complex DFT of contiguous hyperplanes
 		for (n=0; n<N1/2+1; ++n)
 			s_invdft(t+n*N2,z+n,N1/2+1,a->sub2);
