@@ -93,12 +93,8 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	// split-radix DIF
 	if (N==1) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		// y[0]=x[0];
 		yr[0]=xr[0];
 		yi[0]=xi[0];
@@ -106,14 +102,10 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==2) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r;
 		register minfft_real t0i,t1i;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[1];
 		t0r=xr[0]+xr[2];
 		t0i=xi[0]+xi[2];
@@ -130,14 +122,10 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==4) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[2];
 		t0r=xr[0]+xr[4];
 		t0i=xi[0]+xi[4];
@@ -166,8 +154,8 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	}
 	if (N==8) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
 		register minfft_real t00r,t01r,t02r,t03r;
@@ -175,10 +163,6 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 		register minfft_real t10r,t11r,t12r,t13r;
 		register minfft_real t10i,t11i,t12i,t13i;
 		register minfft_real ttr,tti;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[4];
 		t0r=xr[0]+xr[8];
 		t0i=xi[0]+xi[8];
@@ -258,14 +242,8 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 		return;
 	}
 	// recursion
-	minfft_real *xr,*tr,*er;
-	minfft_real *xi,*ti,*ei;
-	xr=(minfft_real*)x;
-	xi=xr+1;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *xr=(minfft_real*)x,*tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *xi=xr+1,*ti=tr+1,*ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
 		register minfft_real t0r,t1r,t2r,t3r;
@@ -330,12 +308,8 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	// split-radix DIF
 	if (N==1) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		// y[0]=x[0];
 		yr[0]=xr[0];
 		yi[0]=xi[0];
@@ -343,14 +317,10 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==2) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r;
 		register minfft_real t0i,t1i;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[1];
 		t0r=xr[0]+xr[2];
 		t0i=xi[0]+xi[2];
@@ -367,14 +337,10 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==4) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[2];
 		t0r=xr[0]+xr[4];
 		t0i=xi[0]+xi[4];
@@ -403,8 +369,8 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	}
 	if (N==8) {
 		// terminal case
-		minfft_real *xr,*yr;
-		minfft_real *xi,*yi;
+		minfft_real *xr=(minfft_real*)x,*yr=(minfft_real*)y;
+		minfft_real *xi=xr+1,*yi=yr+1;
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
 		register minfft_real t00r,t01r,t02r,t03r;
@@ -412,10 +378,6 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 		register minfft_real t10r,t11r,t12r,t13r;
 		register minfft_real t10i,t11i,t12i,t13i;
 		register minfft_real ttr,tti;
-		xr=(minfft_real*)x;
-		xi=xr+1;
-		yr=(minfft_real*)y;
-		yi=yr+1;
 		// t0=x[0]+x[4];
 		t0r=xr[0]+xr[8];
 		t0i=xi[0]+xi[8];
@@ -495,14 +457,8 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 		return;
 	}
 	// recursion
-	minfft_real *xr,*tr,*er;
-	minfft_real *xi,*ti,*ei;
-	xr=(minfft_real*)x;
-	xi=xr+1;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *xr=(minfft_real*)x,*tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *xi=xr+1,*ti=tr+1,*ei=er+1;
 	// prepare sub-transform inputs
 	for (n=0; n<N/4; ++n) {
 		register minfft_real t0r,t1r,t2r,t3r;
@@ -570,9 +526,8 @@ s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	minfft_cmpl *e=a->e; // exponent vector
 	minfft_cmpl *w=(minfft_cmpl*)x; // alias
 	minfft_cmpl *t=a->t; // temporary buffer
-	minfft_real *zr,*zi; // pointers to real and imaginary parts
-	zr=(minfft_real*)z;
-	zi=zr+1;
+	minfft_real *zr=(minfft_real*)z;
+	minfft_real *zi=zr+1;
 	if (N==1) {
 		// trivial case
 		zr[0]=x[0];
@@ -598,12 +553,8 @@ s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	// recover results
 	register minfft_real ur,vr;
 	register minfft_real ui,vi;
-	minfft_real *tr,*er;
-	minfft_real *ti,*ei;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *ti=tr+1,*ei=er+1;
 	// u=t[0];
 	ur=tr[0];
 	ui=ti[0];
@@ -664,9 +615,8 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	minfft_cmpl *e=a->e; // exponent vector
 	minfft_cmpl *w=(minfft_cmpl*)y; // alias
 	minfft_cmpl *t=a->t; // temporary buffer
-	minfft_real *zr,*zi; // pointers to real and imaginary parts
-	zr=(minfft_real*)z;
-	zi=zr+1;
+	minfft_real *zr=(minfft_real*)z;
+	minfft_real *zi=zr+1;
 	if (N==1) {
 		// trivial case
 		y[0]=zr[0];
@@ -683,12 +633,8 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	}
 	// reduce to inverse complex DFT of length N/2
 	// prepare complex DFT inputs
-	minfft_real *tr,*er;
-	minfft_real *ti,*ei;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *ti=tr+1,*ei=er+1;
 	// t[0]=(z[0]+z[N/2])+I*(z[0]-z[N/2]);
 	tr[0]=zr[0]+zr[N];
 	ti[0]=zr[0]-zr[N];
@@ -730,12 +676,8 @@ minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 		int N1=a->sub1->N,N2=a->sub2->N; // transform lengths
 		int n; // counter
 		minfft_cmpl *t=a->t; // temporary buffer
-		minfft_real *zr,*zi;
-		minfft_real *tr,*ti;
-		zr=(minfft_real*)z;
-		zi=zr+1;
-		tr=(minfft_real*)t;
-		ti=tr+1;
+		minfft_real *zr=(minfft_real*)z,*tr=(minfft_real*)t;
+		minfft_real *zi=zr+1,*ti=tr+1;
 		int k;
 		// transpose
 		for (n=0; n<N2; ++n)
@@ -777,9 +719,8 @@ s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
         // do real DFT in-place
 	s_realdft_1d(t,z,1,a->sub1);
 	// recover results
-	minfft_real *er,*ei;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *er=(minfft_real*)e;
+	minfft_real *ei=er+1;
 	// y[0]=2*creal(z[0]);
 	y[0]=2*t[0];
 	for (n=1; n<N/2; ++n) {
@@ -826,9 +767,8 @@ s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
         // do real DFT in-place
 	s_realdft_1d(t,z,1,a->sub1);
 	// recover results
-	minfft_real *er,*ei;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *er=(minfft_real*)e;
+	minfft_real *ei=er+1;
 	// y[sy*(N-1)]=2*creal(z[0]);
 	y[sy*(N-1)]=2*t[0];
 	for (n=1; n<N/2; ++n) {
@@ -868,12 +808,8 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
-	minfft_real *er,*zr;
-	minfft_real *ei,*zi;
-	er=(minfft_real*)e;
-	ei=er+1;
-	zr=(minfft_real*)z;
-	zi=zr+1;
+	minfft_real *er=(minfft_real*)e,*zr=(minfft_real*)z;
+	minfft_real *ei=er+1,*zi=zr+1;
 	// z[0]=x[0];
 	zr[0]=x[0];
 	zi[0]=0;
@@ -921,12 +857,8 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to inverse real DFT of length N
 	// prepare sub-transform inputs
-	minfft_real *er,*zr;
-	minfft_real *ei,*zi;
-	er=(minfft_real*)e;
-	ei=er+1;
-	zr=(minfft_real*)z;
-	zi=zr+1;
+	minfft_real *er=(minfft_real*)e,*zr=(minfft_real*)z;
+	minfft_real *ei=er+1,*zi=zr+1;
 	// z[0]=x[N-1];
 	zr[0]=x[N-1];
 	zi[0]=0;
@@ -973,12 +905,8 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
-	minfft_real *tr,*er;
-	minfft_real *ti,*ei;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *ti=tr+1,*ei=er+1;
 	for (n=0; n<N/2; ++n) {
 		// t[n]=*e++*(x[2*n]+I*x[N-1-2*n]);
 		tr[2*n]=er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
@@ -1023,12 +951,8 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	// reduce to complex DFT of length N/2
 	// prepare sub-transform inputs
-	minfft_real *tr,*er;
-	minfft_real *ti,*ei;
-	tr=(minfft_real*)t;
-	ti=tr+1;
-	er=(minfft_real*)e;
-	ei=er+1;
+	minfft_real *tr=(minfft_real*)t,*er=(minfft_real*)e;
+	minfft_real *ti=tr+1,*ei=er+1;
 	for (n=0; n<N/2; ++n) {
 		// t[n]=-*e++*(x[2*n]-I*x[N-1-2*n]);
 		tr[2*n]=-er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
