@@ -1,5 +1,5 @@
 ! A minimalistic FFT library
-! Copyright (c) 2020 Alexander Mukhin
+! Copyright (c) 2021 Alexander Mukhin
 ! MIT License
 
 #if MINFFT_SINGLE
