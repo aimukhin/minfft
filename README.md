@@ -91,11 +91,12 @@ C             | Fortran
 `minfft_cmpl` | `complex(minfft_cmpl)`
 `minfft_aux`  | `type(minfft_aux)`
 
-By default, the library operates with double precision.
+By default, `minfft_real` is `double`. If C99 native complex is
+available, then `minfft_cmpl` is `double complex`. Otherwise,
+`minfft_cmpl` is `minfft_real[2]`.
 
-However, it can easily be adapted for other data types. Just define
-`MINFFT_SINGLE` or `MINFFT_EXTENDED` macros to build single or extended
-precision versions.
+To compile single or extended-precision versions, define `MINFFT_SINGLE`
+or `MINFFT_EXTENDED` macros.
 
 ## Transforms
 Below is a list of transforms with their definitions, auxiliary data
