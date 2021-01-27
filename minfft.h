@@ -2,6 +2,9 @@
 // Copyright (c) 2021 Alexander Mukhin
 // MIT License
 
+#ifndef MINFFT_H
+#define MINFFT_H
+
 #ifdef complex
 // use C99 complex
 #if MINFFT_SINGLE
@@ -57,3 +60,5 @@ minfft_aux* minfft_mkaux_t4_3d (int, int, int);
 minfft_aux* minfft_mkaux_t4 (int, int*);
 
 void minfft_free_aux (minfft_aux*);
+
+#endif // MINFFT_H
