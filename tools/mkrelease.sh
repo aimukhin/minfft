@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ver=1.2.0
+ver=1.2.1
 workdir=./minfft-$ver
 
 rm -rf $workdir $workdir.tar.gz
