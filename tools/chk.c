@@ -4,7 +4,6 @@
 #include <math.h>
 #include <float.h>
 #include <sys/time.h>
-#include <tgmath.h>
 
 #define D_MAX 4
 #define T_MAX (1<<30)
@@ -202,7 +201,7 @@ dealloc (void) {
 
 double
 cmp (void) {
-	double d,v,dmax,vmax;
+	long double d,v,dmax,vmax;
 	minfft_real *o1,*o2;
 	int i;
 	doit_minfft(1);
@@ -212,9 +211,9 @@ cmp (void) {
 	o1=P.out1;
 	o2=P.out2;
 	for (i=0; i<P.outsz; ++i) {
-		d=fabs(o1[i]-o2[i]);
+		d=fabsl(o1[i]-o2[i]);
 		dmax=(d>dmax)?d:dmax;
-		v=fabs(o2[i]);
+		v=fabsl(o2[i]);
 		vmax=(v>vmax)?v:vmax;
 	}
 	return dmax/vmax;
