@@ -5,6 +5,10 @@
 #ifndef MINFFT_H
 #define MINFFT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef complex
 // use C99 complex
 #if MINFFT_SINGLE
@@ -60,5 +64,9 @@ minfft_aux* minfft_mkaux_t4_3d (int, int, int);
 minfft_aux* minfft_mkaux_t4 (int, int*);
 
 void minfft_free_aux (minfft_aux*);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif // MINFFT_H
