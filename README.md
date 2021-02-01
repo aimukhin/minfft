@@ -93,7 +93,9 @@ C             | Fortran
 
 By default, `minfft_real` is `double`. If C99 native complex is
 available, then `minfft_cmpl` is `double complex`. Otherwise,
-`minfft_cmpl` is an array of two `minfft_real`s.
+`minfft_cmpl` is an array of two `minfft_real`s. It is
+binary-compatible with other known complex number types, such as MSVC
+`_Dcomplex` or C++ `complex<double>`.
 
 To build single or extended precision versions, define `MINFFT_SINGLE`
 or `MINFFT_EXTENDED` macros.
