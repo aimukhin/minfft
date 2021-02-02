@@ -40,15 +40,15 @@ The library provides C and Fortran interfaces.
 ## Interface
 All transform routines take three arguments:
 
-* a pointer to input data `x`,
-* a pointer to output data `y`,
-* a pointer to auxiliary data `a`.
+* input data pointer `x`,
+* output data pointer `y`,
+* auxiliary data pointer `a`.
 
 The transform routines are capable of both in-place and out-of-place
 operation. In the latter case the input is left intact.
 
 Auxiliary data contain chains of precomputed constants and temporary
-memory buffers, required by a transform routine to do its job. Once
+memory buffers, required for a transform routine to do its job. Once
 prepared, the auxiliary data can be reused as many times as needed.
 Also, the same auxiliary data fit for both forward and inverse
 transforms of the same kind.
@@ -117,8 +117,8 @@ array dimensions must be passed in the reverse order:
 
 Auxiliary data makers return NULL if an error occured.
 
-Our definitions of transforms, and input and output data format of the
-transform routines, are fully compatible with FFTW.
+Our definitions of transforms, and formats of input and output data, are
+fully compatible with FFTW.
 
 ### Complex DFT
 ![](docs/dft.svg)
@@ -256,7 +256,7 @@ void minfft_free_aux (minfft_aux *a);
 
 ## Memory requirements
 Our library does not try to save memory, and allocates temporary buffers
-where it benefits performance.
+wherever it benefits performance.
 
 The amounts of memory, allocated for the auxiliary data of the
 one-dimensional transforms, are given below:
