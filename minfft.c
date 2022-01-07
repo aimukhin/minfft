@@ -1,6 +1,6 @@
 // A minimalistic FFT library
 // Copyright (c) 2016-2022 Alexander Mukhin
-// MIT License
+// SPDX-License-Identifier: MIT
 
 #include "minfft.h"
 #include <stdlib.h>
