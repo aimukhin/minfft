@@ -34,7 +34,7 @@ struct minfft_aux {
 	struct minfft_aux *sub2; // subtransform structure
 };
 
-// *** meta-functions ***
+// *** higher-order functions ***
 
 // a pointer to a strided 1d complex transform routine
 typedef
