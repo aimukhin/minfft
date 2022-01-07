@@ -985,6 +985,43 @@ minfft_dst4 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 
 // *** making of aux data ***
 
+// routines for computing N-th roots of unity
+
+// prototype
+static minfft_real nsin (int, int);
+
+// cos(2*pi*n/N)
+static minfft_real
+ncos (int n, int N) {
+	// reduce n to 0..N/8
+	if (n<0)
+		return ncos(-n,N);
+	else if (n>=N/2)
+		return -ncos(n-N/2,N);
+	else if (n>=N/4)
+		return -nsin(n-N/4,N);
+	else if (n>N/8)
+		return nsin(N/4-n,N);
+	else
+		return T(cos)(2*pi*n/N);
+}
+
+// sin(2*pi*n/N)
+static minfft_real
+nsin (int n, int N) {
+	// reduce n to 0..N/8
+	if (n<0)
+		return -nsin(-n,N);
+	else if (n>=N/2)
+		return -nsin(n-N/2,N);
+	else if (n>=N/4)
+		return ncos(n-N/4,N);
+	else if (n>N/8)
+		return ncos(N/4-n,N);
+	else
+		return T(sin)(2*pi*n/N);
+}
+
 // make aux data for any transform of arbitrary dimension
 // using its one-dimensional version
 static minfft_aux*
@@ -1042,10 +1079,10 @@ minfft_mkaux_dft_1d (int N) {
 		e=(minfft_real*)a->e;
 		while (N>=16) {
 			for (n=0; n<N/4; ++n) {
-				*e++=T(cos)(-2*pi*n/N);
-				*e++=T(sin)(-2*pi*n/N);
-				*e++=T(cos)(-2*pi*3*n/N);
-				*e++=T(sin)(-2*pi*3*n/N);
+				*e++=ncos(-n,N);
+				*e++=nsin(-n,N);
+				*e++=ncos(-3*n,N);
+				*e++=nsin(-3*n,N);
 			}
 			N/=2;
 		}
@@ -1100,8 +1137,8 @@ minfft_mkaux_realdft_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/4; ++n) {
-			*e++=T(cos)(-2*pi*n/N);
-			*e++=T(sin)(-2*pi*n/N);
+			*e++=ncos(-n,N);
+			*e++=nsin(-n,N);
 		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 	} else {
@@ -1183,8 +1220,8 @@ minfft_mkaux_t2t3_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/2; ++n) {
-			*e++=T(cos)(-2*pi*n/4/N);
-			*e++=T(sin)(-2*pi*n/4/N);
+			*e++=ncos(-n,4*N);
+			*e++=nsin(-n,4*N);
 		}
 	} else {
 		a->t=NULL;
@@ -1240,12 +1277,12 @@ minfft_mkaux_t4_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		for (n=0; n<N/2; ++n) {
-			*e++=T(cos)(-2*pi*n/2/N);
-			*e++=T(sin)(-2*pi*n/2/N);
+			*e++=ncos(-n,2*N);
+			*e++=nsin(-n,2*N);
 		}
 		for (n=0; n<N; ++n) {
-			*e++=T(cos)(-2*pi*(2*n+1)/8/N);
-			*e++=T(sin)(-2*pi*(2*n+1)/8/N);
+			*e++=ncos(-(2*n+1),8*N);
+			*e++=nsin(-(2*n+1),8*N);
 		}
 		a->sub1=minfft_mkaux_dft_1d(N/2);
 		if (a->sub1==NULL)
