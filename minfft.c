@@ -6,20 +6,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-// suffix for math functions
-#if MINFFT_SINGLE
-#define MATH_SFX f
-#elif MINFFT_EXTENDED
-#define MATH_SFX l
-#else
-#define MATH_SFX
-#endif
-
-// macros for calling math functions
-#define T(F) T2(F,MATH_SFX)
-#define T2(F,S) T22(F,S)
-#define T22(F,S) F##S
-
 // constants
 static const minfft_real pi=3.141592653589793238462643383279502884L;
 static const minfft_real sqrt2=1.414213562373095048801688724209698079L;
@@ -1003,7 +989,13 @@ ncos (int n, int N) {
 	else if (n>N/8)
 		return nsin(N/4-n,N);
 	else
-		return T(cos)(2*pi*n/N);
+#if MINFFT_SINGLE
+		return cosf(2*pi*n/N);
+#elif MINFFT_EXTENDED
+		return cosl(2*pi*n/N);
+#else
+		return cos(2*pi*n/N);
+#endif
 }
 
 // sin(2*pi*n/N)
@@ -1019,7 +1011,13 @@ nsin (int n, int N) {
 	else if (n>N/8)
 		return ncos(N/4-n,N);
 	else
-		return T(sin)(2*pi*n/N);
+#if MINFFT_SINGLE
+		return sinf(2*pi*n/N);
+#elif MINFFT_EXTENDED
+		return sinl(2*pi*n/N);
+#else
+		return sin(2*pi*n/N);
+#endif
 }
 
 // make aux data for any transform of arbitrary dimension
