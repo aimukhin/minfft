@@ -294,9 +294,9 @@ with the libraries of similar design — KissFFT and PocketFFT.
 Performance of the highly-optimized FFTW library is also shown for
 reference.
 
-![](docs/speed.svg)
+![](bench/speed.svg)
 
-![](docs/accuracy.svg)
+![](bench/accuracy.svg)
 
 ## Test environment
 We use `benchFFT` tool (its current `master` branch) to benchmark our
