@@ -289,8 +289,10 @@ repeated application of its one-dimensional routine along each
 dimension.
 
 ## Performance
-Below is a plot of the speed and accuracy of our library, compared with
-FFTW and Kiss FFT.
+Below are the plots of the speed and accuracy of our library, compared
+with the libraries of similar design - KissFFT and PocketFFT.
+Performance of the highly-optimized FFTW library is also shown for
+reference.
 
 ![](docs/speed.svg)
 
@@ -300,31 +302,11 @@ FFTW and Kiss FFT.
 We use `benchFFT` tool (its current `master` branch) to benchmark our
 library and its competitors.
 
-The libraries being compared are built with the GNU C compiler version
-10.2.0 for the x86_64 platform. They are built with the optimization
-options which give each library its best performance.
+The compiler used is the GNU C compiler version 10.2.1 for the x86_64
+platform.
 
-The version of FFTW used is 3.3.8, built with the compiler flags
-selected by the `configure` script: `-O3 -fomit-frame-pointer
--mtune=native -malign-double -fstrict-aliasing -fno-schedule-insns`.
-
-Since FFTW library is highly sophisticated, we decided to take some
-measures to put it into a comparable "weight class". First, we
-configured it without any SIMD optimizations. This allows us to measure
-the performance of its generic machine-independent code. Next, we create
-FFTW plans with the `FFTW_ESTIMATE` option. This puts FFTW in a fairer
-position with regard to the setup time.
-
-The version of Kiss FFT used is 1.3.1. It is built with the only
-optimization option `-O3`.
-
-Our library is also built with `-O3` only.
-
-The performance measurements are made on an isolated core of an Intel®
-Celeron® N3050 CPU running at 2160 MHz.
-
-The results of the performance and accuracy tests are available in the
-`benchmarks` subdirectory.
+The performance measurements are made on an isolated core of an Intel(R)
+Pentium(R) Gold G5420 CPU running 3800 MHz.
 
 ## Conformance
 The source code conforms to the C99 and Fortran 2003 standards.
