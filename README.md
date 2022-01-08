@@ -305,8 +305,8 @@ library and its competitors.
 The compiler used is the GNU C compiler version 10.2.1 for the x86_64
 platform.
 
-The performance measurements are made on an isolated core of an Intel(R)
-Pentium(R) Gold G5420 CPU running at 3800 MHz.
+The performance measurements are made on an isolated core of an Intel®
+Pentium® Gold G5420 CPU running at 3800 MHz.
 
 ## Conformance
 The source code conforms to the C99 and Fortran 2003 standards.
