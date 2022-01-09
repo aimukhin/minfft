@@ -19,6 +19,8 @@
 #define FFTW2(F,S) FFTW22(F,S)
 #define FFTW22(F,S) fftw##S##_##F
 
+#define FFTW_FLAGS FFTW_MEASURE
+
 struct {
 	int d,n[D_MAX];
 	void *in1,*in2;
@@ -152,13 +154,13 @@ cleanup_minfft (void) {
 void
 setup_fftw (void) {
 #if DFT
-	P.x2=FFTW(plan_dft)(P.d,P.n,P.in2,P.out2,FFTW_FORWARD,FFTW_ESTIMATE);
+	P.x2=FFTW(plan_dft)(P.d,P.n,P.in2,P.out2,FFTW_FORWARD,FFTW_FLAGS);
 #elif INVDFT
-	P.x2=FFTW(plan_dft)(P.d,P.n,P.in2,P.out2,FFTW_BACKWARD,FFTW_ESTIMATE);
+	P.x2=FFTW(plan_dft)(P.d,P.n,P.in2,P.out2,FFTW_BACKWARD,FFTW_FLAGS);
 #elif REALDFT
-	P.x2=FFTW(plan_dft_r2c)(P.d,P.n,P.in2,P.out2,FFTW_ESTIMATE);
+	P.x2=FFTW(plan_dft_r2c)(P.d,P.n,P.in2,P.out2,FFTW_FLAGS);
 #elif INVREALDFT
-	P.x2=FFTW(plan_dft_c2r)(P.d,P.n,P.in2,P.out2,FFTW_ESTIMATE);
+	P.x2=FFTW(plan_dft_c2r)(P.d,P.n,P.in2,P.out2,FFTW_FLAGS);
 #else
 	fftw_r2r_kind kinds[D_MAX];
 	for (int i=0; i<P.d; ++i)
@@ -175,7 +177,7 @@ setup_fftw (void) {
 #elif DST4
 		kinds[i]=FFTW_RODFT11;
 #endif
-	P.x2=FFTW(plan_r2r)(P.d,P.n,P.in2,P.out2,kinds,FFTW_ESTIMATE);
+	P.x2=FFTW(plan_r2r)(P.d,P.n,P.in2,P.out2,kinds,FFTW_FLAGS);
 #endif
 }
 
@@ -260,9 +262,9 @@ main (int argc, char **argv) {
 	if (parse(argv[1])!=0)
 		return 2;
 	alloc();
-	init();
 	setup_minfft();
 	setup_fftw();
+	init();
 	r=cmp();
 #if PERF
 	int p1,p2;
