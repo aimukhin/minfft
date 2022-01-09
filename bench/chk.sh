@@ -1,14 +1,12 @@
 #!/bin/sh
 
-FFTW=$(echo ~/build/fftw)
-
 # init
 if [ -z $CC ]; then CC=cc; fi
 CFLAGS="$CFLAGS -std=c99 -pedantic -Wall -Wextra -I.. -I$FFTW/include"
 LDFLAGS=-L$FFTW/lib
 LIBS=-lm
 if [ "$1" = PERF ]; then
-	DEFS=-DPERF
+	DEFS="$DEFS -DPERF"
 	shift
 elif [ "$1" = ACC ]; then
 	shift

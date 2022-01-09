@@ -19,8 +19,6 @@
 #define FFTW2(F,S) FFTW22(F,S)
 #define FFTW22(F,S) fftw##S##_##F
 
-#define FFTW_FLAGS FFTW_MEASURE
-
 struct {
 	int d,n[D_MAX];
 	void *in1,*in2;
