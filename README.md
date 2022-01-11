@@ -291,8 +291,8 @@ dimension.
 ## Performance
 Below are the plots of the speed and accuracy of our library, compared
 with the libraries of similar design — KissFFT and PocketFFT.
-Performance of the highly-optimized FFTW library is also shown for
-reference.
+Performance of a highly optimized machine-specific version of the FFTW
+library is also shown for reference.
 
 ![](bench/speed.svg)
 
