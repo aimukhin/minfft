@@ -174,10 +174,6 @@ and returns a real array of dimensions
 
 ![](docs/realdft-in.svg)
 
-It is better fed with the output of the real DFT routine, especially in
-the multi-dimensional case, since it expects input with some residual
-redundancies.
-
 **NB:** Multidimensional inverse real DFT **does not** preserve input.
 
 ```C
