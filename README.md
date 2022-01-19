@@ -178,6 +178,8 @@ It is better fed with the output of the real DFT routine, especially in
 the multi-dimensional case, since it expects input with some residual
 redundancies.
 
+**NB:** Multidimensional inverse real DFT **does not** preserve input.
+
 ```C
 minfft_aux* minfft_mkaux_realdft_1d (int N);
 minfft_aux* minfft_mkaux_realdft_2d (int N1, int N2);
