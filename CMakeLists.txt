@@ -77,3 +77,26 @@ target_compile_definitions(MinFFT_extended PUBLIC MINFFT_EXTENDED)
 
 ######################################################
 
+foreach(X IN LISTS MINFFT_VARIANTS)
+    add_executable(test_fft_${X}  test_fft.c)
+    target_link_libraries(test_fft_${X} MinFFT_${X} ${MATHLIB})
+endforeach()
+
+######################################################
+
+enable_testing()
+
+set(FFTSZ 4 16 64 256 1024 65536)
+
+foreach(X IN LISTS MINFFT_VARIANTS)
+    foreach(SZ IN LISTS FFTSZ)
+        # message(STATUS "${X} ${SZ}")
+        add_test(NAME test_fft_${X}_size_${SZ}
+            COMMAND "${CMAKE_CURRENT_BINARY_DIR}/test_fft_${X}" "${SZ}"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        )
+    endforeach()
+endforeach()
+
+######################################################
+
