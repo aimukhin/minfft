@@ -16,9 +16,6 @@ extern "C" {
 #if MINFFT_SINGLE
 typedef float minfft_real;
 typedef float complex minfft_cmpl;
-#elif MINFFT_EXTENDED
-typedef long double minfft_real;
-typedef long double complex minfft_cmpl;
 #else
 typedef double minfft_real;
 typedef double complex minfft_cmpl;
@@ -27,8 +24,6 @@ typedef double complex minfft_cmpl;
 /* not using C99 complex */
 #if MINFFT_SINGLE
 typedef float minfft_real;
-#elif MINFFT_EXTENDED
-typedef long double minfft_real;
 #else
 typedef double minfft_real;
 #endif

@@ -989,13 +989,7 @@ ncos (int n, int N) {
 	else if (n>N/8)
 		return nsin(N/4-n,N);
 	else
-#if MINFFT_SINGLE
-		return cosf(2*pi*n/N);
-#elif MINFFT_EXTENDED
-		return cosl(2*pi*n/N);
-#else
 		return cos(2*pi*n/N);
-#endif
 }
 
 /* sin(2*pi*n/N) */
@@ -1011,13 +1005,7 @@ nsin (int n, int N) {
 	else if (n>N/8)
 		return ncos(N/4-n,N);
 	else
-#if MINFFT_SINGLE
-		return sinf(2*pi*n/N);
-#elif MINFFT_EXTENDED
-		return sinl(2*pi*n/N);
-#else
 		return sin(2*pi*n/N);
-#endif
 }
 
 /* making of aux data */
