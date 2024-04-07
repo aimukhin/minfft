@@ -97,8 +97,7 @@ available, then `minfft_cmpl` is `double complex`. Otherwise,
 binary-compatible with other known complex number types, such as MSVC
 `_Dcomplex` or C++ `complex<double>`.
 
-To build single or extended precision versions, define `MINFFT_SINGLE`
-or `MINFFT_EXTENDED` macros.
+To build a single precision version, define the `MINFFT_SINGLE` macro.
 
 ## Transforms
 Below is a list of transforms with their definitions, auxiliary data
@@ -307,7 +306,7 @@ The performance measurements are made on an isolated core of an Intel®
 Pentium® Gold G5420 CPU running at 3800 MHz.
 
 ## Conformance
-The source code conforms to the C99 and Fortran 2003 standards.
+The source code conforms to the C89 and Fortran 2003 standards.
 
 ## License
 MIT.
