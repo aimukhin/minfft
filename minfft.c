@@ -1106,12 +1106,17 @@ minfft_mkaux_dft (int d, int *Ns) {
 /* convenience routines for two- and three-dimensional complex DFT */
 minfft_aux*
 minfft_mkaux_dft_2d (int N1, int N2) {
-	int Ns[2]={N1,N2};
+	int Ns[2];
+	Ns[0]=N1;
+	Ns[1]=N2;
 	return minfft_mkaux_dft(2,Ns);
 }
 minfft_aux*
 minfft_mkaux_dft_3d (int N1, int N2, int N3) {
-	int Ns[3]={N1,N2,N3};
+	int Ns[3];
+	Ns[0]=N1;
+	Ns[1]=N2;
+	Ns[2]=N3;
 	return minfft_mkaux_dft(3,Ns);
 }
 
@@ -1189,12 +1194,17 @@ err:	/* memory allocation error */
 /* convenience routines for two- and three-dimensional real DFT */
 minfft_aux*
 minfft_mkaux_realdft_2d (int N1, int N2) {
-	int Ns[2]={N1,N2};
+	int Ns[2];
+	Ns[0]=N1;
+	Ns[1]=N2;
 	return minfft_mkaux_realdft(2,Ns);
 }
 minfft_aux*
 minfft_mkaux_realdft_3d (int N1, int N2, int N3) {
-	int Ns[3]={N1,N2,N3};
+	int Ns[3];
+	Ns[0]=N1;
+	Ns[1]=N2;
+	Ns[2]=N3;
 	return minfft_mkaux_realdft(3,Ns);
 }
 
@@ -1246,12 +1256,17 @@ minfft_mkaux_t2t3 (int d, int *Ns) {
 /* convenience routines for two- and three-dimensional Type 2 or 3 transforms */
 minfft_aux*
 minfft_mkaux_t2t3_2d (int N1, int N2) {
-	int Ns[2]={N1,N2};
+	int Ns[2];
+	Ns[0]=N1;
+	Ns[1]=N2;
 	return minfft_mkaux_t2t3(2,Ns);
 }
 minfft_aux*
 minfft_mkaux_t2t3_3d (int N1, int N2, int N3) {
-	int Ns[3]={N1,N2,N3};
+	int Ns[3];
+	Ns[0]=N1;
+	Ns[1]=N2;
+	Ns[2]=N3;
 	return minfft_mkaux_t2t3(3,Ns);
 }
 
@@ -1308,12 +1323,17 @@ minfft_mkaux_t4 (int d, int *Ns) {
 /* convenience routines for two- and three-dimensional Type 4 transforms */
 minfft_aux*
 minfft_mkaux_t4_2d (int N1, int N2) {
-	int Ns[2]={N1,N2};
+	int Ns[2];
+	Ns[0]=N1;
+	Ns[1]=N2;
 	return minfft_mkaux_t4(2,Ns);
 }
 minfft_aux*
 minfft_mkaux_t4_3d (int N1, int N2, int N3) {
-	int Ns[3]={N1,N2,N3};
+	int Ns[3];
+	Ns[0]=N1;
+	Ns[1]=N2;
+	Ns[2]=N3;
 	return minfft_mkaux_t4(3,Ns);
 }
 
