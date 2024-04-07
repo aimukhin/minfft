@@ -31,7 +31,7 @@ void (*s_cx_1d_t)
 
 /* make a strided any-dimensional complex transform */
 /* by repeated application of its strided one-dimensional routine */
-inline static void
+static void
 mkcx (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a, s_cx_1d_t s_1d) {
 	if (a->sub2==NULL)
 		(*s_1d)(x,y,sy,a);
@@ -55,7 +55,7 @@ void (*s_rx_1d_t)
 
 /* make a strided any-dimensional real transform */
 /* by repeated application of its strided one-dimensional routine */
-inline static void
+static void
 mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1d) {
 	if (a->sub2==NULL)
 		(*s_1d)(x,y,sy,a);
@@ -75,7 +75,7 @@ mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1
 /* complex transforms */
 
 /* recursive strided one-dimensional DFT */
-inline static void
+static void
 rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; /* counter */
 	/* split-radix DIF */
@@ -272,13 +272,13 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 }
 
 /* strided one-dimensional DFT */
-inline static void
+static void
 s_dft_1d (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a) {
 	rs_dft_1d(a->N,x,a->t,y,sy,a->e);
 }
 
 /* strided DFT of arbitrary dimension */
-inline static void
+static void
 s_dft (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a) {
 	mkcx(x,y,sy,a,s_dft_1d);
 }
@@ -290,7 +290,7 @@ minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 }
 
 /* recursive strided one-dimensional inverse DFT */
-inline static void
+static void
 rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const minfft_cmpl *e) {
 	int n; /* counter */
 	/* split-radix DIF */
@@ -487,13 +487,13 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 }
 
 /* strided one-dimensional inverse DFT */
-inline static void
+static void
 s_invdft_1d (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a) {
 	rs_invdft_1d(a->N,x,a->t,y,sy,a->e);
 }
 
 /* strided inverse DFT of arbitrary dimension */
-inline static void
+static void
 s_invdft (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a) {
 	mkcx(x,y,sy,a,s_invdft_1d);
 }
@@ -507,7 +507,7 @@ minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a) {
 /* real transforms */
 
 /* strided one-dimensional real DFT */
-inline static void
+static void
 s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -596,7 +596,7 @@ minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a) {
 }
 
 /* one-dimensional inverse real DFT */
-inline static void
+static void
 invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -686,7 +686,7 @@ minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 /* real symmetric transforms */
 
 /* strided one-dimensional DCT-2 */
-inline static void
+static void
 s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -722,7 +722,7 @@ s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DCT-2 of arbitrary dimension */
-inline static void
+static void
 s_dct2 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dct2_1d);
 }
@@ -734,7 +734,7 @@ minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 }
 
 /* strided one-dimensional DST-2 */
-inline static void
+static void
 s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -770,7 +770,7 @@ s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DST-2 of arbitrary dimension */
-inline static void
+static void
 s_dst2 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dst2_1d);
 }
@@ -782,7 +782,7 @@ minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 }
 
 /* strided one-dimensional DCT-3 */
-inline static void
+static void
 s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -819,7 +819,7 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DCT-3 of arbitrary dimension */
-inline static void
+static void
 s_dct3 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dct3_1d);
 }
@@ -831,7 +831,7 @@ minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 }
 
 /* strided one-dimensional DST-3 */
-inline static void
+static void
 s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -868,7 +868,7 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DST-3 of arbitrary dimension */
-inline static void
+static void
 s_dst3 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dst3_1d);
 }
@@ -880,7 +880,7 @@ minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 }
 
 /* strided one-dimensional DCT-4 */
-inline static void
+static void
 s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -914,7 +914,7 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DCT-4 of arbitrary dimension */
-inline static void
+static void
 s_dct4 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dct4_1d);
 }
@@ -926,7 +926,7 @@ minfft_dct4 (minfft_real *x, minfft_real *y, const minfft_aux *a) {
 }
 
 /* strided one-dimensional DST-4 */
-inline static void
+static void
 s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	int n; /* counter */
 	int N=a->N; /* transform length */
@@ -960,7 +960,7 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 }
 
 /* strided DST-4 of arbitrary dimension */
-inline static void
+static void
 s_dst4 (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	mkrx(x,y,sy,a,s_dst4_1d);
 }
