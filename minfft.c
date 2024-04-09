@@ -18,8 +18,7 @@ struct minfft_aux {
 	int N; /* number of elements to transform */
 	void *t; /* temporary buffer */
 	void *e; /* exponent vector */
-	struct minfft_aux *sub1; /* subtransform structure */
-	struct minfft_aux *sub2; /* subtransform structure */
+	struct minfft_aux *sub1,*sub2; /* subtransform structures */
 };
 
 /* higher-order functions */
@@ -40,10 +39,10 @@ mkcx (minfft_cmpl *x, minfft_cmpl *y, int sy, const minfft_aux *a, s_cx_1d_t s_1
 		int n; /* counter */
 		minfft_cmpl *t=a->t; /* temporary buffer */
 		/* strided transform of contiguous hyperplanes */
-		for (n=0; n<N2; ++n)
+		for (n=0;n<N2;++n)
 			mkcx(x+n*N1,t+n,N2,a->sub1,s_1d);
 		/* strided transform of contiguous rows */
-		for (n=0; n<N1; ++n)
+		for (n=0;n<N1;++n)
 			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
 	}
 }
@@ -64,10 +63,10 @@ mkrx (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a, s_rx_1d_t s_1
 		int n; /* counter */
 		minfft_real *t=a->t; /* temporary buffer */
 		/* strided transform of contiguous hyperplanes */
-		for (n=0; n<N2; ++n)
+		for (n=0;n<N2;++n)
 			mkrx(x+n*N1,t+n,N2,a->sub1,s_1d);
 		/* strided transform of contiguous rows */
-		for (n=0; n<N1; ++n)
+		for (n=0;n<N1;++n)
 			(*s_1d)(t+n*N2,y+sy*n,sy*N1,a->sub2);
 	}
 }
@@ -234,7 +233,7 @@ rs_dft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, const 
 	xr=(minfft_real*)x,tr=(minfft_real*)t,er=(minfft_real*)e;
 	xi=xr+1,ti=tr+1,ei=er+1;
 	/* prepare sub-transform inputs */
-	for (n=0; n<N/4; ++n) {
+	for (n=0;n<N/4;++n) {
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
 		/* t0=x[n]+x[n+N/2]; */
@@ -450,7 +449,7 @@ rs_invdft_1d (int N, minfft_cmpl *x, minfft_cmpl *t, minfft_cmpl *y, int sy, con
 	xr=(minfft_real*)x,tr=(minfft_real*)t,er=(minfft_real*)e;
 	xi=xr+1,ti=tr+1,ei=er+1;
 	/* prepare sub-transform inputs */
-	for (n=0; n<N/4; ++n) {
+	for (n=0;n<N/4;++n) {
 		register minfft_real t0r,t1r,t2r,t3r;
 		register minfft_real t0i,t1i,t2i,t3i;
 		/* t0=x[n]+x[n+N/2]; */
@@ -554,7 +553,7 @@ s_realdft_1d (minfft_real *x, minfft_cmpl *z, int sz, const minfft_aux *a) {
 	/* z[sz*N/2]=creal(u)-cimag(u); */
 	zr[sz*N]=ur-ui;
 	zi[sz*N]=0;
-	for (n=1; n<N/4; ++n) {
+	for (n=1;n<N/4;++n) {
 		register minfft_real ttr,ter;
 		register minfft_real tti,tei;
 		/* u=(t[n]+conj(t[N/2-n]))/2; */
@@ -589,10 +588,10 @@ minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a) {
 		int n; /* counter */
 		minfft_cmpl *t=a->t; /* temporary buffer */
 		/* strided real DFT of contiguous rows */
-		for (n=0; n<N2; ++n)
+		for (n=0;n<N2;++n)
 			s_realdft_1d(x+n*N1,t+n,N2,a->sub1);
 		/* strided complex DFT of contiguous hyperplanes */
-		for (n=0; n<N1/2+1; ++n)
+		for (n=0;n<N1/2+1;++n)
 			s_dft(t+n*N2,z+n,N1/2+1,a->sub2);
 	}
 }
@@ -629,7 +628,7 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 	/* t[0]=(z[0]+z[N/2])+I*(z[0]-z[N/2]); */
 	tr[0]=zr[0]+zr[N];
 	ti[0]=zr[0]-zr[N];
-	for (n=1; n<N/4; ++n) {
+	for (n=1;n<N/4;++n) {
 		register minfft_real ur,vr;
 		register minfft_real ui,vi;
 		register minfft_real ttr,ter;
@@ -640,7 +639,8 @@ invrealdft_1d (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 		/* v=I*(z[n]-conj(z[N/2-n]))*conj(e[n]); */
 		ttr=zr[2*n]-zr[N-2*n];
 		tti=zi[2*n]+zi[N-2*n];
-		ter=ei[2*n]; /* te=I*conj(e[n]) */
+		/* te=I*conj(e[n]) */
+		ter=ei[2*n];
 		tei=er[2*n];
 		vr=ttr*ter-tti*tei;
 		vi=ttr*tei+tti*ter;
@@ -671,17 +671,17 @@ minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a) {
 		minfft_real *zi=zr+1,*ti=tr+1;
 		int k;
 		/* transpose */
-		for (n=0; n<N2; ++n)
-			for (k=0; k<N1/2+1; ++k) {
+		for (n=0;n<N2;++n)
+			for (k=0;k<N1/2+1;++k) {
 				/* t[n+N2*k]=z[(N1/2+1)*n+k]; */
 				tr[2*n+2*N2*k]=zr[2*(N1/2+1)*n+2*k];
 				ti[2*n+2*N2*k]=zi[2*(N1/2+1)*n+2*k];
 			}
 		/* strided complex DFT of contiguous hyperplanes */
-		for (n=0; n<N1/2+1; ++n)
+		for (n=0;n<N1/2+1;++n)
 			s_invdft(t+n*N2,z+n,N1/2+1,a->sub2);
 		/* inverse real DFT of contiguous rows */
-		for (n=0; n<N2; ++n)
+		for (n=0;n<N2;++n)
 			invrealdft_1d(z+n*(N1/2+1),y+n*N1,a->sub1);
 	}
 }
@@ -704,7 +704,7 @@ s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	/* reduce to real DFT of length N */
 	/* prepare sub-transform inputs */
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		t[n]=x[2*n];
 		t[N/2+n]=x[N-1-2*n];
 	}
@@ -715,7 +715,7 @@ s_dct2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	ei=er+1;
 	/* y[0]=2*creal(z[0]); */
 	y[0]=2*t[0];
-	for (n=1; n<N/2; ++n) {
+	for (n=1;n<N/2;++n) {
 		/* y[sy*n]=2*creal(z[n]*e[n]); */
 		y[sy*n]=2*(t[2*n]*er[2*n]-t[2*n+1]*ei[2*n]);
 		/* y[sy*(N-n)]=-2*cimag(z[n]*e[n]); */
@@ -753,7 +753,7 @@ s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	}
 	/* reduce to real DFT of length N */
 	/* prepare sub-transform inputs */
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		t[n]=x[2*n];
 		t[N/2+n]=-x[N-1-2*n];
 	}
@@ -764,7 +764,7 @@ s_dst2_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	ei=er+1;
 	/* y[sy*(N-1)]=2*creal(z[0]); */
 	y[sy*(N-1)]=2*t[0];
-	for (n=1; n<N/2; ++n) {
+	for (n=1;n<N/2;++n) {
 		/* y[sy*(n-1)]=-2*cimag(z[n]*e[n]); */
 		y[sy*(n-1)]=-2*(t[2*n]*ei[2*n]+t[2*n+1]*er[2*n]);
 		/* y[sy*(N-n-1)]=2*creal(z[n]*e[n]); */
@@ -807,7 +807,7 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* z[0]=x[0]; */
 	zr[0]=x[0];
 	zi[0]=0;
-	for (n=1; n<N/2; ++n) {
+	for (n=1;n<N/2;++n) {
 		/* z[n]=conj((x[n]+I*x[N-n])*e[n]); */
 		zr[2*n]=x[n]*er[2*n]-x[N-n]*ei[2*n];
 		zi[2*n]=-x[n]*ei[2*n]-x[N-n]*er[2*n];
@@ -818,7 +818,7 @@ s_dct3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* do inverse real DFT in-place */
 	invrealdft_1d(z,t,a->sub1);
 	/* recover results */
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		y[sy*2*n]=t[n];
 		y[sy*(N-1-2*n)]=t[N/2+n];
 	}
@@ -857,7 +857,7 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* z[0]=x[N-1]; */
 	zr[0]=x[N-1];
 	zi[0]=0;
-	for (n=1; n<N/2; ++n) {
+	for (n=1;n<N/2;++n) {
 		/* z[n]=conj((x[N-n-1]+I*x[n-1])*e[n]); */
 		zr[2*n]=x[N-n-1]*er[2*n]-x[n-1]*ei[2*n];
 		zi[2*n]=-x[N-n-1]*ei[2*n]-x[n-1]*er[2*n];
@@ -868,7 +868,7 @@ s_dst3_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* do inverse real DFT in-place */
 	invrealdft_1d(z,t,a->sub1);
 	/* recover results */
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		y[sy*2*n]=t[n];
 		y[sy*(N-1-2*n)]=-t[N/2+n];
 	}
@@ -903,7 +903,7 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* prepare sub-transform inputs */
 	tr=(minfft_real*)t,er=(minfft_real*)e;
 	ti=tr+1,ei=er+1;
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		/* t[n]=*e++*(x[2*n]+I*x[N-1-2*n]); */
 		tr[2*n]=er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
 		ti[2*n]=er[2*n]*x[N-1-2*n]+ei[2*n]*x[2*n];
@@ -913,7 +913,7 @@ s_dct4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* recover results */
 	er+=N;
 	ei+=N;
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		/* y[sy*2*n]=2*creal(*e++*t[n]); */
 		y[sy*2*n]=2*(er[4*n]*tr[2*n]-ei[4*n]*ti[2*n]);
 		/* y[sy*(2*n+1)]=2*creal(*e++*conj(t[N/2-1-n])); */
@@ -950,7 +950,7 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* prepare sub-transform inputs */
 	tr=(minfft_real*)t,er=(minfft_real*)e;
 	ti=tr+1,ei=er+1;
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		/* t[n]=-*e++*(x[2*n]-I*x[N-1-2*n]); */
 		tr[2*n]=-er[2*n]*x[2*n]-ei[2*n]*x[N-1-2*n];
 		ti[2*n]=er[2*n]*x[N-1-2*n]-ei[2*n]*x[2*n];
@@ -960,7 +960,7 @@ s_dst4_1d (minfft_real *x, minfft_real *y, int sy, const minfft_aux *a) {
 	/* recover results */
 	er+=N;
 	ei+=N;
-	for (n=0; n<N/2; ++n) {
+	for (n=0;n<N/2;++n) {
 		/* y[sy*2*n]=2*cimag(*e++*t[n]); */
 		y[sy*2*n]=2*(er[4*n]*ti[2*n]+ei[4*n]*tr[2*n]);
 		/* y[sy*(2*n+1)]=2*cimag(*e++*conj(t[N/2-1-n])); */
@@ -1030,7 +1030,7 @@ make_aux (int d, int *Ns, int datasz, minfft_aux* (*aux_1d)(int N)) {
 		return (*aux_1d)(Ns[0]);
 	else {
 		p=1;
-		for (i=0; i<d; ++i)
+		for (i=0;i<d;++i)
 			p*=Ns[i];
 		a=malloc(sizeof(minfft_aux));
 		if (a==NULL)
@@ -1075,7 +1075,7 @@ minfft_mkaux_dft_1d (int N) {
 			goto err;
 		e=(minfft_real*)a->e;
 		while (N>=16) {
-			for (n=0; n<N/4; ++n) {
+			for (n=0;n<N/4;++n) {
 				*e++=ncos(-n,N);
 				*e++=nsin(-n,N);
 				*e++=ncos(-3*n,N);
@@ -1138,7 +1138,7 @@ minfft_mkaux_realdft_1d (int N) {
 		if (a->e==NULL)
 			goto err;
 		e=(minfft_real*)a->e;
-		for (n=0; n<N/4; ++n) {
+		for (n=0;n<N/4;++n) {
 			*e++=ncos(-n,N);
 			*e++=nsin(-n,N);
 		}
@@ -1165,7 +1165,7 @@ minfft_mkaux_realdft (int d, int *Ns) {
 		return minfft_mkaux_realdft_1d(Ns[0]);
 	else {
 		p=1;
-		for (i=0; i<d-1; ++i)
+		for (i=0;i<d-1;++i)
 			p*=Ns[i];
 		a=malloc(sizeof(minfft_aux));
 		if (a==NULL)
@@ -1226,7 +1226,7 @@ minfft_mkaux_t2t3_1d (int N) {
 		if (a->e==NULL)
 			goto err;
 		e=(minfft_real*)a->e;
-		for (n=0; n<N/2; ++n) {
+		for (n=0;n<N/2;++n) {
 			*e++=ncos(-n,4*N);
 			*e++=nsin(-n,4*N);
 		}
@@ -1288,11 +1288,11 @@ minfft_mkaux_t4_1d (int N) {
 		if (a->e==NULL)
 			goto err;
 		e=(minfft_real*)a->e;
-		for (n=0; n<N/2; ++n) {
+		for (n=0;n<N/2;++n) {
 			*e++=ncos(-n,2*N);
 			*e++=nsin(-n,2*N);
 		}
-		for (n=0; n<N; ++n) {
+		for (n=0;n<N;++n) {
 			*e++=ncos(-(2*n+1),8*N);
 			*e++=nsin(-(2*n+1),8*N);
 		}
