@@ -172,7 +172,7 @@ minfft_aux* minfft_mkaux_realdft (int d, int *Ns);
 void minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DCT-2
+### DCT-2
 $$ y_n=2\sum_{k=0}^{N-1}x_k\cos(\frac{\pi}{N}(k+\frac{1}{2})n), ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
@@ -182,7 +182,7 @@ minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DST-2
+### DST-2
 $$ y_n=2\sum_{k=0}^{N-1}x_k\sin(\frac{\pi}{N}(k+\frac{1}{2})(n+1)), ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
@@ -192,7 +192,7 @@ minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DCT-3
+### DCT-3
 $$ y_n=x_0+2\sum_{k=1}^{N-1}x_k\cos(\frac{\pi}{N}k(n+\frac{1}{2})), ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
@@ -202,7 +202,7 @@ minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DST-3
+### DST-3
 $$ y_n=2\sum_{k=0}^{N-2}x_k\sin(\frac{\pi}{N}(k+1)(n+\frac{1}{2}))+(-1)^{n}x_{N-1}, ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
@@ -212,7 +212,7 @@ minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DCT-4
+### DCT-4
 $$ y_n=2\sum_{k=0}^{N-1}x_k\cos(\frac{\pi}{N}(k+\frac{1}{2})(n+\frac{1}{2})), ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
@@ -222,7 +222,7 @@ minfft_aux* minfft_mkaux_t4 (int d, int *Ns);
 void minfft_dct4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
-#### DST-4
+### DST-4
 $$ y_n=2\sum_{k=0}^{N-1}x_k\sin(\frac{\pi}{N}(k+\frac{1}{2})(n+\frac{1}{2})), ~ n=0,1,\dots,N{-}1 $$
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
