@@ -120,7 +120,10 @@ Our definitions of transforms, and formats of input and output data, are
 fully compatible with FFTW.
 
 ### Complex DFT
-![](docs/dft.svg)
+$$
+y_n = \sum_{k=0}^{N-1}x_k\exp(-\frac{2\pi i}{N}kn),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
@@ -130,7 +133,10 @@ void minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 ```
 
 ### Inverse complex DFT
-![](docs/invdft.svg)
+$$
+y_n = \sum_{k=0}^{N-1}x_k\exp(\frac{2\pi i}{N}kn),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
@@ -143,13 +149,8 @@ void minfft_invdft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 This transform returns mostly non-redundant part of the complex DFT of
 real data.
 
-For a real array of dimensions
-
-![](docs/realdft-in.svg)
-
-it produces a complex array of dimensions
-
-![](docs/realdft-out.svg)
+For a real array of dimensions $ N_1 \times \dots \times N_{d-1} \times N_d $
+it produces a complex array of dimensions $ N_1 \times \dots \times N_{d-1} \times (\frac{N_d}{2}+1) $.
 
 Note that output takes a little more space than input. For in-place
 operation, make sure the data buffer is big enough to contain output.
@@ -165,13 +166,8 @@ void minfft_realdft (minfft_real *x, minfft_cmpl *z, const minfft_aux *a);
 ### Inverse real DFT
 This is the inversion of the real DFT.
 
-It takes a complex array of dimensions 
-
-![](docs/realdft-out.svg)
-
-and returns a real array of dimensions
-
-![](docs/realdft-in.svg)
+It takes a complex array of dimensions $ N_1 \times \dots \times N_{d-1} \times (\frac{N_d}{2}+1) $
+and returns a real array of dimensions $ N_1 \times \dots \times N_{d-1} \times N_d $.
 
 **NB:** Multidimensional inverse real DFT **does not** preserve input.
 
@@ -184,7 +180,10 @@ void minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-2
-![](docs/dct2.svg)
+$$
+y_n = 2\sum_{k=0}^{N-1}x_k\cos(\frac{\pi}{N}(k+\frac{1}{2})n),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -194,7 +193,10 @@ void minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-2
-![](docs/dst2.svg)
+$$
+y_n = 2\sum_{k=0}^{N-1}x_k\sin(\frac{\pi}{N}(k+\frac{1}{2})(n+1)),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -204,7 +206,10 @@ void minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-3
-![](docs/dct3.svg)
+$$
+y_n = x_0 + 2\sum_{k=1}^{N-1}x_k\cos(\frac{\pi}{N}k(n+\frac{1}{2})),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -214,7 +219,10 @@ void minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-3
-![](docs/dst3.svg)
+$$
+y_n = 2\sum_{k=0}^{N-2}x_k\sin(\frac{\pi}{N}(k+1)(n+\frac{1}{2}))+(-1)^{n}x_{N-1},
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -224,7 +232,10 @@ void minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DCT-4
-![](docs/dct4.svg)
+$$
+y_n = 2\sum_{k=0}^{N-1}x_k\cos(\frac{\pi}{N}(k+\frac{1}{2})(n+\frac{1}{2})),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
@@ -234,7 +245,10 @@ void minfft_dct4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 #### DST-4
-![](docs/dst4.svg)
+$$
+y_n = 2\sum_{k=0}^{N-1}x_k\sin(\frac{\pi}{N}(k+\frac{1}{2})(n+\frac{1}{2})),
+\ n=0,1,\dots,N\!\!-\!\!1.
+$$
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
