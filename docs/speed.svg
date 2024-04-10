@@ -7,7 +7,7 @@
 >
 
 <title>Gnuplot</title>
-<desc>Produced by GNUPLOT 5.4 patchlevel 1 </desc>
+<desc>Produced by GNUPLOT 5.4 patchlevel 9 </desc>
 
 <g id="gnuplot_canvas">
 
@@ -460,53 +460,55 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-	<g id="gnuplot_plot_1" ><title>minfft</title>
-<g fill="none" color="white" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g id="gnuplot_plot_1" ><title>fftw sse2</title>
+<g fill="none" color="white" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
+		<text><tspan font-family="Arial" >fftw sse2</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='rgb(148,   0, 211)'  d='M515.48,72.01 L558.04,72.01 M89.31,365.35 L114.86,277.95 L140.42,170.20 L165.97,107.34 L191.52,57.53 L217.08,108.60
+		L242.63,142.57 L268.18,153.61 L293.74,165.07 L319.29,143.64 L344.84,173.56 L370.39,184.92 L395.95,198.84 L421.50,211.44
+		L447.05,217.85 L472.61,226.94 L498.16,242.91 L523.71,268.16 L549.27,314.85 L574.82,315.32  '/></g>
+	</g>
+	<g id="gnuplot_plot_2" ><title>kissfft</title>
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(507.09,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
+		<text><tspan font-family="Arial" >kissfft</tspan></text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='rgb(  0, 158, 115)'  d='M515.48,90.01 L558.04,90.01 M89.31,393.69 L114.86,375.54 L140.42,366.05 L165.97,343.44 L191.52,346.83 L217.08,327.68
+		L242.63,337.73 L268.18,321.59 L293.74,329.80 L319.29,317.25 L344.84,330.00 L370.39,316.57 L395.95,330.56 L421.50,326.07
+		L447.05,336.06 L472.61,339.38 L498.16,365.26 L523.71,376.36 L549.27,385.58 L574.82,389.76  '/></g>
+	</g>
+	<g id="gnuplot_plot_3" ><title>minfft</title>
+<g fill="none" color="white" stroke="rgb(  0, 158, 115)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(507.09,75.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
+	<g transform="translate(507.09,111.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
 		<text><tspan font-family="Arial" >minfft</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(148,   0, 211)'  d='M515.48,72.01 L558.04,72.01 M89.31,372.82 L114.86,289.50 L140.42,210.23 L165.97,269.06 L191.52,257.18 L217.08,262.57
-		L242.63,258.87 L268.18,259.54 L293.74,258.60 L319.29,261.12 L344.84,275.89 L370.39,281.89 L395.95,284.45 L421.50,291.84
-		L447.05,290.85 L472.61,288.55 L498.16,307.12 L523.71,350.15 L549.27,366.55 L574.82,373.75  '/></g>
+	<path stroke='black'  d='M515.48,108.01 L558.04,108.01 M89.31,369.73 L114.86,293.98 L140.42,219.13 L165.97,258.59 L191.52,253.69 L217.08,255.21
+		L242.63,255.83 L268.18,256.92 L293.74,256.89 L319.29,260.78 L344.84,280.93 L370.39,284.75 L395.95,289.23 L421.50,295.03
+		L447.05,294.54 L472.61,293.27 L498.16,309.92 L523.71,349.81 L549.27,367.23 L574.82,374.18  '/></g>
 	</g>
-	<g id="gnuplot_plot_2" ><title>KissFFT</title>
-<g fill="none" color="white" stroke="rgb(148,   0, 211)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g id="gnuplot_plot_4" ><title>pocketfft</title>
+<g fill="none" color="white" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(507.09,93.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >KissFFT</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 158, 115)'  d='M515.48,90.01 L558.04,90.01 M89.31,396.82 L114.86,374.51 L140.42,367.83 L165.97,346.97 L191.52,351.54 L217.08,333.46
-		L242.63,339.71 L268.18,320.23 L293.74,330.73 L319.29,317.65 L344.84,328.40 L370.39,316.44 L395.95,330.38 L421.50,327.12
-		L447.05,339.54 L472.61,346.73 L498.16,368.14 L523.71,376.32 L549.27,388.01 L574.82,389.79  '/></g>
-	</g>
-	<g id="gnuplot_plot_3" ><title>PocketFFT</title>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g transform="translate(507.09,111.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >PocketFFT</tspan></text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb( 86, 180, 233)'  d='M515.48,108.01 L558.04,108.01 M89.31,397.05 L114.86,377.62 L140.42,355.99 L165.97,314.15 L191.52,301.14 L217.08,268.98
-		L242.63,257.85 L268.18,245.38 L293.74,257.51 L319.29,256.11 L344.84,259.45 L370.39,258.27 L395.95,272.00 L421.50,277.38
-		L447.05,269.16 L472.61,275.13 L498.16,320.09 L523.71,357.60 L549.27,360.52 L574.82,362.62  '/></g>
-	</g>
-	<g id="gnuplot_plot_4" ><title>FFTW</title>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<g transform="translate(507.09,129.91)" stroke="none" fill="black" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" >FFTW</tspan></text>
+		<text><tspan font-family="Arial" >pocketfft</tspan></text>
 	</g>
 </g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(230, 159,   0)'  d='M515.48,126.01 L558.04,126.01 M89.31,365.36 L114.86,283.75 L140.42,168.24 L165.97,130.97 L191.52,61.32 L217.08,91.64
-		L242.63,140.59 L268.18,145.57 L293.74,157.04 L319.29,141.12 L344.84,173.56 L370.39,185.95 L395.95,198.16 L421.50,210.25
-		L447.05,218.61 L472.61,228.61 L498.16,241.33 L523.71,268.50 L549.27,316.35 L574.82,317.05  '/></g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='rgb(230, 159,   0)'  d='M515.48,126.01 L558.04,126.01 M89.31,396.92 L114.86,377.43 L140.42,357.19 L165.97,316.63 L191.52,296.48 L217.08,263.94
+		L242.63,249.69 L268.18,233.51 L293.74,245.75 L319.29,245.39 L344.84,248.98 L370.39,247.78 L395.95,264.42 L421.50,267.83
+		L447.05,257.44 L472.61,259.41 L498.16,318.77 L523.71,355.72 L549.27,360.88 L574.82,363.56  '/></g>
 	</g>
 <g fill="none" color="white" stroke="rgb(230, 159,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
