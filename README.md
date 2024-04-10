@@ -286,7 +286,7 @@ repeated application of its one-dimensional routine along each
 dimension.
 
 ## Performance
-Below are the plots of the speed and accuracy of our library, compared
+Below are the plots of speed and accuracy of our library, compared
 with the libraries of similar design — KissFFT and PocketFFT.
 Performance of a highly optimized machine-specific version of the FFTW
 library is also shown for reference.
@@ -299,8 +299,11 @@ library is also shown for reference.
 We use [benchFFT](https://github.com/FFTW/benchfft) tool to benchmark our
 library and its competitors.
 
-The compiler used is the GNU C compiler version 10.2.1 for the x86_64
-platform.
+The compiler used is the GNU C compiler version 13.2.1 for the x86_64
+platform. All libraries are built with `-O2` optimizations, except for FFTW,
+which is built with the flags choosed automatically by its `configure` script.
+The versions tested are: FFTW - 3.3.10, KissFFT - 1.3.1, minfft - current master,
+PocketFFT - 1.0.
 
 The performance measurements are made on an isolated core of an Intel®
 Pentium® Gold G5420 CPU running at 3800 MHz.
