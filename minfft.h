@@ -1,6 +1,6 @@
 /*
 	A minimalistic FFT library
-	Copyright (c) 2016-2022 Alexander Mukhin
+	Copyright (c) 2016-2024 Alexander Mukhin
 	SPDX-License-Identifier: MIT
 */
 
