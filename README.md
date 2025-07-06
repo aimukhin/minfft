@@ -1,5 +1,5 @@
 # minfft
-A minimalistic Fast Fourier Transform library.
+A minimalist Fast Fourier Transform library.
 
 It achieves high performance by simple means.
 
@@ -254,8 +254,8 @@ void minfft_free_aux (minfft_aux *a);
 Our library does not try to save memory, and allocates temporary buffers
 wherever it benefits performance.
 
-The amounts of memory, allocated for the auxiliary data of the
-one-dimensional transforms, are given below:
+The amounts of memory allocated for the auxiliary data of the
+one-dimensional transforms are given below:
 
 Transform                                | Auxiliary data size
 -----------------------------------------|---------------------
