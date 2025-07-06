@@ -222,6 +222,7 @@ minfft_aux* minfft_mkaux_t2t3 (int d, int *Ns);
 void minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
+### DCT-4
 ![](docs/dct4.svg)
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
