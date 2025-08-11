@@ -119,7 +119,7 @@ Our definitions of transforms, and formats of input and output data, are
 fully compatible with FFTW.
 
 ### Complex DFT
-![](docs/dft.svg)
+![](docs/dft.png)
 ```C
 minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
@@ -129,7 +129,7 @@ void minfft_dft (minfft_cmpl *x, minfft_cmpl *y, const minfft_aux *a);
 ```
 
 ### Inverse complex DFT
-![](docs/invdft.svg)
+![](docs/invdft.png)
 ```C
 minfft_aux* minfft_mkaux_dft_1d (int N);
 minfft_aux* minfft_mkaux_dft_2d (int N1, int N2);
@@ -144,11 +144,11 @@ real data.
 
 For a real array of dimensions
 
-![](docs/realdft-in.svg)
+![](docs/realdft-in.png)
 
 it produces a complex array of dimensions
 
-![](docs/realdft-out.svg)
+![](docs/realdft-out.png)
 
 Note that output takes a little more space than input. For in-place
 operation, make sure the data buffer is big enough to contain output.
@@ -166,11 +166,11 @@ This is the inversion of the real DFT.
 
 It takes a complex array of dimensions
 
-![](docs/realdft-out.svg)
+![](docs/realdft-out.png)
 
 and returns a real array of dimensions
 
-![](docs/realdft-in.svg)
+![](docs/realdft-in.png)
 
 **NB:** Multidimensional inverse real DFT **does not** preserve input.
 
@@ -183,7 +183,7 @@ void minfft_invrealdft (minfft_cmpl *z, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DCT-2
-![](docs/dct2.svg)
+![](docs/dct2.png)
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -193,7 +193,7 @@ void minfft_dct2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DST-2
-![](docs/dst2.svg)
+![](docs/dst2.png)
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -203,7 +203,7 @@ void minfft_dst2 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DCT-3
-![](docs/dct3.svg)
+![](docs/dct3.png)
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -213,7 +213,7 @@ void minfft_dct3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DST-3
-![](docs/dst3.svg)
+![](docs/dst3.png)
 ```C
 minfft_aux* minfft_mkaux_t2t3_1d (int N);
 minfft_aux* minfft_mkaux_t2t3_2d (int N1, int N2);
@@ -223,7 +223,7 @@ void minfft_dst3 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DCT-4
-![](docs/dct4.svg)
+![](docs/dct4.png)
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
@@ -233,7 +233,7 @@ void minfft_dct4 (minfft_real *x, minfft_real *y, const minfft_aux *a);
 ```
 
 ### DST-4
-![](docs/dst4.svg)
+![](docs/dst4.png)
 ```C
 minfft_aux* minfft_mkaux_t4_1d (int N);
 minfft_aux* minfft_mkaux_t4_2d (int N1, int N2);
